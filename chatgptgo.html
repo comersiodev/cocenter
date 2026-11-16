@@ -10,11 +10,17 @@
 <style>
   #cc-container, #cc-container * { font-family:'JetBrains Mono', monospace!important; box-sizing:border-box; }
   html, body { margin:0!important; padding:0!important; height:100%!important; overflow:hidden!important; background:#05060a!important; color:#fff; }
-  #cc-container { position:fixed; top:0; left:0; width:100vw; height:100vh; z-index:999999; background:#05060a; overflow-y:auto; -webkit-overflow-scrolling:touch; padding-top:75px; padding-bottom:100px; }
-  .cc-bg.bg-default { position:fixed; inset:0; z-index:-1; background:#000 url('https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh9DocQHrQw9p05Lbkght7m-rpO8O2HS6s3VG28Nc7FW6LPePf_AYJ3E104I15aD8OUsQRINz7QGbgv7EeJXKZKXdecQ-RAHvowdbS5vPqDrfZ63ZC3w-FOPKWPcVBKY5IFdenDmRixqc-Jy8BvVpAp6ReI7Io5UdxjNnlzY_TZLuTW6xaepq9RkRMA92kV/s1600/11.gif') no-repeat center center; background-size:cover; transition:background 0.3s ease; }
-  .cc-overlay.bg-default { position:fixed; inset:0; z-index:-1; background:rgba(3,4,8,0.78); transition:background 0.3s ease; }
-  .cc-bg.bg-simple { position:fixed; inset:0; z-index:-1; background:linear-gradient(135deg,#090a0f 0%,#12151f 50%,#1a1614 100%) !important; }
-  .cc-overlay.bg-simple { position:fixed; inset:0; z-index:-1; background:rgba(12,10,8,0.65) !important; backdrop-filter:blur(10px); }
+  #cc-container { position:fixed; top:0; left:0; width:100vw; height:100vh; z-index:999999; background:transparent; overflow-y:auto; -webkit-overflow-scrolling:touch; padding-top:75px; padding-bottom:100px; }
+  .cc-bg { position:fixed; inset:0; z-index:0; background-color:#05060a; pointer-events:none; transition:background 0.3s ease; }
+  .cc-overlay { position:fixed; inset:0; z-index:1; pointer-events:none; transition:background 0.3s ease, backdrop-filter 0.3s ease; }
+  .cc-bg.bg-default { background:#000 url('https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh9DocQHrQw9p05Lbkght7m-rpO8O2HS6s3VG28Nc7FW6LPePf_AYJ3E104I15aD8OUsQRINz7QGbgv7EeJXKZKXdecQ-RAHvowdbS5vPqDrfZ63ZC3w-FOPKWPcVBKY5IFdenDmRixqc-Jy8BvVpAp6ReI7Io5UdxjNnlzY_TZLuTW6xaepq9RkRMA92kV/s1600/11.gif') no-repeat center center; background-size:cover; }
+  .cc-overlay.bg-default { background:rgba(3,4,8,0.78); }
+  .cc-bg.bg-simple { background:linear-gradient(135deg,#090a0f 0%,#12151f 50%,#1a1614 100%) !important; }
+  .cc-overlay.bg-simple { background:rgba(12,10,8,0.65) !important; backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); }
+  .cc-bg.bg-dark { background:#05060a !important; }
+  .cc-overlay.bg-dark { background:transparent !important; backdrop-filter:none !important; -webkit-backdrop-filter:none !important; }
+  .cc-bg.bg-custom { background-color:#05060a; background-position:center center; background-repeat:no-repeat; background-size:cover; }
+  .cc-overlay.bg-custom { background:rgba(3,4,8,0.72); }
   body.cc-simple-mode .cc-tutorial-bubble { animation:none !important; border-color:rgba(255,255,255,0.1) !important; background:#0d0f16 !important; }
   body.cc-simple-mode .cc-fab-main, body.cc-simple-mode .cc-fab-dock, body.cc-simple-mode .cc-fab-item { transition:none !important; }
   body.cc-simple-mode .cc-fab-stage.cc-fab-open .cc-fab-main { transform:none !important; }
@@ -24,7 +30,21 @@
   .cc-brand { font-weight:800; font-size:16px; color:#fff; letter-spacing:-0.5px; }
   .cc-subtitle { font-size:9px; font-weight:700; color:#a9b2c3; letter-spacing:2px; text-transform:uppercase; margin-left:42px; }
   .cc-img { width:32px; height:32px; border-radius:8px; object-fit:cover; }
-  .cc-nav-right { display:flex; align-items:center; gap:6px; position:relative; }
+  .cc-nav-right { display:flex; align-items:center; gap:8px; position:relative; }
+
+  /* TOMBOL REFRESH INSTAN */
+  @keyframes ccSpin { 0%{transform:rotate(0deg);} 100%{transform:rotate(360deg);} }
+  .cc-refresh-btn { width:32px; height:32px; border-radius:50%; border:1.5px solid rgba(41,224,201,0.5); background:#151824; color:#29e0c9; cursor:pointer; display:flex; align-items:center; justify-content:center; padding:0; transition:background 0.2s, border-color 0.2s, transform 0.15s; -webkit-tap-highlight-color:transparent; }
+  .cc-refresh-btn:hover { background:rgba(41,224,201,0.14); border-color:#29e0c9; }
+  .cc-refresh-btn:active { transform:scale(0.92); }
+  .cc-refresh-btn svg { width:15px; height:15px; stroke:currentColor; }
+  .cc-refresh-btn.spinning svg { animation:ccSpin 0.65s linear infinite; }
+
+  /* TOAST NOTIFIKASI SYNC */
+  .cc-sync-toast { position:fixed; top:70px; left:50%; transform:translateX(-50%) translateY(-12px); z-index:1200000; background:rgba(13,15,22,0.96); border:1px solid rgba(41,224,201,0.55); color:#29e0c9; font-family:'JetBrains Mono', monospace; font-size:11px; font-weight:700; padding:8px 14px; border-radius:999px; box-shadow:0 8px 24px rgba(0,0,0,0.65); opacity:0; visibility:hidden; pointer-events:none; transition:opacity 0.22s ease, transform 0.22s ease, visibility 0.22s; white-space:nowrap; }
+  .cc-sync-toast.show { opacity:1; visibility:visible; transform:translateX(-50%) translateY(0); }
+  .cc-sync-toast.error { border-color:rgba(255,45,106,0.6); color:#ff2d6a; }
+
   .cc-profile-wrap { position:relative; }
   .cc-profile-btn { width:32px; height:32px; border-radius:50%; overflow:hidden; border:1.5px solid rgba(255,210,63,0.5); cursor:pointer; display:flex; align-items:center; justify-content:center; background:#151824; -webkit-tap-highlight-color:transparent; }
   .cc-profile-btn img { width:100%; height:100%; object-fit:cover; display:block; }
@@ -41,13 +61,21 @@
   .cc-tutorial-bubble { border-radius:18px; border:2px solid transparent!important; background:linear-gradient(#0d0f16,#0d0f16) padding-box, linear-gradient(90deg,#ff2d6a,#ffd23f,#29e0c9,#7c5cff,#ff2d6a) border-box!important; background-size:200% 200%!important; animation:rgbStroke 4s linear infinite; overflow:hidden; box-shadow:0 10px 30px rgba(0,0,0,0.5); }
   .cc-tutorial-img { width:100%; display:block; aspect-ratio:16/9; object-fit:cover; border-bottom:1px solid rgba(255,255,255,0.1); }
   .cc-tutorial-body { padding:25px 20px; }
+  .cc-section-head-row { display:flex; align-items:center; justify-content:space-between; gap:8px; margin:0 0 12px 0; }
+  .cc-section-head-row .cc-section-title { margin:0; }
+  .cc-sync-time { font-size:10px; color:#64748b; font-weight:700; }
   .cc-section-title { color:#29e0c9; font-weight:800; font-size:13px; text-transform:uppercase; margin:0 0 12px 0; }
   .cc-benefit-list { padding-left:18px; margin:0 0 25px 0; color:#29e0c9; }
   .cc-benefit-list li { font-size:13px; line-height:1.6; color:#e2e8f0; margin-bottom:8px; }
-  .cc-price-highlight { background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:14px; padding:16px; text-align:center; margin:0 0 25px 0; }
+  .cc-price-highlight { background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:14px; padding:16px; text-align:center; margin:0 0 25px 0; cursor:pointer; transition:border-color 0.2s, background 0.2s; }
+  .cc-price-highlight:hover { border-color:rgba(41,224,201,0.45); background:rgba(41,224,201,0.06); }
+  .cc-price-highlight.out-of-stock { opacity:0.55; cursor:not-allowed; border-color:rgba(255,45,106,0.35); }
+  .cc-price-highlight.out-of-stock:hover { border-color:rgba(255,45,106,0.35); background:rgba(255,255,255,0.04); }
   .cc-price-highlight .dur { font-size:12px; font-weight:800; color:#fff; text-transform:uppercase; }
   .cc-price-highlight .val { font-size:22px; font-weight:800; color:#29e0c9; margin:6px 0 2px; }
   .cc-price-highlight .per { font-size:10px; color:#94a3b8; }
+  .cc-stock-badge { display:inline-block; font-size:9px; font-weight:800; color:#05060a; background:linear-gradient(90deg,#29e0c9,#7c5cff); padding:3px 8px; border-radius:6px; margin-left:6px; vertical-align:middle; }
+  .cc-stock-badge.habis { color:#fff; background:#ff2d6a; }
   .cc-tutorial-list { padding-left:18px; margin:0 0 25px 0; color:#ffd23f; font-weight:700; }
   .cc-tutorial-list li { font-size:13px; line-height:1.6; color:#e2e8f0; font-weight:400; margin-bottom:12px; }
   .cc-refund-list { padding-left:0; margin:0 0 25px 0; list-style:none; }
@@ -58,8 +86,9 @@
   .cc-footer-text { font-size:13px; line-height:1.6; color:#29e0c9; margin-top:0; text-align:center; font-weight:bold; }
 
   .cc-bottom-action-bubble { position:fixed; bottom:10px; left:12px; right:calc(50% + 40px); height:54px; z-index:999999; display:flex; align-items:center; justify-content:flex-start; padding:0 18px; border-radius:999px; background:linear-gradient(135deg, rgba(41,224,201,0.12), rgba(124,92,255,0.12)); border:1.5px solid rgba(41,224,201,0.45); color:#29e0c9; font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:0.6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; box-shadow:0 4px 15px rgba(41,224,201,0.2); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); pointer-events:none; }
-  .cc-bottom-action-order { position:fixed; bottom:10px; left:calc(50% + 40px); right:12px; height:54px; z-index:999999; display:flex; align-items:center; justify-content:center; padding:0 22px; border-radius:999px; border:none; cursor:pointer; font-family:'JetBrains Mono', monospace; font-weight:800; font-size:12px; letter-spacing:0.6px; text-transform:uppercase; color:#05060a; background:linear-gradient(90deg, #29e0c9, #7c5cff); box-shadow:0 4px 18px rgba(41,224,201,0.45); -webkit-tap-highlight-color:transparent; transition:transform 0.15s ease; }
+  .cc-bottom-action-order { position:fixed; bottom:10px; left:calc(50% + 40px); right:12px; height:54px; z-index:999999; display:flex; align-items:center; justify-content:center; padding:0 22px; border-radius:999px; border:none; cursor:pointer; font-family:'JetBrains Mono', monospace; font-weight:800; font-size:12px; letter-spacing:0.6px; text-transform:uppercase; color:#05060a; background:linear-gradient(90deg, #29e0c9, #7c5cff); box-shadow:0 4px 18px rgba(41,224,201,0.45); -webkit-tap-highlight-color:transparent; transition:transform 0.15s ease, opacity 0.2s ease; }
   .cc-bottom-action-order:active { transform:scale(0.95); }
+  .cc-bottom-action-order:disabled { opacity:0.45; cursor:not-allowed; background:#334155; color:#94a3b8; box-shadow:none; }
 
   .cc-modal-backdrop { position:fixed; inset:0; z-index:1100000; display:flex; align-items:flex-end; justify-content:center; visibility:hidden; pointer-events:none; transition:background 0.4s, visibility 0.4s; }
   .cc-modal-backdrop.active { visibility:visible; pointer-events:auto; background:rgba(2,3,6,0.78); backdrop-filter:blur(6px); }
@@ -144,7 +173,8 @@
   .cc-fab-backdrop.cc-fab-backdrop-show { opacity:1; visibility:visible; pointer-events:auto; }
 </style>
 </head>
-<body>
+<body data-provider="chatgpt_go">
+<div class="cc-sync-toast" id="cc-sync-toast">✓ Data & harga diperbarui</div>
 <div id="cc-container">
   <div class="cc-bg bg-default" id="cc-bg-element"></div>
   <div class="cc-overlay bg-default" id="cc-overlay-element"></div>
@@ -154,9 +184,16 @@
         <img class="cc-img" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjgKAkQ6fTJOBPoOVz21klx2Vw6CXegaFe7QnvWoaDZTt1raufO5Ikvqu0JrP93QUf_iAcqVp8IkcTZjTx_e1mMqJENEYIpEjv-br9ApdDAeMiPcm8xoO-dFAmPJa-9y22yJdNme0Eb-EFxm-dS0Pd2UwUNu2cfB5pxS7KA7RP1JPKB-79xmqs5Vl9pSYHn/s1600/IMG_20260808_230713.png">
         CO CENTER
       </div>
-      <div class="cc-subtitle">ChatGPT Go</div>
+      <div class="cc-subtitle" id="cc-header-subtitle">ChatGPT Go</div>
     </div>
     <div class="cc-nav-right">
+      <button type="button" class="cc-refresh-btn" id="cc-refresh-catalog" title="Refresh Harga & Paket">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="23 4 23 10 17 10"></polyline>
+          <polyline points="1 20 1 14 7 14"></polyline>
+          <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+        </svg>
+      </button>
       <div class="cc-profile-wrap">
         <div class="cc-profile-btn" id="cc-profile-toggle" title="Menu Akun">
           <div id="header-avatar-container" style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
@@ -178,11 +215,14 @@
       <div class="cc-tutorial-body">
         <h2 class="cc-section-title">🔥 CHATGPT GO PRIVATE 🔥</h2>
         <div class="cc-intro-text">ChatGPT Go Private memberikan Anda <span class="cc-highlight-text">akun pribadi (full private, bukan shared/invite)</span> dengan akses penuh ke fitur premium ChatGPT, tanpa berbagi kuota dengan siapa pun.</div>
-        <h2 class="cc-section-title">💰 Harga Paket</h2>
-        <div class="cc-price-highlight">
-          <div class="dur">ChatGPT Go Private</div>
-          <div class="val">Rp75.000</div>
-          <div class="per">per bulan / akun</div>
+        <div class="cc-section-head-row">
+          <h2 class="cc-section-title">💰 Harga Paket</h2>
+          <span class="cc-sync-time" id="cc-sync-time"></span>
+        </div>
+        <div class="cc-price-highlight" id="cc-price-box">
+          <div class="dur" id="cc-pkg-name">ChatGPT Go Private</div>
+          <div class="val" id="cc-pkg-price">Rp75.000</div>
+          <div class="per" id="cc-pkg-detail">per bulan / akun</div>
         </div>
         <h2 class="cc-section-title">✨ TOTAL BENEFIT</h2>
         <ul class="cc-benefit-list">
@@ -246,9 +286,9 @@
     <div class="cc-modal-item">
       <img src="ChatGPT.jpg" alt="ChatGPT Go Private">
       <div>
-        <div class="cc-modal-item-name">ChatGPT Go Private</div>
-        <div class="cc-modal-item-sub">Akun Pribadi · 27-30 Hari</div>
-        <div class="cc-modal-item-price">Rp75.000 / bulan</div>
+        <div class="cc-modal-item-name" id="modal-item-name">ChatGPT Go Private</div>
+        <div class="cc-modal-item-sub" id="modal-item-sub">Akun Pribadi · 27-30 Hari</div>
+        <div class="cc-modal-item-price" id="modal-item-price">Rp75.000 / bulan</div>
       </div>
     </div>
     <div class="cc-modal-body-scroll">
@@ -261,7 +301,7 @@
         </div>
       </div>
       <div class="cc-total-row"><span class="cc-total-label">Total Harga</span><span class="cc-total-value" id="total-price">Rp75.000</span></div>
-      <label class="cc-field-label">Catatan (Opsional)</label>
+      <label class="cc-field-label" id="label-user-note">Catatan (Opsional)</label>
       <div class="cc-input-wrap">
         <input type="text" class="cc-input" id="user-note" placeholder="contoh: request kirim ke WA lain / catatan tambahan">
         <div class="cc-input-hint">Akun (email & password) akan dikirimkan langsung oleh Admin via WhatsApp setelah pembayaran dikonfirmasi.</div>
@@ -290,10 +330,57 @@ document.addEventListener('DOMContentLoaded', function () {
   function applyBackgroundSettings() {
     var bgEl = document.getElementById('cc-bg-element');
     var overlayEl = document.getElementById('cc-overlay-element');
-    var bgMode = localStorage.getItem('cc_bg_mode') || 'default';
-    if (bgEl && overlayEl) {
-      if (bgMode === 'sederhana') { bgEl.className = 'cc-bg bg-simple'; overlayEl.className = 'cc-overlay bg-simple'; document.body.classList.add('cc-simple-mode'); }
-      else { bgEl.className = 'cc-bg bg-default'; overlayEl.className = 'cc-overlay bg-default'; document.body.classList.remove('cc-simple-mode'); }
+    if (!bgEl || !overlayEl) return;
+
+    var bgMode = (localStorage.getItem('cc_bg_mode') || 'default').trim().toLowerCase();
+    var customBg = (
+      localStorage.getItem('cc_bg_custom') ||
+      localStorage.getItem('cc_custom_bg') ||
+      localStorage.getItem('cc_bg_image') ||
+      localStorage.getItem('cc_bg_url') ||
+      ''
+    ).trim();
+    var customOverlay = localStorage.getItem('cc_bg_overlay');
+    var customBlur = localStorage.getItem('cc_bg_blur');
+
+    bgEl.style.background = '';
+    bgEl.style.backgroundImage = '';
+    overlayEl.style.background = '';
+    overlayEl.style.backdropFilter = '';
+    overlayEl.style.webkitBackdropFilter = '';
+
+    if (bgMode === 'sederhana' || bgMode === 'simple') {
+      bgEl.className = 'cc-bg bg-simple';
+      overlayEl.className = 'cc-overlay bg-simple';
+      document.body.classList.add('cc-simple-mode');
+    } else if (bgMode === 'polos' || bgMode === 'dark' || bgMode === 'gelap') {
+      bgEl.className = 'cc-bg bg-dark';
+      overlayEl.className = 'cc-overlay bg-dark';
+      document.body.classList.add('cc-simple-mode');
+    } else if (bgMode === 'custom' && customBg !== '') {
+      bgEl.className = 'cc-bg bg-custom';
+      overlayEl.className = 'cc-overlay bg-custom';
+      if (/^(#|rgb|hsl|linear-gradient|radial-gradient)/i.test(customBg)) {
+        bgEl.style.background = customBg;
+      } else {
+        bgEl.style.backgroundImage = 'url("' + customBg.replace(/"/g, '\\"') + '")';
+      }
+      if (customOverlay !== null && customOverlay !== '') {
+        var alpha = Math.max(0, Math.min(1, parseFloat(customOverlay)));
+        if (!isNaN(alpha)) overlayEl.style.background = 'rgba(3,4,8,' + alpha + ')';
+      }
+      if (customBlur !== null && customBlur !== '') {
+        var blurPx = Math.max(0, parseFloat(customBlur));
+        if (!isNaN(blurPx)) {
+          overlayEl.style.backdropFilter = 'blur(' + blurPx + 'px)';
+          overlayEl.style.webkitBackdropFilter = 'blur(' + blurPx + 'px)';
+        }
+      }
+      document.body.classList.remove('cc-simple-mode');
+    } else {
+      bgEl.className = 'cc-bg bg-default';
+      overlayEl.className = 'cc-overlay bg-default';
+      document.body.classList.remove('cc-simple-mode');
     }
   }
   applyBackgroundSettings();
@@ -350,33 +437,241 @@ document.addEventListener('DOMContentLoaded', function () {
     if (dragState.hasMoved) { var rect = fabStage.getBoundingClientRect(); localStorage.setItem('cc_fab_position', JSON.stringify({ left: rect.left, top: rect.top })); }
     else { if (fabStage.classList.contains('cc-fab-open')) closeFab(); else openFab(); } });
   fabMain.addEventListener('pointercancel', function(){ dragState.active = false; });
+
+  function syncAllSettings() {
+    applyBackgroundSettings();
+    updateHeaderAvatar();
+    updateFabVisualState();
+    if (!isFabMovable()) resetFabPosition();
+    else applySavedFabPosition();
+  }
+
   window.addEventListener('storage', function(e) {
+    if (!e.key || ['cc_bg_mode', 'cc_bg_custom', 'cc_custom_bg', 'cc_bg_image', 'cc_bg_url', 'cc_bg_overlay', 'cc_bg_blur'].indexOf(e.key) !== -1) {
+      applyBackgroundSettings();
+    }
     if (e.key === 'cc_user_avatar') updateHeaderAvatar();
-    if (e.key === 'cc_bg_mode') applyBackgroundSettings();
     if (e.key === 'cc_fab_movable') { updateFabVisualState(); if (!isFabMovable()) resetFabPosition(); else applySavedFabPosition(); }
-    if (e.key === 'cc_fab_position') { if (isFabMovable()) applySavedFabPosition(); } });
+    if (e.key === 'cc_fab_position') { if (isFabMovable()) applySavedFabPosition(); }
+    if (e.key === 'cc_catalog_cache' && e.newValue) {
+      try { applyCatalogData(JSON.parse(e.newValue), false); } catch(err) {}
+    }
+  });
+  window.addEventListener('pageshow', syncAllSettings);
+  document.addEventListener('visibilitychange', function() {
+    if (document.visibilityState === 'visible') syncAllSettings();
+  });
+
   updateFabVisualState(); applySavedFabPosition();
 
   const modalBackdrop = document.getElementById('order-modal-backdrop');
-  document.getElementById('open-order-modal-sticky').addEventListener('click', (e) => { e.stopPropagation(); modalBackdrop.classList.add('active'); });
+  const openOrderStickyBtn = document.getElementById('open-order-modal-sticky');
+  openOrderStickyBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (isOutOfStock) return;
+    modalBackdrop.classList.add('active');
+  });
   document.getElementById('close-order-modal').addEventListener('click', (e) => { e.stopPropagation(); modalBackdrop.classList.remove('active'); });
   modalBackdrop.addEventListener('click', (e) => { if (e.target === modalBackdrop) modalBackdrop.classList.remove('active'); });
   modalBackdrop.querySelector('.cc-modal').addEventListener('click', (e) => e.stopPropagation());
-  const PRICE_PER_SLOT = 75000;
+
+  let pricePerSlot = 75000;
   let qty = 1;
+  let isOutOfStock = false;
+  let dynamicWaAdmin = '6288971071456';
+  let dynamicItemName = 'ChatGPT Go Private';
+
   const qtyValueEl = document.getElementById('qty-value'), totalPriceEl = document.getElementById('total-price');
-  function formatRupiah(num) { return 'Rp' + num.toLocaleString('id-ID'); }
-  function updateTotal() { totalPriceEl.textContent = formatRupiah(qty * PRICE_PER_SLOT); }
+  const tncCheckbox = document.getElementById('tnc-checkbox'), confirmBtn = document.getElementById('confirm-order');
+
+  function formatRupiah(num) { return 'Rp' + Number(num || 0).toLocaleString('id-ID'); }
+  function updateTotal() { totalPriceEl.textContent = formatRupiah(qty * pricePerSlot); }
+  function updateConfirmState() { confirmBtn.disabled = !tncCheckbox.checked || isOutOfStock; }
+
+  /* =========================================================
+     INTEGRASI AUTO-SYNC & REFRESH INSTAN product.json
+  ========================================================= */
+  const CATALOG_STORAGE_KEY = 'cc_catalog_cache';
+  const CATALOG_SYNC_TIME_KEY = 'cc_catalog_last_sync';
+  const GH_RAW_CATALOG_URL = 'https://raw.githubusercontent.com/comersiodev/cocenter/main/product.json';
+
+  function detectProviderKey() {
+    if (document.body && document.body.dataset.provider) {
+      return document.body.dataset.provider.trim().toLowerCase();
+    }
+    const file = (window.location.pathname.split('/').pop() || '').replace(/\.html$/i, '').trim().toLowerCase();
+    return file || 'chatgpt_go';
+  }
+
+  function escapeHtml(str) {
+    return String(str || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  let toastTimer = null;
+  function showSyncToast(text, isError) {
+    const toast = document.getElementById('cc-sync-toast');
+    if (!toast) return;
+    toast.textContent = text;
+    toast.classList.toggle('error', Boolean(isError));
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => { toast.classList.remove('show'); }, 2200);
+  }
+
+  function applyCatalogData(catalog, saveToExternal) {
+    if (!catalog || !catalog.produk) return false;
+    const providerKey = detectProviderKey();
+    const provider = catalog.produk[providerKey] || catalog.produk['chatgpt'] || catalog.produk['chatgpt_go'];
+    if (!provider || !Array.isArray(provider.paket) || !provider.paket.length) return false;
+
+    if (saveToExternal) {
+      try {
+        localStorage.setItem(CATALOG_STORAGE_KEY, JSON.stringify(catalog));
+        const nowTime = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+        localStorage.setItem(CATALOG_SYNC_TIME_KEY, nowTime);
+        window.CC_EXTERNAL_CATALOG = catalog;
+        window.dispatchEvent(new CustomEvent('cc:catalog-updated', { detail: catalog }));
+      } catch (e) {}
+    }
+
+    const savedTime = localStorage.getItem(CATALOG_SYNC_TIME_KEY);
+    const syncTimeEl = document.getElementById('cc-sync-time');
+    if (syncTimeEl && savedTime) syncTimeEl.textContent = 'Sync ' + savedTime;
+
+    if (catalog.wa_admin) dynamicWaAdmin = String(catalog.wa_admin).trim();
+
+    const pkg = provider.paket[0];
+    const hargaNum = Number(pkg.harga ?? pkg.price ?? 75000) || 75000;
+    const isReady = pkg.stok !== false;
+    const namaPaket = pkg.nama || provider.judul_item || 'ChatGPT Go Private';
+    const detailPaket = pkg.detail || 'per bulan / akun';
+
+    pricePerSlot = hargaNum;
+    isOutOfStock = !isReady;
+    dynamicItemName = namaPaket;
+
+    if (provider.judul_item) {
+      const subHeader = document.getElementById('cc-header-subtitle');
+      const stickyBubble = document.getElementById('cc-page-bubble');
+      if (subHeader) subHeader.textContent = provider.judul_item;
+      if (stickyBubble) stickyBubble.textContent = provider.judul_item;
+    }
+
+    const priceBox = document.getElementById('cc-price-box');
+    const pkgNameEl = document.getElementById('cc-pkg-name');
+    const pkgPriceEl = document.getElementById('cc-pkg-price');
+    const pkgDetailEl = document.getElementById('cc-pkg-detail');
+
+    const badgeHtml = !isReady
+      ? '<span class="cc-stock-badge habis">Habis</span>'
+      : (pkg.badge ? `<span class="cc-stock-badge">${escapeHtml(pkg.badge)}</span>` : '');
+
+    if (priceBox) priceBox.classList.toggle('out-of-stock', !isReady);
+    if (pkgNameEl) pkgNameEl.innerHTML = escapeHtml(namaPaket) + badgeHtml;
+    if (pkgPriceEl) pkgPriceEl.textContent = formatRupiah(hargaNum);
+    if (pkgDetailEl) pkgDetailEl.textContent = detailPaket;
+
+    const modalItemName = document.getElementById('modal-item-name');
+    const modalItemSub = document.getElementById('modal-item-sub');
+    const modalItemPrice = document.getElementById('modal-item-price');
+    if (modalItemName) modalItemName.textContent = namaPaket;
+    if (modalItemSub) modalItemSub.textContent = isReady ? detailPaket : 'Stok sedang habis';
+    if (modalItemPrice) modalItemPrice.textContent = formatRupiah(hargaNum) + ' / bulan';
+
+    if (openOrderStickyBtn) {
+      openOrderStickyBtn.disabled = !isReady;
+      openOrderStickyBtn.textContent = isReady ? 'Order' : 'Habis';
+    }
+
+    if (provider.label_tujuan) {
+      const lblNote = document.getElementById('label-user-note');
+      if (lblNote) lblNote.textContent = provider.label_tujuan;
+    }
+    if (provider.placeholder_tujuan) {
+      const inpNote = document.getElementById('user-note');
+      if (inpNote) inpNote.placeholder = provider.placeholder_tujuan;
+    }
+
+    updateTotal();
+    updateConfirmState();
+    return true;
+  }
+
+  async function refreshCatalogNow(showFeedback) {
+    const btn = document.getElementById('cc-refresh-catalog');
+    if (btn) btn.classList.add('spinning');
+
+    const bust = `?v=${Date.now()}`;
+    const sources = [
+      `${GH_RAW_CATALOG_URL}${bust}`,
+      `./product.json${bust}`
+    ];
+
+    let updated = false;
+    for (let i = 0; i < sources.length; i++) {
+      try {
+        const res = await fetch(sources[i], { cache: 'no-store' });
+        if (!res.ok) continue;
+        const data = await res.json();
+        if (applyCatalogData(data, true)) {
+          updated = true;
+          break;
+        }
+      } catch (err) {}
+    }
+
+    if (btn) {
+      setTimeout(() => btn.classList.remove('spinning'), 300);
+    }
+
+    if (showFeedback) {
+      if (updated) {
+        showSyncToast('✓ Harga & paket berhasil diperbarui', false);
+      } else {
+        showSyncToast('⚠️ Belum ada update atau cek koneksi', true);
+      }
+    }
+  }
+
+  // Klik kotak harga langsung buka modal order jika stok tersedia
+  const priceBoxEl = document.getElementById('cc-price-box');
+  if (priceBoxEl) {
+    priceBoxEl.addEventListener('click', () => {
+      if (!isOutOfStock) modalBackdrop.classList.add('active');
+    });
+  }
+
+  // 1. Langsung muat cache eksternal lokal saat halaman dibuka (0ms)
+  try {
+    const cachedRaw = localStorage.getItem(CATALOG_STORAGE_KEY);
+    if (cachedRaw) applyCatalogData(JSON.parse(cachedRaw), false);
+  } catch (e) {}
+
+  // 2. Auto-sync diam-diam dari GitHub product.json saat buka halaman
+  refreshCatalogNow(false);
+
+  // 3. Klik tombol refresh -> langsung update tanpa tanya konfirmasi
+  const refreshBtn = document.getElementById('cc-refresh-catalog');
+  if (refreshBtn) {
+    refreshBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      refreshCatalogNow(true);
+    });
+  }
+
   document.getElementById('qty-minus').addEventListener('click', () => { if (qty > 1) { qty--; qtyValueEl.textContent = qty; updateTotal(); } });
   document.getElementById('qty-plus').addEventListener('click', () => { if (qty < 99) { qty++; qtyValueEl.textContent = qty; updateTotal(); } });
   let selectedMethod = 'QRIS';
   document.querySelectorAll('.cc-pay-option').forEach(opt => { opt.addEventListener('click', () => { document.querySelectorAll('.cc-pay-option').forEach(o => o.classList.remove('selected')); opt.classList.add('selected'); selectedMethod = opt.getAttribute('data-method'); }); });
-  const tncCheckbox = document.getElementById('tnc-checkbox'), confirmBtn = document.getElementById('confirm-order');
-  tncCheckbox.addEventListener('change', () => { confirmBtn.disabled = !tncCheckbox.checked; });
+  tncCheckbox.addEventListener('change', updateConfirmState);
   function getFormattedDate() { const now = new Date(); const days = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu']; const months = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember']; return `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()} - ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')} WIB`; }
-  document.getElementById('confirm-order').addEventListener('click', () => { if (!tncCheckbox.checked) return;
-    const itemName = 'ChatGPT Go Private';
-    const tanggal = getFormattedDate(), waNumber = '6288971071456', totalHarga = formatRupiah(qty * PRICE_PER_SLOT);
+  document.getElementById('confirm-order').addEventListener('click', () => { if (!tncCheckbox.checked || isOutOfStock) return;
+    const itemName = dynamicItemName;
+    const tanggal = getFormattedDate(), waNumber = dynamicWaAdmin, totalHarga = formatRupiah(qty * pricePerSlot);
     const noteLine = document.getElementById('user-note').value.trim() || '-';
     const message = `Nama Item : ${itemName}\nJumlah Akun : ${qty}\nTotal Harga : ${totalHarga}\nCatatan : ${noteLine}\nTanggal Pemesanan : ${tanggal}\nMetode Pembayaran : ${selectedMethod}\nSetuju Rules & Ketentuan : Ya, saya menyetujui Rules, Syarat, dan Ketentuan Garansi ChatGPT Go Private Co Center`;
     window.open(`https://wa.me/${waNumber}?text=${encodeURIComponent(message)}`, '_blank'); });

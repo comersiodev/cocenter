@@ -10,13 +10,21 @@
 <style>
   #cc-container, #cc-container * { font-family:'JetBrains Mono', monospace!important; box-sizing:border-box; }
   html, body { margin:0!important; padding:0!important; height:100%!important; overflow:hidden!important; background:#05060a!important; color:#fff; }
-  #cc-container { position:fixed; top:0; left:0; width:100vw; height:100vh; z-index:999999; background:#05060a; overflow-y:auto; -webkit-overflow-scrolling:touch; padding-top:75px; padding-bottom:50px; }
+  #cc-container { position:fixed; top:0; left:0; width:100vw; height:100vh; z-index:999999; background:transparent; overflow-y:auto; -webkit-overflow-scrolling:touch; padding-top:75px; padding-bottom:50px; }
 
-  .cc-bg.bg-default { position:fixed; inset:0; z-index:-1; background:#000 url('https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh9DocQHrQw9p05Lbkght7m-rpO8O2HS6s3VG28Nc7FW6LPePf_AYJ3E104I15aD8OUsQRINz7QGbgv7EeJXKZKXdecQ-RAHvowdbS5vPqDrfZ63ZC3w-FOPKWPcVBKY5IFdenDmRixqc-Jy8BvVpAp6ReI7Io5UdxjNnlzY_TZLuTW6xaepq9RkRMA92kV/s1600/11.gif') no-repeat center center; background-size:cover; transition:background 0.3s ease; }
-  .cc-overlay.bg-default { position:fixed; inset:0; z-index:-1; background:rgba(3,4,8,0.78); transition:background 0.3s ease; }
-  .cc-bg.bg-simple { position:fixed; inset:0; z-index:-1; background:linear-gradient(135deg,#090a0f 0%,#12151f 50%,#1a1614 100%) !important; transition:background 0.3s ease; }
-  .cc-overlay.bg-simple { position:fixed; inset:0; z-index:-1; background:rgba(12,10,8,0.65) !important; backdrop-filter:blur(10px); transition:background 0.3s ease; }
+  .cc-bg { position:fixed; inset:0; z-index:0; background-color:#05060a; pointer-events:none; transition:background 0.3s ease; }
+  .cc-overlay { position:fixed; inset:0; z-index:1; pointer-events:none; transition:background 0.3s ease, backdrop-filter 0.3s ease; }
+  .cc-bg.bg-default { background:#000 url('https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh9DocQHrQw9p05Lbkght7m-rpO8O2HS6s3VG28Nc7FW6LPePf_AYJ3E104I15aD8OUsQRINz7QGbgv7EeJXKZKXdecQ-RAHvowdbS5vPqDrfZ63ZC3w-FOPKWPcVBKY5IFdenDmRixqc-Jy8BvVpAp6ReI7Io5UdxjNnlzY_TZLuTW6xaepq9RkRMA92kV/s1600/11.gif') no-repeat center center; background-size:cover; }
+  .cc-overlay.bg-default { background:rgba(3,4,8,0.78); }
+  .cc-bg.bg-simple { background:linear-gradient(135deg,#090a0f 0%,#12151f 50%,#1a1614 100%) !important; }
+  .cc-overlay.bg-simple { background:rgba(12,10,8,0.65) !important; backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); }
+  .cc-bg.bg-dark { background:#05060a !important; }
+  .cc-overlay.bg-dark { background:transparent !important; backdrop-filter:none !important; -webkit-backdrop-filter:none !important; }
+  .cc-bg.bg-custom { background-color:#05060a; background-position:center center; background-repeat:no-repeat; background-size:cover; }
+  .cc-overlay.bg-custom { background:rgba(3,4,8,0.72); }
+
   body.cc-simple-mode .cc-acc-card::before { animation:none !important; }
+  body.cc-simple-mode .cc-op-pill, body.cc-simple-mode .cc-paket-card { transition:none !important; }
 
   .cc-nav { display:flex; align-items:center; justify-content:space-between; padding:14px 24px; position:fixed; top:0; left:0; right:0; z-index:200; background:rgba(5,6,10,0.88); backdrop-filter:blur(14px); border-bottom:1px solid rgba(255,255,255,0.06); gap:10px; }
   .cc-brand-wrap { display:flex; flex-direction:column; gap:2px; flex-shrink:0; }
@@ -24,7 +32,21 @@
   .cc-brand { font-weight:800; font-size:16px; color:#fff; letter-spacing:-0.5px; }
   .cc-subtitle { font-size:9px; font-weight:700; color:#a9b2c3; letter-spacing:2px; text-transform:uppercase; margin-left:42px; }
   .cc-img { width:32px; height:32px; border-radius:8px; object-fit:cover; }
-  .cc-nav-right { display:flex; align-items:center; gap:6px; position:relative; }
+  .cc-nav-right { display:flex; align-items:center; gap:8px; position:relative; }
+
+  /* TOMBOL REFRESH INSTAN */
+  @keyframes ccSpin { 0%{transform:rotate(0deg);} 100%{transform:rotate(360deg);} }
+  .cc-refresh-btn { width:32px; height:32px; border-radius:50%; border:1.5px solid rgba(41,224,201,0.5); background:#151824; color:#29e0c9; cursor:pointer; display:flex; align-items:center; justify-content:center; padding:0; transition:background 0.2s, border-color 0.2s, transform 0.15s; -webkit-tap-highlight-color:transparent; }
+  .cc-refresh-btn:hover { background:rgba(41,224,201,0.14); border-color:#29e0c9; }
+  .cc-refresh-btn:active { transform:scale(0.92); }
+  .cc-refresh-btn svg { width:15px; height:15px; stroke:currentColor; }
+  .cc-refresh-btn.spinning svg { animation:ccSpin 0.65s linear infinite; }
+
+  /* TOAST NOTIFIKASI SYNC */
+  .cc-sync-toast { position:fixed; top:70px; left:50%; transform:translateX(-50%) translateY(-12px); z-index:1200000; background:rgba(13,15,22,0.96); border:1px solid rgba(41,224,201,0.55); color:#29e0c9; font-family:'JetBrains Mono', monospace; font-size:11px; font-weight:700; padding:8px 14px; border-radius:999px; box-shadow:0 8px 24px rgba(0,0,0,0.65); opacity:0; visibility:hidden; pointer-events:none; transition:opacity 0.22s ease, transform 0.22s ease, visibility 0.22s; white-space:nowrap; }
+  .cc-sync-toast.show { opacity:1; visibility:visible; transform:translateX(-50%) translateY(0); }
+  .cc-sync-toast.error { border-color:rgba(255,45,106,0.6); color:#ff2d6a; }
+
   .cc-profile-wrap { position:relative; }
   .cc-profile-btn { width:32px; height:32px; border-radius:50%; overflow:hidden; border:1.5px solid rgba(255,210,63,0.5); cursor:pointer; display:flex; align-items:center; justify-content:center; background:#151824; -webkit-tap-highlight-color:transparent; }
   .cc-profile-btn img { width:100%; height:100%; object-fit:cover; display:block; }
@@ -38,11 +60,13 @@
   .cc-profile-dropdown a.cc-logout { color:#ff2d6a; }
 
   @keyframes rgbStroke { 0%{background-position:0% 50%;} 100%{background-position:200% 50%;} }
-  .cc-section { padding:0 30px 30px; }
-  .cc-section-title { font-weight:800; color:#29e0c9; margin-bottom:15px; font-size:12px; text-transform:uppercase; letter-spacing:1px; display:flex; align-items:center; gap:8px; }
+  .cc-section { padding:0 30px 30px; position:relative; z-index:5; }
+  .cc-section-head-row { display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:15px; }
+  .cc-section-title { font-weight:800; color:#29e0c9; margin:0; font-size:12px; text-transform:uppercase; letter-spacing:1px; display:flex; align-items:center; gap:8px; flex:1; }
   .cc-section-title::after { content:''; flex:1; height:1px; background:rgba(41,224,201,0.25); }
+  .cc-sync-time { font-size:10px; color:#64748b; font-weight:700; }
 
-  .cc-op-wrapper { display:flex; overflow-x:auto; gap:12px; margin:15px 30px 20px; padding-bottom:4px; -webkit-overflow-scrolling:touch; scrollbar-width:none; scroll-behavior:smooth; }
+  .cc-op-wrapper { display:flex; overflow-x:auto; gap:12px; margin:15px 30px 20px; padding-bottom:4px; -webkit-overflow-scrolling:touch; scrollbar-width:none; scroll-behavior:smooth; position:relative; z-index:5; }
   .cc-op-wrapper::-webkit-scrollbar { display:none; }
   .cc-op-pill { flex:0 0 auto; padding:10px 18px; border-radius:999px; font-weight:800; font-size:12px; letter-spacing:0.3px; color:#ffd23f; background:#0b1226; border:1.5px solid #ffd23f; cursor:pointer; text-decoration:none; white-space:nowrap; transition:transform 0.2s cubic-bezier(0.2,0.8,0.2,1), background 0.2s ease, color 0.2s ease; -webkit-tap-highlight-color:transparent; }
   .cc-op-pill:active { transform:scale(0.95); }
@@ -60,15 +84,18 @@
   .cc-acc-arrow { width:32px; height:32px; background:rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.25); border-radius:50%; display:flex; align-items:center; justify-content:center; transition:transform 0.3s cubic-bezier(0.2,0.8,0.2,1); flex-shrink:0; }
   .cc-acc-card.open .cc-acc-arrow { transform:rotate(180deg); }
   .cc-acc-body { max-height:0; overflow:hidden; transition:max-height 0.35s cubic-bezier(0.2,0.8,0.2,1), padding 0.35s ease; background:rgba(13,15,22,0.85); border-top:1px solid rgba(255,255,255,0.05); padding:0 20px; }
-  .cc-acc-card.open .cc-acc-body { max-height:1500px; padding:20px; }
+  .cc-acc-card.open .cc-acc-body { max-height:2000px; padding:20px; }
   .cc-paket-list { display:flex; flex-direction:column; gap:10px; }
-  .cc-paket-card { text-decoration:none; display:block!important; background:rgba(13,15,22,0.95); border-radius:12px; padding:12px 14px; border:1px solid rgba(255,255,255,0.08); transition:transform 0.2s cubic-bezier(0.2,0.8,0.2,1), background 0.2s ease; -webkit-tap-highlight-color:transparent; }
+  .cc-paket-card { text-decoration:none; display:block!important; background:rgba(13,15,22,0.95); border-radius:12px; padding:12px 14px; border:1px solid rgba(255,255,255,0.08); transition:transform 0.2s cubic-bezier(0.2,0.8,0.2,1), background 0.2s ease, opacity 0.2s; -webkit-tap-highlight-color:transparent; }
   .cc-paket-card:active { transform:scale(0.98); background:rgba(25,28,40,0.95); }
+  .cc-paket-card.out-of-stock { opacity:0.55; }
   .cc-paket-head { display:flex; justify-content:space-between; align-items:flex-start; gap:10px; margin-bottom:4px; }
   .cc-paket-name { font-weight:800; font-size:12px; color:#fff; line-height:1.3; }
   .cc-paket-price { font-weight:800; font-size:12px; color:#ffd23f; white-space:nowrap; background:rgba(255,210,63,0.1); padding:3px 6px; border-radius:6px; border:1px solid rgba(255,210,63,0.25); }
+  .cc-paket-card.out-of-stock .cc-paket-price { background:rgba(255,45,106,0.1); border-color:rgba(255,45,106,0.3); color:#ff2d6a; }
   .cc-paket-sub { font-size:10px; color:#a9b2c3; line-height:1.4; }
   .cc-paket-badge { display:inline-block; background:rgba(41,224,201,0.15); color:#29e0c9; font-size:8px; font-weight:800; padding:2px 5px; border-radius:4px; border:1px solid rgba(41,224,201,0.3); margin-left:4px; text-transform:uppercase; vertical-align:middle; }
+  .cc-paket-badge.habis { color:#fff; background:#ff2d6a; border-color:#ff2d6a; }
   .cc-empty-msg { text-align:center; color:#a9b2c3; padding:25px; font-size:12px; }
 
   .cc-fab-stage { position:fixed; left:50%; bottom:0; transform:translateX(-50%); width:200px; height:125px; z-index:999999; pointer-events:none; }
@@ -110,6 +137,7 @@
 </head>
 <body>
 
+<div class="cc-sync-toast" id="cc-sync-toast">✓ Data & harga diperbarui</div>
 <div id="cc-container">
   <div class="cc-bg bg-default" id="cc-bg-element"></div>
   <div class="cc-overlay bg-default" id="cc-overlay-element"></div>
@@ -123,6 +151,13 @@
       <div class="cc-subtitle">Cek Paket Kuota</div>
     </div>
     <div class="cc-nav-right">
+      <button type="button" class="cc-refresh-btn" id="cc-refresh-catalog" title="Refresh Harga & Paket">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="23 4 23 10 17 10"></polyline>
+          <polyline points="1 20 1 14 7 14"></polyline>
+          <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+        </svg>
+      </button>
       <div class="cc-profile-wrap">
         <div class="cc-profile-btn" id="cc-profile-toggle" title="Menu Akun">
           <div id="header-avatar-container" style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
@@ -149,7 +184,10 @@
   </div>
 
   <div class="cc-section">
-    <div class="cc-section-title" id="cc-current-op-title">Pilih Kategori: Indosat</div>
+    <div class="cc-section-head-row">
+      <div class="cc-section-title" id="cc-current-op-title">Pilih Kategori: Indosat</div>
+      <span class="cc-sync-time" id="cc-sync-time"></span>
+    </div>
     <div class="cc-accordion-list" id="cc-accordion-container"></div>
   </div>
 </div>
@@ -179,17 +217,57 @@ document.addEventListener('DOMContentLoaded', function () {
   function applyBackgroundSettings() {
     var bgEl = document.getElementById('cc-bg-element');
     var overlayEl = document.getElementById('cc-overlay-element');
-    var bgMode = localStorage.getItem('cc_bg_mode') || 'default';
-    if (bgEl && overlayEl) {
-      if (bgMode === 'sederhana') {
-        bgEl.className = 'cc-bg bg-simple';
-        overlayEl.className = 'cc-overlay bg-simple';
-        document.body.classList.add('cc-simple-mode');
+    if (!bgEl || !overlayEl) return;
+
+    var bgMode = (localStorage.getItem('cc_bg_mode') || 'default').trim().toLowerCase();
+    var customBg = (
+      localStorage.getItem('cc_bg_custom') ||
+      localStorage.getItem('cc_custom_bg') ||
+      localStorage.getItem('cc_bg_image') ||
+      localStorage.getItem('cc_bg_url') ||
+      ''
+    ).trim();
+    var customOverlay = localStorage.getItem('cc_bg_overlay');
+    var customBlur = localStorage.getItem('cc_bg_blur');
+
+    bgEl.style.background = '';
+    bgEl.style.backgroundImage = '';
+    overlayEl.style.background = '';
+    overlayEl.style.backdropFilter = '';
+    overlayEl.style.webkitBackdropFilter = '';
+
+    if (bgMode === 'sederhana' || bgMode === 'simple') {
+      bgEl.className = 'cc-bg bg-simple';
+      overlayEl.className = 'cc-overlay bg-simple';
+      document.body.classList.add('cc-simple-mode');
+    } else if (bgMode === 'polos' || bgMode === 'dark' || bgMode === 'gelap') {
+      bgEl.className = 'cc-bg bg-dark';
+      overlayEl.className = 'cc-overlay bg-dark';
+      document.body.classList.add('cc-simple-mode');
+    } else if (bgMode === 'custom' && customBg !== '') {
+      bgEl.className = 'cc-bg bg-custom';
+      overlayEl.className = 'cc-overlay bg-custom';
+      if (/^(#|rgb|hsl|linear-gradient|radial-gradient)/i.test(customBg)) {
+        bgEl.style.background = customBg;
       } else {
-        bgEl.className = 'cc-bg bg-default';
-        overlayEl.className = 'cc-overlay bg-default';
-        document.body.classList.remove('cc-simple-mode');
+        bgEl.style.backgroundImage = 'url("' + customBg.replace(/"/g, '\\"') + '")';
       }
+      if (customOverlay !== null && customOverlay !== '') {
+        var alpha = Math.max(0, Math.min(1, parseFloat(customOverlay)));
+        if (!isNaN(alpha)) overlayEl.style.background = 'rgba(3,4,8,' + alpha + ')';
+      }
+      if (customBlur !== null && customBlur !== '') {
+        var blurPx = Math.max(0, parseFloat(customBlur));
+        if (!isNaN(blurPx)) {
+          overlayEl.style.backdropFilter = 'blur(' + blurPx + 'px)';
+          overlayEl.style.webkitBackdropFilter = 'blur(' + blurPx + 'px)';
+        }
+      }
+      document.body.classList.remove('cc-simple-mode');
+    } else {
+      bgEl.className = 'cc-bg bg-default';
+      overlayEl.className = 'cc-overlay bg-default';
+      document.body.classList.remove('cc-simple-mode');
     }
   }
   applyBackgroundSettings();
@@ -267,12 +345,30 @@ document.addEventListener('DOMContentLoaded', function () {
   });
   fabMain.addEventListener('pointercancel', function(){ dragState.active = false; });
 
+  function syncAllSettings() {
+    applyBackgroundSettings();
+    updateHeaderAvatar();
+    updateFabVisualState();
+    if (!isFabMovable()) resetFabPosition();
+    else applySavedFabPosition();
+  }
+
   window.addEventListener('storage', function(e) {
+    if (!e.key || ['cc_bg_mode', 'cc_bg_custom', 'cc_custom_bg', 'cc_bg_image', 'cc_bg_url', 'cc_bg_overlay', 'cc_bg_blur'].indexOf(e.key) !== -1) {
+      applyBackgroundSettings();
+    }
     if (e.key === 'cc_user_avatar') updateHeaderAvatar();
-    if (e.key === 'cc_bg_mode') applyBackgroundSettings();
     if (e.key === 'cc_fab_movable') { updateFabVisualState(); if (!isFabMovable()) resetFabPosition(); else applySavedFabPosition(); }
     if (e.key === 'cc_fab_position') { if (isFabMovable()) applySavedFabPosition(); }
+    if (e.key === 'cc_catalog_cache' && e.newValue) {
+      try { applyCatalogData(JSON.parse(e.newValue), false); } catch(err) {}
+    }
   });
+  window.addEventListener('pageshow', syncAllSettings);
+  document.addEventListener('visibilitychange', function() {
+    if (document.visibilityState === 'visible') syncAllSettings();
+  });
+
   updateFabVisualState(); applySavedFabPosition();
 
   var OPERATOR_CONFIG = {
@@ -284,7 +380,7 @@ document.addEventListener('DOMContentLoaded', function () {
     "Smartfren": { link:"smartfren.html", bgImg:"Smartfren.jpg" }
   };
 
-  var ALL_PACKETS = [
+  var DEFAULT_PACKETS = [
     { op:"Indosat", name:"Freedom Internet Harian 7GB All Net", price:"Rp10.500", sub:"7GB All Net · Masa aktif 1 Hari", cat:"hemat" },
     { op:"Indosat", name:"Freedom Internet Harian 9GB All Net", price:"Rp14.000", sub:"9GB All Net · Masa aktif 2 Hari", cat:"hemat" },
     { op:"Indosat", name:"Freedom Internet Harian 30GB All Net", price:"Rp26.500", sub:"30GB All Net · Masa aktif 3 Hari", cat:"untung" },
@@ -337,7 +433,130 @@ document.addEventListener('DOMContentLoaded', function () {
     { op:"XL", name:"XL Flex Max 150GB + Bonus Nelpon", price:"Rp143.000", sub:"150GB Paket Internet All Net + Bonus Nelpon · Masa aktif 28 Hari", badge:"Best Value", cat:"akhirbulan" }
   ];
 
+  var ALL_PACKETS = JSON.parse(JSON.stringify(DEFAULT_PACKETS));
   var currentOperator = "Indosat";
+
+  function formatRupiah(num) {
+    return 'Rp' + Number(num || 0).toLocaleString('id-ID');
+  }
+
+  function escapeHtml(str) {
+    return String(str || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  let toastTimer = null;
+  function showSyncToast(text, isError) {
+    const toast = document.getElementById('cc-sync-toast');
+    if (!toast) return;
+    toast.textContent = text;
+    toast.classList.toggle('error', Boolean(isError));
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => { toast.classList.remove('show'); }, 2200);
+  }
+
+  function applyCatalogData(catalog, saveToExternal) {
+    if (!catalog || !catalog.produk) return false;
+    const pData = catalog.produk;
+    let mappedPackets = [];
+
+    const opKeys = ["indosat", "axis", "three", "smartfren", "telkomsel", "xl"];
+    let foundAny = false;
+
+    opKeys.forEach(key => {
+      const prov = pData[key];
+      if (prov && Array.isArray(prov.paket)) {
+        foundAny = true;
+        const opName = key.charAt(0).toUpperCase() + key.slice(1);
+        const fixedOpName = key === 'three' ? 'Three' : (key === 'smartfren' ? 'Smartfren' : opName);
+
+        prov.paket.forEach(p => {
+          let cat = 'untung';
+          const nameLower = (p.nama || '').toLowerCase();
+          const detailLower = (p.detail || '').toLowerCase();
+          if (nameLower.includes('harian') || detailLower.includes('hari') && parseInt(detailLower) <= 2) {
+            cat = 'hemat';
+          } else if (nameLower.includes('bulan') || detailLower.includes('28 hari') || detailLower.includes('30 hari') || detailLower.includes('bulanan')) {
+            cat = 'akhirbulan';
+          }
+
+          const hargaNum = Number(p.harga ?? p.price ?? 10000);
+          const isReady = p.stok !== false;
+
+          mappedPackets.push({
+            op: fixedOpName,
+            name: p.nama || 'Paket Internet',
+            price: formatRupiah(hargaNum),
+            sub: p.detail || 'Paket Internet All Net',
+            badge: p.badge || (!isReady ? 'Habis' : ''),
+            stok: isReady,
+            cat: cat
+          });
+        });
+      }
+    });
+
+    if (!foundAny) return false;
+
+    ALL_PACKETS = mappedPackets;
+
+    if (saveToExternal) {
+      try {
+        localStorage.setItem('cc_catalog_cache', JSON.stringify(catalog));
+        const nowTime = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+        localStorage.setItem('cc_catalog_last_sync', nowTime);
+        window.CC_EXTERNAL_CATALOG = catalog;
+        window.dispatchEvent(new CustomEvent('cc:catalog-updated', { detail: catalog }));
+      } catch (e) {}
+    }
+
+    const savedTime = localStorage.getItem('cc_catalog_last_sync');
+    const syncTimeEl = document.getElementById('cc-sync-time');
+    if (syncTimeEl && savedTime) syncTimeEl.textContent = 'Sync ' + savedTime;
+
+    renderAccordion();
+    return true;
+  }
+
+  async function refreshCatalogNow(showFeedback) {
+    const btn = document.getElementById('cc-refresh-catalog');
+    if (btn) btn.classList.add('spinning');
+
+    const bust = `?v=${Date.now()}`;
+    const sources = [
+      `https://raw.githubusercontent.com/comersiodev/cocenter/main/product.json${bust}`,
+      `./product.json${bust}`
+    ];
+
+    let updated = false;
+    for (let i = 0; i < sources.length; i++) {
+      try {
+        const res = await fetch(sources[i], { cache: 'no-store' });
+        if (!res.ok) continue;
+        const data = await res.json();
+        if (applyCatalogData(data, true)) {
+          updated = true;
+          break;
+        }
+      } catch (err) {}
+    }
+
+    if (btn) {
+      setTimeout(() => btn.classList.remove('spinning'), 300);
+    }
+
+    if (showFeedback) {
+      if (updated) {
+        showSyncToast('✓ Data & harga berhasil diperbarui', false);
+      } else {
+        showSyncToast('⚠️ Belum ada update atau cek koneksi', true);
+      }
+    }
+  }
 
   function renderAccordion() {
     var container = document.getElementById('cc-accordion-container');
@@ -356,7 +575,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     var html = '';
     categories.forEach(function(cat, index) {
-      var catItems = ALL_PACKETS.filter(function(p) { return p.op === currentOperator && p.cat === cat.id; });
+      var catItems = ALL_PACKETS.filter(function(p) { return p.op.toLowerCase() === currentOperator.toLowerCase() && p.cat === cat.id; });
       var isOpen = index === 0 ? ' open' : '';
       html += '<div class="cc-acc-card' + isOpen + '" style="' + cardBgStyle + '">' +
                 '<div class="cc-acc-header">' +
@@ -373,13 +592,17 @@ document.addEventListener('DOMContentLoaded', function () {
         html += '<div class="cc-empty-msg">Belum ada paket untuk kategori ini.</div>';
       } else {
         catItems.forEach(function(item) {
-          var badgeHtml = item.badge ? '<span class="cc-paket-badge">' + item.badge + '</span>' : '';
-          html += '<a class="cc-paket-card" href="' + targetUrl + '">' +
+          var isOut = item.stok === false;
+          var badgeHtml = isOut ? '<span class="cc-paket-badge habis">Habis</span>' : (item.badge ? '<span class="cc-paket-badge">' + escapeHtml(item.badge) + '</span>' : '');
+          var cardClass = 'cc-paket-card' + (isOut ? ' out-of-stock' : '');
+          var hrefAttr = isOut ? 'javascript:void(0);' : targetUrl;
+
+          html += '<a class="' + cardClass + '" href="' + hrefAttr + '"' + (isOut ? ' onclick="return false;"' : '') + '>' +
                     '<div class="cc-paket-head">' +
-                      '<span class="cc-paket-name">' + item.name + badgeHtml + '</span>' +
-                      '<span class="cc-paket-price">' + item.price + '</span>' +
+                      '<span class="cc-paket-name">' + escapeHtml(item.name) + badgeHtml + '</span>' +
+                      '<span class="cc-paket-price">' + escapeHtml(item.price) + '</span>' +
                     '</div>' +
-                    '<div class="cc-paket-sub">' + item.sub + '</div>' +
+                    '<div class="cc-paket-sub">' + escapeHtml(item.sub) + '</div>' +
                   '</a>';
         });
       }
@@ -415,7 +638,27 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 
-  renderAccordion();
+  // 1. Muat cache lokal jika ada (0ms)
+  try {
+    const cachedRaw = localStorage.getItem('cc_catalog_cache');
+    if (cachedRaw) applyCatalogData(JSON.parse(cachedRaw), false);
+    else renderAccordion();
+  } catch (e) {
+    renderAccordion();
+  }
+
+  // 2. Auto-sync dari GitHub di latar belakang
+  refreshCatalogNow(false);
+
+  // 3. Tombol Refresh Instan
+  const refreshBtn = document.getElementById('cc-refresh-catalog');
+  if (refreshBtn) {
+    refreshBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      refreshCatalogNow(true);
+    });
+  }
+
 });
 </script>
 

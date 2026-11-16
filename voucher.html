@@ -22,34 +22,25 @@
 
   #cc-container {
     position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-    z-index: 999999; background: #05060a; overflow-y: auto; -webkit-overflow-scrolling: touch;
+    z-index: 999999; background: transparent; overflow-y: auto; -webkit-overflow-scrolling: touch;
     padding-top: 75px;
     padding-bottom: 120px;
   }
 
-  .cc-bg.bg-default {
-    position: fixed; inset: 0; z-index: -1;
-    background: #000 url('https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh9DocQHrQw9p05Lbkght7m-rpO8O2HS6s3VG28Nc7FW6LPePf_AYJ3E104I15aD8OUsQRINz7QGbgv7EeJXKZKXdecQ-RAHvowdbS5vPqDrfZ63ZC3w-FOPKWPcVBKY5IFdenDmRixqc-Jy8BvVpAp6ReI7Io5UdxjNnlzY_TZLuTW6xaepq9RkRMA92kV/s1600/11.gif') no-repeat center center;
-    background-size: cover;
-    transition: background 0.3s ease;
-  }
-  .cc-overlay.bg-default {
-    position: fixed; inset: 0; z-index: -1; background: rgba(3,4,8,0.78);
-    transition: background 0.3s ease;
-  }
+  .cc-bg { position: fixed; inset: 0; z-index: 0; background-color: #05060a; pointer-events: none; transition: background 0.3s ease; }
+  .cc-overlay { position: fixed; inset: 0; z-index: 1; pointer-events: none; transition: background 0.3s ease, backdrop-filter 0.3s ease; }
+  
+  .cc-bg.bg-default { background: #000 url('https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh9DocQHrQw9p05Lbkght7m-rpO8O2HS6s3VG28Nc7FW6LPePf_AYJ3E104I15aD8OUsQRINz7QGbgv7EeJXKZKXdecQ-RAHvowdbS5vPqDrfZ63ZC3w-FOPKWPcVBKY5IFdenDmRixqc-Jy8BvVpAp6ReI7Io5UdxjNnlzY_TZLuTW6xaepq9RkRMA92kV/s1600/11.gif') no-repeat center center; background-size: cover; }
+  .cc-overlay.bg-default { background: rgba(3,4,8,0.78); }
 
-  .cc-bg.bg-simple {
-    position: fixed; inset: 0; z-index: -1;
-    background: linear-gradient(135deg, #090a0f 0%, #12151f 50%, #1a1614 100%) !important;
-    background-size: cover;
-    transition: background 0.3s ease;
-  }
-  .cc-overlay.bg-simple {
-    position: fixed; inset: 0; z-index: -1;
-    background: rgba(12, 10, 8, 0.65) !important;
-    backdrop-filter: blur(10px);
-    transition: background 0.3s ease;
-  }
+  .cc-bg.bg-simple { background: linear-gradient(135deg, #090a0f 0%, #12151f 50%, #1a1614 100%) !important; }
+  .cc-overlay.bg-simple { background: rgba(12, 10, 8, 0.65) !important; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+
+  .cc-bg.bg-dark { background: #05060a !important; }
+  .cc-overlay.bg-dark { background: transparent !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
+
+  .cc-bg.bg-custom { background-color: #05060a; background-position: center center; background-repeat: no-repeat; background-size: cover; }
+  .cc-overlay.bg-custom { background: rgba(3,4,8,0.72); }
 
   .cc-nav {
     display: flex;
@@ -60,7 +51,7 @@
     top: 0;
     left: 0;
     width: 100vw;
-    z-index: 100;
+    z-index: 200;
     background: rgba(5, 6, 10, 0.85);
     backdrop-filter: blur(12px);
     border-bottom: 1px solid rgba(255,255,255,0.08);
@@ -76,7 +67,6 @@
   .cc-img {
     width:35px; height:35px; border-radius:10px; cursor:pointer;
     object-fit: cover;
-    transition: transform 0.5s ease;
   }
 
   .cc-nav-right {
@@ -84,112 +74,62 @@
     align-items: center;
     gap: 8px;
     position: relative;
+    z-index: 205;
   }
 
-  .cc-profile-wrap {
-    position: relative;
-  }
+  /* TOMBOL REFRESH INSTAN */
+  @keyframes ccSpin { 0%{transform:rotate(0deg);} 100%{transform:rotate(360deg);} }
+  .cc-refresh-btn { width:32px; height:32px; border-radius:50%; border:1.5px solid rgba(41,224,201,0.5); background:#151824; color:#29e0c9; cursor:pointer; display:flex; align-items:center; justify-content:center; padding:0; transition:background 0.2s, border-color 0.2s, transform 0.15s; -webkit-tap-highlight-color:transparent; }
+  .cc-refresh-btn:hover { background:rgba(41,224,201,0.14); border-color:#29e0c9; }
+  .cc-refresh-btn:active { transform:scale(0.92); }
+  .cc-refresh-btn svg { width:15px; height:15px; stroke:currentColor; }
+  .cc-refresh-btn.spinning svg { animation:ccSpin 0.65s linear infinite; }
+
+  /* TOAST NOTIFIKASI SYNC */
+  .cc-sync-toast { position:fixed; top:70px; left:50%; transform:translateX(-50%) translateY(-12px); z-index:1200000; background:rgba(13,15,22,0.96); border:1px solid rgba(41,224,201,0.55); color:#29e0c9; font-family:'JetBrains Mono', monospace; font-size:11px; font-weight:700; padding:8px 14px; border-radius:999px; box-shadow:0 8px 24px rgba(0,0,0,0.65); opacity:0; visibility:hidden; pointer-events:none; transition:opacity 0.22s ease, transform 0.22s ease, visibility 0.22s; white-space:nowrap; }
+  .cc-sync-toast.show { opacity:1; visibility:visible; transform:translateX(-50%) translateY(0); }
+  .cc-sync-toast.error { border-color:rgba(255,45,106,0.6); color:#ff2d6a; }
+
+  .cc-profile-wrap { position: relative; }
   .cc-profile-btn {
-    width: 35px;
-    height: 35px;
-    border-radius: 50%;
-    overflow: hidden;
-    border: 1.5px solid rgba(255, 210, 63, 0.5);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #151824;
+    width: 35px; height: 35px; border-radius: 50%; overflow: hidden;
+    border: 1.5px solid rgba(255, 210, 63, 0.5); cursor: pointer;
+    display: flex; align-items: center; justify-content: center; background: #151824;
     transition: transform 0.15s ease, border-color 0.2s ease, background 0.2s ease;
-    -webkit-tap-highlight-color: transparent;
   }
-  .cc-profile-btn svg {
-    width: 20px;
-    height: 20px;
-    fill: #ffd23f;
-  }
-  .cc-profile-btn img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-  }
-  .cc-profile-btn:active {
-    transform: scale(0.92);
-  }
-  .cc-profile-btn:hover {
-    border-color: #ffd23f;
-    background: rgba(255, 210, 63, 0.1);
-  }
-
+  .cc-profile-btn svg { width: 20px; height: 20px; fill: #ffd23f; }
+  .cc-profile-btn img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .cc-profile-dropdown {
-    position: absolute;
-    top: calc(100% + 10px);
-    right: 0;
-    width: 180px;
-    background: #0d0f16;
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 12px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
-    padding: 6px;
-    z-index: 100000;
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(-8px);
-    transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
+    position: absolute; top: calc(100% + 10px); right: 0; width: 180px;
+    background: #0d0f16; border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 12px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+    padding: 6px; z-index: 100000; opacity: 0; visibility: hidden;
+    transform: translateY(-8px); transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
   }
-  .cc-profile-dropdown.show {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
-  }
+  .cc-profile-dropdown.show { opacity: 1; visibility: visible; transform: translateY(0); }
   .cc-profile-dropdown a {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px 12px;
-    color: #d5dae3;
-    font-size: 12px;
-    font-weight: 700;
-    text-decoration: none;
-    border-radius: 8px;
-    transition: background 0.15s ease, color 0.15s ease;
+    display: flex; align-items: center; gap: 10px; padding: 10px 12px;
+    color: #d5dae3; font-size: 12px; font-weight: 700; text-decoration: none; border-radius: 8px;
   }
-  .cc-profile-dropdown a svg {
-    width: 16px;
-    height: 16px;
-    fill: currentColor;
-    flex-shrink: 0;
-  }
-  .cc-profile-dropdown a:hover {
-    background: rgba(41, 224, 201, 0.1);
-    color: #29e0c9;
-  }
-  .cc-profile-dropdown .cc-dropdown-divider {
-    height: 1px;
-    background: rgba(255, 255, 255, 0.08);
-    margin: 4px 0;
-  }
-  .cc-profile-dropdown a.cc-logout {
-    color: #ff2d6a;
-  }
-  .cc-profile-dropdown a.cc-logout:hover {
-    background: rgba(255, 45, 106, 0.1);
-    color: #ff2d6a;
-  }
+  .cc-profile-dropdown a svg { width: 16px; height: 16px; fill: currentColor; flex-shrink: 0; }
+  .cc-profile-dropdown a:hover { background: rgba(41, 224, 201, 0.1); color: #29e0c9; }
+  .cc-profile-dropdown .cc-dropdown-divider { height: 1px; background: rgba(255, 255, 255, 0.08); margin: 4px 0; }
+  .cc-profile-dropdown a.cc-logout { color: #ff2d6a; }
 
   @keyframes rgbStroke {
     0% { background-position: 0% 50%; }
     100% { background-position: 200% 50%; }
   }
 
-  .cc-section { padding: 0 30px 30px; }
+  .cc-section { padding: 0 30px 30px; position: relative; z-index: 5; }
 
   .cc-op-wrapper {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 10px;
     margin: 20px 30px 20px;
+    position: relative;
+    z-index: 5;
   }
 
   .cc-op-pill {
@@ -282,26 +222,9 @@
     -webkit-tap-highlight-color: transparent;
   }
 
-  .cc-acc-info {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-
-  .cc-acc-title {
-    font-weight: 800;
-    font-size: 16px;
-    color: #fff;
-    letter-spacing: -0.3px;
-    text-shadow: 0 1px 3px rgba(0,0,0,0.8);
-  }
-
-  .cc-acc-price-info {
-    font-size: 12px;
-    color: #ffd23f;
-    font-weight: 700;
-    text-shadow: 0 1px 2px rgba(0,0,0,0.8);
-  }
+  .cc-acc-info { display: flex; flex-direction: column; gap: 4px; }
+  .cc-acc-title { font-weight: 800; font-size: 16px; color: #fff; letter-spacing: -0.3px; text-shadow: 0 1px 3px rgba(0,0,0,0.8); }
+  .cc-acc-price-info { font-size: 12px; color: #ffd23f; font-weight: 700; text-shadow: 0 1px 2px rgba(0,0,0,0.8); }
 
   .cc-acc-arrow {
     width: 32px; height: 32px;
@@ -312,10 +235,7 @@
     transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
     flex-shrink: 0;
   }
-
-  .cc-acc-card.open .cc-acc-arrow {
-    transform: rotate(180deg);
-  }
+  .cc-acc-card.open .cc-acc-arrow { transform: rotate(180deg); }
 
   .cc-acc-body {
     max-height: 0;
@@ -325,287 +245,88 @@
     border-top: 1px solid rgba(255,255,255,0.05);
     padding: 0 20px;
   }
-
-  .cc-acc-card.open .cc-acc-body {
-    max-height: 2500px;
-    padding: 20px;
-  }
+  .cc-acc-card.open .cc-acc-body { max-height: 2500px; padding: 20px; }
 
   .cc-acc-desc {
-    font-size: 10.5px;
-    color: #a9b2c3;
-    line-height: 1.6;
-    margin-bottom: 14px;
-    padding-bottom: 14px;
+    font-size: 10.5px; color: #a9b2c3; line-height: 1.6;
+    margin-bottom: 14px; padding-bottom: 14px;
     border-bottom: 1px dashed rgba(255,255,255,0.08);
   }
 
-  .cc-paket-list {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
+  .cc-paket-list { display: flex; flex-direction: column; gap: 10px; }
 
   .cc-paket-card {
-    text-decoration: none;
-    display: block !important;
-    width: 100%;
-    text-align: left;
-    background: rgba(13, 15, 22, 0.95);
-    border-radius: 12px;
-    padding: 12px 14px;
+    text-decoration: none; display: block !important; width: 100%; text-align: left;
+    background: rgba(13, 15, 22, 0.95); border-radius: 12px; padding: 12px 14px;
     border: 1px solid rgba(255, 255, 255, 0.08);
-    transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), background 0.2s ease;
-    -webkit-tap-highlight-color: transparent;
-    cursor: pointer;
-    color: #fff;
-    font-family: inherit;
+    transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), background 0.2s ease, opacity 0.2s;
+    -webkit-tap-highlight-color: transparent; cursor: pointer; color: #fff; font-family: inherit;
   }
   .cc-paket-card:active { transform: scale(0.98); background: rgba(25, 28, 40, 0.95); }
+  .cc-paket-card.out-of-stock { opacity: 0.55; border-color: rgba(255,45,106,0.35); }
 
-  .cc-paket-head {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 10px;
-    margin-bottom: 4px;
-  }
-
-  .cc-paket-name {
-    font-weight: 800;
-    font-size: 12px;
-    color: #fff;
-    line-height: 1.3;
-  }
-
+  .cc-paket-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 4px; }
+  .cc-paket-name { font-weight: 800; font-size: 12px; color: #fff; line-height: 1.3; }
   .cc-paket-price {
-    font-weight: 800;
-    font-size: 12px;
-    color: #ffd23f;
-    white-space: nowrap;
-    background: rgba(255, 210, 63, 0.1);
-    padding: 3px 6px;
-    border-radius: 6px;
+    font-weight: 800; font-size: 12px; color: #ffd23f; white-space: nowrap;
+    background: rgba(255, 210, 63, 0.1); padding: 3px 6px; border-radius: 6px;
     border: 1px solid rgba(255, 210, 63, 0.25);
   }
+  .cc-paket-card.out-of-stock .cc-paket-price { color: #ff2d6a; border-color: rgba(255,45,106,0.3); background: rgba(255,45,106,0.1); }
+  .cc-paket-sub { font-size: 10px; color: #a9b2c3; line-height: 1.4; }
 
-  .cc-paket-sub {
-    font-size: 10px;
-    color: #a9b2c3;
-    line-height: 1.4;
-  }
-
-  .cc-empty-msg {
-    text-align: center;
-    color: #a9b2c3;
-    padding: 25px;
-    font-size: 12px;
-  }
+  .cc-paket-badge { display: inline-block; font-size: 9px; font-weight: 800; color: #05060a; background: linear-gradient(90deg,#29e0c9,#7c5cff); padding: 2px 6px; border-radius: 4px; margin-left: 6px; vertical-align: middle; }
+  .cc-paket-badge.habis { color: #fff; background: #ff2d6a; }
 
   .cc-empty-state {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    padding: 50px 20px 40px;
+    display: flex; flex-direction: column; align-items: center; text-align: center; padding: 50px 20px 40px;
   }
-  .cc-empty-state svg {
-    width: 140px;
-    height: 140px;
-    margin-bottom: 18px;
-  }
-  .cc-empty-state-title {
-    font-weight: 800;
-    font-size: 14px;
-    color: #fff;
-    margin-bottom: 6px;
-  }
-  .cc-empty-state-sub {
-    font-size: 11px;
-    color: #a9b2c3;
-    line-height: 1.6;
-    max-width: 260px;
-  }
+  .cc-empty-state svg { width: 140px; height: 140px; margin-bottom: 18px; }
+  .cc-empty-state-title { font-weight: 800; font-size: 14px; color: #fff; margin-bottom: 6px; }
+  .cc-empty-state-sub { font-size: 11px; color: #a9b2c3; line-height: 1.6; max-width: 260px; }
 
   .cc-single-note {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-top: 14px;
-    padding: 14px;
-    border-radius: 14px;
-    background: rgba(255,255,255,0.03);
-    border: 1px dashed rgba(255,255,255,0.12);
+    display: flex; align-items: center; gap: 12px; margin-top: 14px; padding: 14px;
+    border-radius: 14px; background: rgba(255,255,255,0.03); border: 1px dashed rgba(255,255,255,0.12);
   }
-  .cc-single-note svg {
-    width: 44px;
-    height: 44px;
-    flex-shrink: 0;
-  }
-  .cc-single-note-text {
-    font-size: 10.5px;
-    color: #a9b2c3;
-    line-height: 1.5;
-  }
-  .cc-single-note-text b {
-    color: #ffd23f;
-  }
+  .cc-single-note svg { width: 44px; height: 44px; flex-shrink: 0; }
+  .cc-single-note-text { font-size: 10.5px; color: #a9b2c3; line-height: 1.5; }
+  .cc-single-note-text b { color: #ffd23f; }
 
-  .cc-detail-points {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    margin-bottom: 4px;
-  }
-  .cc-detail-point {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    font-size: 11px;
-    color: #d5dae3;
-    line-height: 1.5;
-  }
-  .cc-detail-point svg {
-    width: 15px;
-    height: 15px;
-    flex-shrink: 0;
-    margin-top: 1px;
-    fill: #29e0c9;
-  }
-  .cc-detail-point b {
-    color: #fff;
-  }
-
-  .cc-bottom-nav {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100vw;
-    background: rgba(13, 15, 22, 0.85);
-    backdrop-filter: blur(15px);
-    border-top: 1px solid rgba(255, 255, 255, 0.12);
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
-    padding: 12px 20px calc(12px + env(safe-area-inset-bottom, 0px));
-    z-index: 999999;
-    box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.4);
-  }
-  .cc-bottom-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-    text-decoration: none;
-    color: #a9b2c3;
-    font-size: 10px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: color 0.2s ease, transform 0.2s ease;
-    -webkit-tap-highlight-color: transparent;
-  }
-  .cc-bottom-item svg {
-    width: 22px;
-    height: 22px;
-    fill: #a9b2c3;
-    transition: fill 0.2s ease, transform 0.2s ease;
-  }
-  .cc-bottom-item:active {
-    transform: scale(0.92);
-  }
-  .cc-bottom-item:hover, .cc-bottom-item.active {
-    color: #ffd23f;
-  }
-  .cc-bottom-item:hover svg, .cc-bottom-item.active svg {
-    fill: #ffd23f;
-  }
+  .cc-detail-points { display: flex; flex-direction: column; gap: 8px; margin-bottom: 4px; }
+  .cc-detail-point { display: flex; align-items: flex-start; gap: 10px; font-size: 11px; color: #d5dae3; line-height: 1.5; }
+  .cc-detail-point svg { width: 15px; height: 15px; flex-shrink: 0; margin-top: 1px; fill: #29e0c9; }
+  .cc-detail-point b { color: #fff; }
 
   .cc-modal-backdrop {
-    position: fixed; inset: 0;
-    background: rgba(0,0,0,0.75);
-    backdrop-filter: blur(4px);
-    z-index: 10000000;
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.25s ease, visibility 0.25s ease;
+    position: fixed; inset: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(4px);
+    z-index: 10000000; display: flex; align-items: flex-end; justify-content: center;
+    opacity: 0; visibility: hidden; transition: opacity 0.25s ease, visibility 0.25s ease;
   }
   .cc-modal-backdrop.show { opacity: 1; visibility: visible; }
 
   .cc-modal {
-    width: 100%;
-    max-width: 480px;
-    background: #0d0f16;
-    border-radius: 24px 24px 0 0;
-    border: 1px solid rgba(255,255,255,0.1);
-    border-bottom: none;
-    max-height: 88vh;
-    display: flex;
-    flex-direction: column;
-    transform: translateY(30px);
-    transition: transform 0.25s cubic-bezier(0.2,0.8,0.2,1);
-    overflow: hidden;
+    width: 100%; max-width: 480px; background: #0d0f16; border-radius: 24px 24px 0 0;
+    border: 1px solid rgba(255,255,255,0.1); border-bottom: none; max-height: 88vh;
+    display: flex; flex-direction: column; transform: translateY(30px);
+    transition: transform 0.25s cubic-bezier(0.2,0.8,0.2,1); overflow: hidden;
   }
   .cc-modal-backdrop.show .cc-modal { transform: translateY(0); }
 
-  .cc-modal-header {
-    flex-shrink: 0;
-    padding: 20px 20px 14px;
-    border-bottom: 1px solid rgba(255,255,255,0.08);
-  }
+  .cc-modal-header { flex-shrink: 0; padding: 20px 20px 14px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+  .cc-modal-scroll { padding: 14px 20px 4px; overflow-y: auto; -webkit-overflow-scrolling: touch; flex: 1 1 auto; min-height: 0; }
+  .cc-modal-footer { flex-shrink: 0; padding: 14px 20px calc(14px + env(safe-area-inset-bottom, 0px)); background: #0d0f16; border-top: 1px solid rgba(255,255,255,0.08); }
 
-  .cc-modal-scroll {
-    padding: 14px 20px 4px;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    flex: 1 1 auto;
-    min-height: 0;
-  }
-
-  .cc-modal-footer {
-    flex-shrink: 0;
-    padding: 14px 20px calc(14px + env(safe-area-inset-bottom, 0px));
-    background: #0d0f16;
-    border-top: 1px solid rgba(255,255,255,0.08);
-  }
-
-  .cc-modal-handle {
-    width: 40px; height: 4px; border-radius: 4px;
-    background: rgba(255,255,255,0.2);
-    margin: 0 auto 16px;
-  }
-
+  .cc-modal-handle { width: 40px; height: 4px; border-radius: 4px; background: rgba(255,255,255,0.2); margin: 0 auto 16px; }
   .cc-modal-op { font-size: 10px; font-weight: 800; color: #7c5cff; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
   .cc-modal-title { font-weight: 800; font-size: 16px; color: #fff; margin-bottom: 4px; line-height: 1.3; }
   .cc-modal-price { font-weight: 800; font-size: 20px; color: #ffd23f; margin-bottom: 0; }
+  .cc-modal-header .cc-detail-points { margin-top: 14px; margin-bottom: 0; }
 
-  .cc-modal-header .cc-detail-points {
-    margin-top: 14px;
-    margin-bottom: 0;
-  }
+  .cc-field-label { font-size: 11px; font-weight: 800; color: #29e0c9; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; margin-top: 18px; }
 
-  .cc-field-label {
-    font-size: 11px; font-weight: 800; color: #29e0c9;
-    text-transform: uppercase; letter-spacing: 0.5px;
-    margin-bottom: 8px; margin-top: 18px;
-  }
-
-  .cc-mode-toggle {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-  }
-  .cc-mode-btn {
-    padding: 12px 10px;
-    border-radius: 12px;
-    text-align: center;
-    background: rgba(255,255,255,0.04);
-    border: 1.5px solid rgba(255,255,255,0.12);
-    cursor: pointer;
-    transition: border-color 0.15s ease, background 0.15s ease;
-  }
+  .cc-mode-toggle { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .cc-mode-btn { padding: 12px 10px; border-radius: 12px; text-align: center; background: rgba(255,255,255,0.04); border: 1.5px solid rgba(255,255,255,0.12); cursor: pointer; transition: border-color 0.15s ease, background 0.15s ease; }
   .cc-mode-btn-label { font-size: 12px; font-weight: 800; color: #fff; margin-bottom: 2px; }
   .cc-mode-btn-sub { font-size: 9.5px; color: #a9b2c3; line-height: 1.3; }
   .cc-mode-btn.active { border-color: #29e0c9; background: rgba(41, 224, 201, 0.08); }
@@ -613,184 +334,65 @@
   .cc-mode-btn[data-mode="bulk"].active { border-color: #7c5cff; background: rgba(124, 92, 255, 0.1); }
   .cc-mode-btn[data-mode="bulk"].active .cc-mode-btn-label { color: #7c5cff; }
 
-  .cc-qty-block {
-    overflow: hidden;
-    max-height: 0;
-    opacity: 0;
-    transition: max-height 0.3s cubic-bezier(0.2,0.8,0.2,1), opacity 0.25s ease;
-  }
+  .cc-qty-block { overflow: hidden; max-height: 0; opacity: 0; transition: max-height 0.3s cubic-bezier(0.2,0.8,0.2,1), opacity 0.25s ease; }
   .cc-qty-block.cc-open { max-height: 160px; opacity: 1; }
 
   .cc-qty-row { display: flex; align-items: center; gap: 14px; }
-  .cc-qty-btn {
-    width: 38px; height: 38px; border-radius: 10px;
-    background: rgba(255,255,255,0.08);
-    border: 1px solid rgba(255,255,255,0.15);
-    color: #fff; font-size: 18px; font-weight: 800;
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer;
-  }
+  .cc-qty-btn { width: 38px; height: 38px; border-radius: 10px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: #fff; font-size: 18px; font-weight: 800; display: flex; align-items: center; justify-content: center; cursor: pointer; }
   .cc-qty-btn:active { transform: scale(0.9); }
   .cc-qty-val { font-size: 16px; font-weight: 800; color: #fff; min-width: 30px; text-align: center; }
 
   .cc-pay-list { display: flex; flex-direction: column; gap: 8px; }
-  .cc-pay-option {
-    display: flex; align-items: center; gap: 10px;
-    padding: 12px 14px;
-    border-radius: 12px;
-    background: rgba(255,255,255,0.04);
-    border: 1.5px solid rgba(255,255,255,0.1);
-    cursor: pointer;
-    transition: border-color 0.15s ease, background 0.15s ease, max-height 0.25s ease, opacity 0.2s ease, padding 0.25s ease, margin 0.25s ease;
-    overflow: hidden;
-    max-height: 60px;
-  }
+  .cc-pay-option { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-radius: 12px; background: rgba(255,255,255,0.04); border: 1.5px solid rgba(255,255,255,0.1); cursor: pointer; transition: border-color 0.15s ease, background 0.15s ease, max-height 0.25s ease, opacity 0.2s ease, padding 0.25s ease, margin 0.25s ease; overflow: hidden; max-height: 60px; }
   .cc-pay-option.active { border-color: #29e0c9; background: rgba(41, 224, 201, 0.08); }
-  .cc-pay-option.cc-collapsed {
-    max-height: 0; padding-top: 0; padding-bottom: 0;
-    border-width: 0; opacity: 0; margin: 0;
-  }
-  .cc-pay-radio {
-    width: 18px; height: 18px; border-radius: 50%;
-    border: 2px solid rgba(255,255,255,0.3);
-    flex-shrink: 0;
-    display: flex; align-items: center; justify-content: center;
-  }
+  .cc-pay-option.cc-collapsed { max-height: 0; padding-top: 0; padding-bottom: 0; border-width: 0; opacity: 0; margin: 0; }
+  .cc-pay-radio { width: 18px; height: 18px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.3); flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
   .cc-pay-option.active .cc-pay-radio { border-color: #29e0c9; }
   .cc-pay-radio-dot { width: 9px; height: 9px; border-radius: 50%; background: #29e0c9; display: none; }
   .cc-pay-option.active .cc-pay-radio-dot { display: block; }
   .cc-pay-name { font-size: 12px; font-weight: 700; color: #fff; flex: 1; }
 
-  .cc-modal-total-box {
-    padding: 14px 16px;
-    border-radius: 14px;
-    background: rgba(255, 210, 63, 0.08);
-    border: 1px solid rgba(255, 210, 63, 0.25);
-    display: flex; justify-content: space-between; align-items: center;
-  }
+  .cc-modal-total-box { padding: 14px 16px; border-radius: 14px; background: rgba(255, 210, 63, 0.08); border: 1px solid rgba(255, 210, 63, 0.25); display: flex; justify-content: space-between; align-items: center; }
   .cc-modal-total-label { font-size: 11px; font-weight: 700; color: #a9b2c3; }
   .cc-modal-total-value { font-size: 17px; font-weight: 800; color: #ffd23f; }
 
-  .cc-confirm-btn {
-    margin-top: 12px;
-    width: 100%;
-    padding: 15px;
-    border-radius: 14px;
-    background: linear-gradient(90deg, #25d366, #1ea952);
-    border: none;
-    color: #fff;
-    font-weight: 800;
-    font-size: 13px;
-    display: flex; align-items: center; justify-content: center; gap: 8px;
-    cursor: pointer;
-    font-family: inherit;
-  }
+  .cc-confirm-btn { margin-top: 12px; width: 100%; padding: 15px; border-radius: 14px; background: linear-gradient(90deg, #25d366, #1ea952); border: none; color: #fff; font-weight: 800; font-size: 13px; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; font-family: inherit; }
   .cc-confirm-btn:active { transform: scale(0.98); }
   .cc-confirm-btn svg { width: 18px; height: 18px; fill: #fff; }
   .cc-confirm-btn.cc-disabled { opacity: 0.4; pointer-events: none; }
 
-  .cc-pay-hint {
-    font-size: 10px;
-    color: #a9b2c3;
-    margin-top: 18px;
-    padding: 10px 12px;
-    border-radius: 10px;
-    background: rgba(255,255,255,0.03);
-    border: 1px dashed rgba(255,255,255,0.1);
-  }
+  .cc-pay-hint { font-size: 10px; color: #a9b2c3; margin-top: 18px; padding: 10px 12px; border-radius: 10px; background: rgba(255,255,255,0.03); border: 1px dashed rgba(255,255,255,0.1); }
 
-  .cc-modal-close {
-    position: absolute;
-    top: 16px; right: 16px;
-    width: 30px; height: 30px;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.08);
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer;
-  }
+  .cc-modal-close { position: absolute; top: 16px; right: 16px; width: 30px; height: 30px; border-radius: 50%; background: rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; cursor: pointer; }
   .cc-modal-close svg { width: 14px; height: 14px; fill: #fff; }
-  .cc-modal-inner {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    min-height: 0;
-    flex: 1 1 auto;
-    overflow: hidden;
-  }
+  .cc-modal-inner { position: relative; display: flex; flex-direction: column; min-height: 0; flex: 1 1 auto; overflow: hidden; }
 
   .cc-toast {
-    position: fixed;
-    bottom: 100px;
-    left: 50%;
-    transform: translateX(-50%) translateY(20px);
-    background: #0d0f16;
-    border: 1px solid rgba(41,224,201,0.4);
-    color: #29e0c9;
-    padding: 12px 20px;
-    border-radius: 12px;
-    font-size: 12px;
-    font-weight: 700;
-    z-index: 10000001;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s ease;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    white-space: nowrap;
+    position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(20px);
+    background: #0d0f16; border: 1px solid rgba(41,224,201,0.4); color: #29e0c9;
+    padding: 12px 20px; border-radius: 12px; font-size: 12px; font-weight: 700;
+    z-index: 10000001; opacity: 0; visibility: hidden; transition: opacity 0.25s ease, transform 0.25s ease;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5); white-space: nowrap;
   }
   .cc-toast.show { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
 
-  /* ============================================================
-     ===== FAB FAN MENU GOLD — REVOLVER RELOAD + DRAG SUPPORT =====
-     ============================================================ */
-  .cc-fab-stage {
-    position: fixed;
-    left: 50%;
-    bottom: 0px;
-    transform: translateX(-50%);
-    width: 200px;
-    height: 125px;
-    z-index: 999999;
-    pointer-events: none;
-    transition: filter 0.2s ease;
-  }
-  .cc-fab-stage.cc-fab-grabbable {
-    filter: drop-shadow(0 0 6px rgba(255, 210, 63, 0.45));
-  }
+  /* FAB FAN MENU GOLD */
+  .cc-fab-stage { position: fixed; left: 50%; bottom: 0px; transform: translateX(-50%); width: 200px; height: 125px; z-index: 999999; pointer-events: none; }
+  .cc-fab-stage.cc-fab-grabbable { filter: drop-shadow(0 0 6px rgba(255, 210, 63, 0.45)); }
   .cc-fab-dock {
-    position: absolute;
-    left: 50%;
-    bottom: -95px;
-    width: 190px;
-    height: 190px;
-    margin-left: -95px;
-    border-radius: 50%;
-    background: #0d0f16;
-    border: 1.5px solid rgba(255, 210, 63, 0.65);
+    position: absolute; left: 50%; bottom: -95px; width: 190px; height: 190px; margin-left: -95px;
+    border-radius: 50%; background: #0d0f16; border: 1.5px solid rgba(255, 210, 63, 0.65);
     box-shadow: 0 -6px 20px rgba(0,0,0,0.5), 0 0 12px rgba(255,210,63,0.1);
-    opacity: 0;
-    transform: scale(0.3) rotate(-180deg);
-    transform-origin: 50% 100%;
-    transition: transform 0.55s cubic-bezier(0.34, 1.2, 0.64, 1), opacity 0.3s ease;
-    pointer-events: none;
-    overflow: hidden;
+    opacity: 0; transform: scale(0.3) rotate(-180deg); transform-origin: 50% 100%;
+    transition: transform 0.55s cubic-bezier(0.34, 1.2, 0.64, 1), opacity 0.3s ease; pointer-events: none; overflow: hidden;
   }
-  .cc-fab-stage.cc-fab-open .cc-fab-dock {
-    opacity: 1;
-    transform: scale(1) rotate(0deg);
-  }
-  .cc-fab-slice {
-    position: absolute;
-    left: 50%; top: 50%; width: 95px; height: 95px;
-    transform-origin: 0% 0%; pointer-events: none;
-  }
+  .cc-fab-stage.cc-fab-open .cc-fab-dock { opacity: 1; transform: scale(1) rotate(0deg); }
+  .cc-fab-slice { position: absolute; left: 50%; top: 50%; width: 95px; height: 95px; transform-origin: 0% 0%; pointer-events: none; }
   .cc-fab-slice[data-s="0"] { transform: rotate(-180deg) skewY(-45deg); background: rgba(255,210,63,0.06); }
   .cc-fab-slice[data-s="1"] { transform: rotate(-135deg) skewY(-45deg); background: rgba(255,210,63,0.12); }
   .cc-fab-slice[data-s="2"] { transform: rotate(-90deg)  skewY(-45deg); background: rgba(255,210,63,0.06); }
   .cc-fab-slice[data-s="3"] { transform: rotate(-45deg)  skewY(-45deg); background: rgba(255,210,63,0.12); }
-  .cc-fab-slice-line {
-    position: absolute; left: 50%; top: 50%; width: 1px; height: 95px;
-    background: rgba(255,210,63,0.35); transform-origin: 50% 0%;
-  }
+  .cc-fab-slice-line { position: absolute; left: 50%; top: 50%; width: 1px; height: 95px; background: rgba(255,210,63,0.35); transform-origin: 50% 0%; }
   .cc-fab-slice-line[data-l="0"] { transform: rotate(-180deg); }
   .cc-fab-slice-line[data-l="1"] { transform: rotate(-135deg); }
   .cc-fab-slice-line[data-l="2"] { transform: rotate(-90deg); }
@@ -798,99 +400,41 @@
   .cc-fab-slice-line[data-l="4"] { transform: rotate(0deg); }
 
   .cc-fab-main {
-    position: absolute;
-    left: 50%; bottom: 10px; width: 54px; height: 54px; margin-left: -27px;
-    border-radius: 50%;
-    background: #0d0f16;
-    border: 1px solid rgba(255, 210, 63, 0.55);
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer;
-    pointer-events: auto;
-    overflow: hidden;
-    z-index: 5;
-    touch-action: none;
-    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
-                bottom 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
-                border-color 0.3s ease, background 0.3s ease;
-    -webkit-tap-highlight-color: transparent;
+    position: absolute; left: 50%; bottom: 10px; width: 54px; height: 54px; margin-left: -27px;
+    border-radius: 50%; background: #0d0f16; border: 1px solid rgba(255, 210, 63, 0.55);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5); display: flex; align-items: center; justify-content: center;
+    cursor: pointer; pointer-events: auto; overflow: hidden; z-index: 5; touch-action: none;
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), bottom 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
-  .cc-fab-stage.cc-fab-open .cc-fab-main {
-    bottom: -6px;
-    background: #161822;
-    border-color: rgba(255, 210, 63, 0.4);
-    transform: rotate(360deg);
-  }
-  .cc-fab-main:active { transform: scale(0.94) rotate(0deg); }
-  .cc-fab-stage.cc-fab-open .cc-fab-main:active { transform: scale(0.94) rotate(360deg); }
-
-  .cc-fab-main .cc-fab-logo {
-    width: 100%; height: 100%; border-radius: 50%;
-    object-fit: cover; object-position: center;
-    display: block; position: absolute; top: 0; left: 0;
-    transform: scale(1) rotate(0deg);
-    transition: opacity 0.2s ease, transform 0.35s ease;
-    pointer-events: none;
-  }
-  .cc-fab-main .cc-fab-icon-close {
-    width: 20px; height: 20px;
-    fill: none; stroke: #ffd23f; stroke-width: 1.4;
-    stroke-linecap: round; stroke-linejoin: round;
-    position: absolute; top: 50%; left: 50%;
-    opacity: 0;
-    transform: translate(-50%, -50%) scale(0.4) rotate(-90deg);
-    transition: opacity 0.2s ease, transform 0.35s ease;
-  }
-  .cc-fab-stage.cc-fab-open .cc-fab-main .cc-fab-logo {
-    opacity: 0; transform: scale(0.4) rotate(90deg);
-  }
-  .cc-fab-stage.cc-fab-open .cc-fab-main .cc-fab-icon-close {
-    opacity: 1; transform: translate(-50%, -50%) scale(1) rotate(0deg);
-  }
+  .cc-fab-stage.cc-fab-open .cc-fab-main { bottom: -6px; background: #161822; transform: rotate(360deg); }
+  .cc-fab-main .cc-fab-logo { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; position: absolute; top: 0; left: 0; transition: opacity 0.2s, transform 0.35s; pointer-events: none; }
+  .cc-fab-main .cc-fab-icon-close { width: 20px; height: 20px; fill: none; stroke: #ffd23f; stroke-width: 1.4; position: absolute; top: 50%; left: 50%; opacity: 0; transform: translate(-50%,-50%) scale(0.4) rotate(-90deg); transition: opacity 0.2s, transform 0.35s; }
+  .cc-fab-stage.cc-fab-open .cc-fab-main .cc-fab-logo { opacity: 0; transform: scale(0.4) rotate(90deg); }
+  .cc-fab-stage.cc-fab-open .cc-fab-main .cc-fab-icon-close { opacity: 1; transform: translate(-50%,-50%) scale(1) rotate(0deg); }
   .cc-fab-item {
-    position: absolute;
-    left: 50%; bottom: 12px; width: 38px; height: 38px; margin-left: -19px;
+    position: absolute; left: 50%; bottom: 12px; width: 38px; height: 38px; margin-left: -19px;
     display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
-    text-decoration: none;
-    opacity: 0; pointer-events: none;
-    transform: translate(0px, 0px) scale(0.3) rotate(-90deg);
-    transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.25s ease;
-    z-index: 4;
+    text-decoration: none; opacity: 0; pointer-events: none; transform: translate(0,0) scale(0.3) rotate(-90deg);
+    transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.25s ease; z-index: 4;
   }
-  .cc-fab-item svg {
-    width: 16px; height: 16px;
-    fill: none; stroke: #ffd23f; stroke-width: 1.4;
-    stroke-linecap: round; stroke-linejoin: round;
-    filter: drop-shadow(0 2px 3px rgba(0,0,0,0.6));
-  }
-  .cc-fab-item span {
-    font-size: 7.5px; font-weight: 700; color: #ffd23f;
-    white-space: nowrap; text-shadow: 0 2px 3px rgba(0,0,0,0.8);
-  }
-  .cc-fab-item.cc-fab-item-disabled svg,
-  .cc-fab-item.cc-fab-item-disabled span { stroke: #ffd23f; color: #ffd23f; }
+  .cc-fab-item svg { width: 16px; height: 16px; fill: none; stroke: #ffd23f; stroke-width: 1.4; }
+  .cc-fab-item span { font-size: 7.5px; font-weight: 700; color: #ffd23f; white-space: nowrap; }
   .cc-fab-stage.cc-fab-open .cc-fab-item { opacity: 1; pointer-events: auto; }
   .cc-fab-item[data-i="0"] { transition-delay: 0.10s; }
   .cc-fab-item[data-i="1"] { transition-delay: 0.22s; }
   .cc-fab-item[data-i="2"] { transition-delay: 0.34s; }
   .cc-fab-item[data-i="3"] { transition-delay: 0.46s; }
-  .cc-fab-stage.cc-fab-open .cc-fab-item[data-i="0"] { transform: translate(-54px, 20px) scale(1) rotate(0deg); }
-  .cc-fab-stage.cc-fab-open .cc-fab-item[data-i="1"] { transform: translate(-26px, -34px) scale(1) rotate(0deg); }
-  .cc-fab-stage.cc-fab-open .cc-fab-item[data-i="2"] { transform: translate(26px, -34px) scale(1) rotate(0deg); }
-  .cc-fab-stage.cc-fab-open .cc-fab-item[data-i="3"] { transform: translate(54px, 20px) scale(1) rotate(0deg); }
-  .cc-fab-backdrop {
-    position: fixed; inset: 0;
-    z-index: 999998;
-    background: rgba(3,4,8,0.4);
-    opacity: 0; visibility: hidden; pointer-events: none;
-    transition: opacity 0.3s ease, visibility 0.3s ease;
-  }
-  .cc-fab-backdrop.cc-fab-backdrop-show {
-    opacity: 1; visibility: visible; pointer-events: auto;
-  }
+  .cc-fab-stage.cc-fab-open .cc-fab-item[data-i="0"] { transform: translate(-54px,20px) scale(1) rotate(0deg); }
+  .cc-fab-stage.cc-fab-open .cc-fab-item[data-i="1"] { transform: translate(-26px,-34px) scale(1) rotate(0deg); }
+  .cc-fab-stage.cc-fab-open .cc-fab-item[data-i="2"] { transform: translate(26px,-34px) scale(1) rotate(0deg); }
+  .cc-fab-stage.cc-fab-open .cc-fab-item[data-i="3"] { transform: translate(54px,20px) scale(1) rotate(0deg); }
+  .cc-fab-backdrop { position: fixed; inset: 0; z-index: 999998; background: rgba(3,4,8,0.4); opacity: 0; visibility: hidden; pointer-events: none; transition: opacity 0.3s, visibility 0.3s; }
+  .cc-fab-backdrop.cc-fab-backdrop-show { opacity: 1; visibility: visible; pointer-events: auto; }
 </style>
 </head>
 <body>
+
+<div class="cc-sync-toast" id="cc-sync-toast">✓ Data & harga diperbarui</div>
 
 <div id="cc-container">
   <div class="cc-bg bg-default" id="cc-bg-element"></div>
@@ -906,6 +450,13 @@
     </div>
 
     <div class="cc-nav-right">
+      <button type="button" class="cc-refresh-btn" id="cc-refresh-catalog" title="Refresh Harga & Paket">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="23 4 23 10 17 10"></polyline>
+          <polyline points="1 20 1 14 7 14"></polyline>
+          <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+        </svg>
+      </button>
       <div class="cc-profile-wrap">
         <div class="cc-profile-btn" id="cc-profile-toggle" title="Menu Akun">
           <div id="header-avatar-container" style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
@@ -945,6 +496,7 @@
   <div class="cc-section">
     <div class="cc-accordion-list" id="cc-accordion-container"></div>
   </div>
+</div>
 
 <div class="cc-modal-backdrop" id="cc-modal-backdrop">
   <div class="cc-modal">
@@ -1015,7 +567,7 @@
           <div class="cc-modal-total-value" id="cc-modal-total">Rp0</div>
         </div>
 
-        <button class="cc-confirm-btn" id="cc-confirm-btn">
+        <button class="cc-confirm-btn cc-disabled" id="cc-confirm-btn">
           <svg viewBox="0 0 24 24"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.44.79 3.06 1.2 4.71 1.2h.01c5.46 0 9.91-4.45 9.91-9.91.01-5.46-4.44-9.91-9.9-9.91zm5.83 14.15c-.24.68-1.4 1.3-1.94 1.38-.5.08-1.13.11-1.83-.11-.42-.14-.96-.32-1.65-.62-2.9-1.25-4.79-4.17-4.94-4.36-.14-.19-1.18-1.57-1.18-3 0-1.43.75-2.13 1.02-2.42.27-.29.58-.36.78-.36.19 0 .39 0 .55.01.18.01.42-.07.65.5.24.58.82 2 .89 2.15.07.14.11.31.02.5-.09.19-.14.31-.27.48-.14.17-.29.38-.41.51-.14.14-.28.29-.12.57.16.28.72 1.19 1.55 1.93 1.06.95 1.96 1.24 2.24 1.38.28.14.44.11.6-.07.16-.18.68-.79.87-1.06.18-.27.36-.22.6-.13.24.09 1.55.73 1.82.86.27.13.44.2.51.31.07.11.07.63-.17 1.31z"/></svg>
           Konfirmasi Pemesanan via WhatsApp
         </button>
@@ -1026,10 +578,8 @@
 
 <div class="cc-toast" id="cc-toast">✅ Pesanan tersimpan di riwayat transaksi</div>
 
-<!-- ===== BACKDROP FAB ===== -->
 <div class="cc-fab-backdrop" id="cc-fab-backdrop"></div>
 
-<!-- ===== FAB FAN MENU GOLD ===== -->
 <div class="cc-fab-stage" id="cc-fab-stage">
   <div class="cc-fab-dock">
     <div class="cc-fab-slice" data-s="0"></div>
@@ -1076,20 +626,59 @@
 <script>
 document.addEventListener('DOMContentLoaded', function () {
 
-  var WA_NUMBER = "6285971071456";
+  var DEFAULT_WA_NUMBER = "6285971071456";
+  var dynamicWaAdmin = DEFAULT_WA_NUMBER;
 
   function applyBackgroundSettings() {
     var bgEl = document.getElementById('cc-bg-element');
     var overlayEl = document.getElementById('cc-overlay-element');
-    var bgMode = localStorage.getItem('cc_bg_mode') || 'default';
-    if (bgEl && overlayEl) {
-      if (bgMode === 'sederhana') {
-        bgEl.className = 'cc-bg bg-simple';
-        overlayEl.className = 'cc-overlay bg-simple';
+    if (!bgEl || !overlayEl) return;
+
+    var bgMode = (localStorage.getItem('cc_bg_mode') || 'default').trim().toLowerCase();
+    var customBg = (
+      localStorage.getItem('cc_bg_custom') ||
+      localStorage.getItem('cc_custom_bg') ||
+      localStorage.getItem('cc_bg_image') ||
+      localStorage.getItem('cc_bg_url') ||
+      ''
+    ).trim();
+    var customOverlay = localStorage.getItem('cc_bg_overlay');
+    var customBlur = localStorage.getItem('cc_bg_blur');
+
+    bgEl.style.background = '';
+    bgEl.style.backgroundImage = '';
+    overlayEl.style.background = '';
+    overlayEl.style.backdropFilter = '';
+    overlayEl.style.webkitBackdropFilter = '';
+
+    if (bgMode === 'sederhana' || bgMode === 'simple') {
+      bgEl.className = 'cc-bg bg-simple';
+      overlayEl.className = 'cc-overlay bg-simple';
+    } else if (bgMode === 'polos' || bgMode === 'dark' || bgMode === 'gelap') {
+      bgEl.className = 'cc-bg bg-dark';
+      overlayEl.className = 'cc-overlay bg-dark';
+    } else if (bgMode === 'custom' && customBg !== '') {
+      bgEl.className = 'cc-bg bg-custom';
+      overlayEl.className = 'cc-overlay bg-custom';
+      if (/^(#|rgb|hsl|linear-gradient|radial-gradient)/i.test(customBg)) {
+        bgEl.style.background = customBg;
       } else {
-        bgEl.className = 'cc-bg bg-default';
-        overlayEl.className = 'cc-overlay bg-default';
+        bgEl.style.backgroundImage = 'url("' + customBg.replace(/"/g, '\\"') + '")';
       }
+      if (customOverlay !== null && customOverlay !== '') {
+        var alpha = Math.max(0, Math.min(1, parseFloat(customOverlay)));
+        if (!isNaN(alpha)) overlayEl.style.background = 'rgba(3,4,8,' + alpha + ')';
+      }
+      if (customBlur !== null && customBlur !== '') {
+        var blurPx = Math.max(0, parseFloat(customBlur));
+        if (!isNaN(blurPx)) {
+          overlayEl.style.backdropFilter = 'blur(' + blurPx + 'px)';
+          overlayEl.style.webkitBackdropFilter = 'blur(' + blurPx + 'px)';
+        }
+      }
+    } else {
+      bgEl.className = 'cc-bg bg-default';
+      overlayEl.className = 'cc-overlay bg-default';
     }
   }
   applyBackgroundSettings();
@@ -1107,7 +696,6 @@ document.addEventListener('DOMContentLoaded', function () {
   }
   updateHeaderAvatar();
 
-  // ================= FAB + DRAG =================
   var fabStage = document.getElementById('cc-fab-stage');
   var fabMain = document.getElementById('cc-fab-main');
   var fabBackdrop = document.getElementById('cc-fab-backdrop');
@@ -1119,9 +707,7 @@ document.addEventListener('DOMContentLoaded', function () {
     startX: 0, startY: 0, startLeft: 0, startTop: 0, pointerId: null
   };
 
-  function isFabMovable() {
-    return localStorage.getItem('cc_fab_movable') === 'true';
-  }
+  function isFabMovable() { return localStorage.getItem('cc_fab_movable') === 'true'; }
   function updateFabVisualState() {
     if (isFabMovable()) fabStage.classList.add('cc-fab-grabbable');
     else fabStage.classList.remove('cc-fab-grabbable');
@@ -1135,29 +721,21 @@ document.addEventListener('DOMContentLoaded', function () {
       if (typeof pos.left === 'number' && typeof pos.top === 'number') {
         var maxLeft = Math.max(0, window.innerWidth - fabStage.offsetWidth);
         var maxTop = Math.max(0, window.innerHeight - fabStage.offsetHeight);
-        var clampedLeft = Math.max(0, Math.min(maxLeft, pos.left));
-        var clampedTop = Math.max(0, Math.min(maxTop, pos.top));
-        fabStage.style.left = clampedLeft + 'px';
-        fabStage.style.top = clampedTop + 'px';
+        fabStage.style.left = Math.max(0, Math.min(maxLeft, pos.left)) + 'px';
+        fabStage.style.top = Math.max(0, Math.min(maxTop, pos.top)) + 'px';
         fabStage.style.bottom = 'auto';
         fabStage.style.transform = 'none';
       }
     } catch(e) {}
   }
   function resetFabPosition() {
-    fabStage.style.left = '';
-    fabStage.style.top = '';
-    fabStage.style.bottom = '';
-    fabStage.style.transform = '';
+    fabStage.style.left = ''; fabStage.style.top = ''; fabStage.style.bottom = ''; fabStage.style.transform = '';
   }
   function openFab() {
     if (isFabMovable()) {
       var rect = fabStage.getBoundingClientRect();
       savedPosBeforeOpen = { left: rect.left, top: rect.top };
-      fabStage.style.left = '';
-      fabStage.style.top = '';
-      fabStage.style.bottom = '';
-      fabStage.style.transform = '';
+      fabStage.style.left = ''; fabStage.style.top = ''; fabStage.style.bottom = ''; fabStage.style.transform = '';
     }
     fabStage.classList.add('cc-fab-open');
     fabBackdrop.classList.add('cc-fab-backdrop-show');
@@ -1180,38 +758,26 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   fabMain.addEventListener('pointerdown', function(e) {
-    e.preventDefault();
-    e.stopPropagation();
-    dragState.active = true;
-    dragState.hasMoved = false;
-    dragState.pointerId = e.pointerId;
+    e.preventDefault(); e.stopPropagation();
+    dragState.active = true; dragState.hasMoved = false; dragState.pointerId = e.pointerId;
     dragState.isMovable = isFabMovable() && !fabStage.classList.contains('cc-fab-open');
-    dragState.startX = e.clientX;
-    dragState.startY = e.clientY;
+    dragState.startX = e.clientX; dragState.startY = e.clientY;
     var rect = fabStage.getBoundingClientRect();
-    dragState.startLeft = rect.left;
-    dragState.startTop = rect.top;
+    dragState.startLeft = rect.left; dragState.startTop = rect.top;
     try { fabMain.setPointerCapture(e.pointerId); } catch(err) {}
   });
 
   fabMain.addEventListener('pointermove', function(e) {
     if (!dragState.active || !dragState.isMovable) return;
-    var dx = e.clientX - dragState.startX;
-    var dy = e.clientY - dragState.startY;
+    var dx = e.clientX - dragState.startX; var dy = e.clientY - dragState.startY;
     if (!dragState.hasMoved) {
       if (Math.abs(dx) < DRAG_THRESHOLD && Math.abs(dy) < DRAG_THRESHOLD) return;
       dragState.hasMoved = true;
     }
-    var newLeft = dragState.startLeft + dx;
-    var newTop = dragState.startTop + dy;
-    var maxLeft = window.innerWidth - fabStage.offsetWidth;
-    var maxTop = window.innerHeight - fabStage.offsetHeight;
-    newLeft = Math.max(0, Math.min(maxLeft, newLeft));
-    newTop = Math.max(0, Math.min(maxTop, newTop));
-    fabStage.style.left = newLeft + 'px';
-    fabStage.style.top = newTop + 'px';
-    fabStage.style.bottom = 'auto';
-    fabStage.style.transform = 'none';
+    var newLeft = Math.max(0, Math.min(window.innerWidth - fabStage.offsetWidth, dragState.startLeft + dx));
+    var newTop = Math.max(0, Math.min(window.innerHeight - fabStage.offsetHeight, dragState.startTop + dy));
+    fabStage.style.left = newLeft + 'px'; fabStage.style.top = newTop + 'px';
+    fabStage.style.bottom = 'auto'; fabStage.style.transform = 'none';
   });
 
   fabMain.addEventListener('pointerup', function(e) {
@@ -1226,32 +792,32 @@ document.addEventListener('DOMContentLoaded', function () {
       else openFab();
     }
   });
-
   fabMain.addEventListener('pointercancel', function() { dragState.active = false; });
 
   window.addEventListener('storage', function(e) {
-    if (e.key === 'cc_bg_mode') applyBackgroundSettings();
+    if (!e.key || ['cc_bg_mode', 'cc_bg_custom', 'cc_custom_bg', 'cc_bg_image', 'cc_bg_url', 'cc_bg_overlay', 'cc_bg_blur'].indexOf(e.key) !== -1) {
+      applyBackgroundSettings();
+    }
     if (e.key === 'cc_user_avatar') updateHeaderAvatar();
     if (e.key === 'cc_fab_movable') {
       updateFabVisualState();
-      if (!isFabMovable()) resetFabPosition();
-      else applySavedFabPosition();
+      if (!isFabMovable()) resetFabPosition(); else applySavedFabPosition();
     }
-    if (e.key === 'cc_fab_position') {
-      if (isFabMovable()) applySavedFabPosition();
+    if (e.key === 'cc_fab_position') { if (isFabMovable()) applySavedFabPosition(); }
+    if (e.key === 'cc_catalog_cache' && e.newValue) {
+      try {
+        loadCatalogFromData(JSON.parse(e.newValue), false);
+      } catch(err) {}
     }
   });
 
-  updateFabVisualState();
-  applySavedFabPosition();
+  updateFabVisualState(); applySavedFabPosition();
 
-  // ================= PROFILE DROPDOWN =================
   var profileToggle = document.getElementById('cc-profile-toggle');
   var profileDropdown = document.getElementById('cc-profile-dropdown');
   if (profileToggle && profileDropdown) {
     profileToggle.addEventListener('click', function(e) {
-      e.stopPropagation();
-      profileDropdown.classList.toggle('show');
+      e.stopPropagation(); profileDropdown.classList.toggle('show');
     });
     document.addEventListener('click', function(e) {
       if (!profileToggle.contains(e.target) && !profileDropdown.contains(e.target)) {
@@ -1270,63 +836,49 @@ document.addEventListener('DOMContentLoaded', function () {
   };
 
   var CATEGORY_DATA = {
-    "Axis": [
-      { title: "Axis Mini Voucher", desc: "Kuota internet utama yang bisa dipakai di semua jaringan selama 24 jam penuh. Tambahan kuota bonus akan aktif sesuai dengan jumlah hari yang tertera pada masing-masing paket.", items: [
-        { name: "5GB + Bonus 1 Hari", price: 8000, points: [
-          { label: "Kuota Utama", val: "5GB" }, { label: "Bonus Kuota", val: "Aktif 1 Hari" },
-          { label: "Jaringan", val: "All Net 24 Jam" }, { label: "Masa Aktif", val: "1 Hari sejak diaktifkan" } ]},
-        { name: "8,5GB + Bonus 3 Hari", price: 15000, points: [
-          { label: "Kuota Utama", val: "8,5GB" }, { label: "Bonus Kuota", val: "Aktif 3 Hari" },
-          { label: "Jaringan", val: "All Net 24 Jam" }, { label: "Masa Aktif", val: "3 Hari sejak diaktifkan" } ]},
-        { name: "5GB + Bonus 5 Hari", price: 16000, points: [
-          { label: "Kuota Utama", val: "5GB" }, { label: "Bonus Kuota", val: "Aktif 5 Hari" },
-          { label: "Jaringan", val: "All Net 24 Jam" }, { label: "Masa Aktif", val: "5 Hari sejak diaktifkan" } ]},
-        { name: "10GB + Bonus 7 Hari", price: 25000, points: [
-          { label: "Kuota Utama", val: "10GB" }, { label: "Bonus Kuota", val: "Aktif 7 Hari" },
-          { label: "Jaringan", val: "All Net 24 Jam" }, { label: "Masa Aktif", val: "7 Hari sejak diaktifkan" } ]}
-      ]},
-      { title: "Axis AIGO", desc: "Kuota internet reguler 24 jam dengan masa aktif panjang selama 30 hari (30D). Cocok untuk penggunaan bulanan yang stabil tanpa pembagian kuota yang rumit.", items: [
-        { name: "AIGO 1GB 30D", price: 31000, points: [
-          { label: "Kuota Utama", val: "1GB" }, { label: "Jaringan", val: "All Net 24 Jam" }, { label: "Masa Aktif", val: "30 Hari" } ]},
-        { name: "AIGO 8GB 30D", price: 46500, points: [
-          { label: "Kuota Utama", val: "8GB" }, { label: "Jaringan", val: "All Net 24 Jam" }, { label: "Masa Aktif", val: "30 Hari" } ]}
-      ]}
-    ],
     "Indosat": [
       { title: "Indosat Freedom Combo", desc: "Paket lengkap untuk 30 hari (30D) yang dibagi menjadi Kuota Utama, Kuota Lokal (hanya bisa dipakai di area tempat kamu mengaktifkan voucher), dan Kuota Malam khusus untuk internetan di jam kalong (01.00 - 06.00).", items: [
-        { name: "2GB + Bonus Lokal 2GB + Kuota Malam 2GB 30D", price: 40000, points: [
+        { name: "2GB + Bonus Lokal 2GB + Kuota Malam 2GB 30D", price: 40000, stok: true, points: [
           { label: "Kuota Utama", val: "2GB" }, { label: "Kuota Lokal", val: "2GB (area aktivasi saja)" },
           { label: "Kuota Malam", val: "2GB (01.00 - 06.00)" }, { label: "Masa Aktif", val: "30 Hari" } ]},
-        { name: "7,5GB + Kuota Lokal 7,5GB + 5GB Kuota Malam 30D", price: 78500, points: [
+        { name: "7,5GB + Kuota Lokal 7,5GB + 5GB Kuota Malam 30D", price: 78500, stok: true, points: [
           { label: "Kuota Utama", val: "7,5GB" }, { label: "Kuota Lokal", val: "7,5GB (area aktivasi saja)" },
           { label: "Kuota Malam", val: "5GB (01.00 - 06.00)" }, { label: "Masa Aktif", val: "30 Hari" } ]}
       ]}
     ],
-    "XL": [
-      { title: "XL Hotrod", desc: "Paket internet semi-mingguan yang menggabungkan Kuota Nasional dan Kuota Lokal XL. Masa aktif paket mengikuti varian yang dipilih (7 atau 10 hari) sejak kode voucher dimasukkan.", items: [
-        { name: "2GB + Lokal 7 Hari", price: 18500, points: [
-          { label: "Kuota Nasional", val: "2GB" }, { label: "Kuota Lokal", val: "Termasuk (area XL setempat)" },
-          { label: "Masa Aktif", val: "7 Hari sejak kode dimasukkan" } ]},
-        { name: "6GB + Lokal 10 Hari", price: 28000, points: [
-          { label: "Kuota Nasional", val: "6GB" }, { label: "Kuota Lokal", val: "Termasuk (area XL setempat)" },
-          { label: "Masa Aktif", val: "10 Hari sejak kode dimasukkan" } ]}
+    "Axis": [
+      { title: "Axis Mini Voucher", desc: "Kuota internet utama yang bisa dipakai di semua jaringan selama 24 jam penuh. Tambahan kuota bonus akan aktif sesuai dengan jumlah hari yang tertera pada masing-masing paket.", items: [
+        { name: "5GB + Bonus 1 Hari", price: 8000, stok: true, points: [
+          { label: "Kuota Utama", val: "5GB" }, { label: "Bonus Kuota", val: "Aktif 1 Hari" },
+          { label: "Jaringan", val: "All Net 24 Jam" }, { label: "Masa Aktif", val: "1 Hari sejak diaktifkan" } ]},
+        { name: "8,5GB + Bonus 3 Hari", price: 15000, stok: true, points: [
+          { label: "Kuota Utama", val: "8,5GB" }, { label: "Bonus Kuota", val: "Aktif 3 Hari" },
+          { label: "Jaringan", val: "All Net 24 Jam" }, { label: "Masa Aktif", val: "3 Hari sejak diaktifkan" } ]}
+      ]}
+    ],
+    "Three": [
+      { title: "Happy Internet Three (3)", desc: "PAKET DATA ALL NETWORK & HAPPY THREE RESMI. Kuota besar, jaringan stabil, langsung masuk ke nomor kamu tanpa ribet.", items: [
+        { name: "Three Happy 10GB", price: 12000, stok: true, badge: "", points: [
+          { label: "Kuota Utama", val: "10GB All Net" }, { label: "Masa Aktif", val: "1 Hari" } ]},
+        { name: "Three Happy 20GB", price: 19500, stok: true, badge: "Hemat", points: [
+          { label: "Kuota Utama", val: "20GB All Net" }, { label: "Masa Aktif", val: "3 Hari" } ]},
+        { name: "Three Happy 100GB", price: 48000, stok: true, badge: "Popular", points: [
+          { label: "Kuota Utama", val: "100GB All Net" }, { label: "Masa Aktif", val: "7 Hari" } ]}
       ]}
     ],
     "Smartfren": [
-      { title: "Smartfren Unlimited Nonstop", desc: "Kuota utama dengan sistem batas pemakaian wajar harian (FUP Daily). Setelah kuota harian habis, kamu tetap bisa internetan tanpa stop dengan kecepatan yang disesuaikan sampai masa aktif voucher berakhir.", items: [
-        { name: "2GB (Daily) 10 Hari", price: 15000, points: [
-          { label: "Kuota Harian", val: "2GB/hari (FUP)" }, { label: "Setelah FUP", val: "Tetap unlimited, kecepatan disesuaikan" },
-          { label: "Masa Aktif", val: "10 Hari" } ]},
-        { name: "4GB (Daily) 14 Hari", price: 25000, points: [
-          { label: "Kuota Harian", val: "4GB/hari (FUP)" }, { label: "Setelah FUP", val: "Tetap unlimited, kecepatan disesuaikan" },
-          { label: "Masa Aktif", val: "14 Hari" } ]},
-        { name: "6GB (Daily) 30 Hari", price: 41000, points: [
-          { label: "Kuota Harian", val: "6GB/hari (FUP)" }, { label: "Setelah FUP", val: "Tetap unlimited, kecepatan disesuaikan" },
-          { label: "Masa Aktif", val: "30 Hari" } ]}
+      { title: "Smartfren Unlimited Nonstop", desc: "Kuota utama dengan sistem batas pemakaian wajar harian (FUP Daily).", items: [
+        { name: "2GB (Daily) 10 Hari", price: 15000, stok: true, points: [
+          { label: "Kuota Harian", val: "2GB/hari (FUP)" }, { label: "Masa Aktif", val: "10 Hari" } ]}
       ]}
     ],
-    "Three": [],
-    "Telkomsel": []
+    "Telkomsel": [],
+    "XL": [
+      { title: "XL Hotrod", desc: "Paket internet semi-mingguan yang menggabungkan Kuota Nasional dan Kuota Lokal XL.", items: [
+        { name: "2GB + Lokal 7 Hari", price: 18500, stok: true, points: [
+          { label: "Kuota Nasional", val: "2GB" }, { label: "Masa Aktif", val: "7 Hari" } ]}
+      ]}
+    ]
   };
 
   var currentOperator = "Indosat";
@@ -1341,45 +893,47 @@ document.addEventListener('DOMContentLoaded', function () {
         '<line x1="100" y1="92" x2="100" y2="100" stroke="#7c5cff" stroke-width="2.5" stroke-linecap="round"/>' +
         '<line x1="100" y1="100" x2="105" y2="104" stroke="#7c5cff" stroke-width="2.5" stroke-linecap="round"/>' +
       '</g>' +
-      '<g opacity="0.8"><animateTransform attributeName="transform" type="translate" values="0 0; 0 -4; 0 0" dur="2s" begin="0.3s" repeatCount="indefinite"/>' +
-        '<circle cx="45" cy="55" r="4" fill="#29e0c9"/></g>' +
-      '<g opacity="0.6"><animateTransform attributeName="transform" type="translate" values="0 0; 0 -5; 0 0" dur="2.2s" begin="0.6s" repeatCount="indefinite"/>' +
-        '<circle cx="155" cy="65" r="3" fill="#ff2d6a"/></g>' +
-      '<g opacity="0.7"><animateTransform attributeName="transform" type="translate" values="0 0; 0 -4; 0 0" dur="1.8s" begin="0.15s" repeatCount="indefinite"/>' +
-        '<circle cx="150" cy="110" r="3.5" fill="#ffd23f"/></g>' +
     '</svg>';
 
   var SINGLE_ITEM_SVG = '<svg viewBox="0 0 60 60" fill="none">' +
-      '<circle cx="30" cy="30" r="26" fill="rgba(41,224,201,0.08)" stroke="#29e0c9" stroke-width="2" stroke-dasharray="3 3">' +
-        '<animateTransform attributeName="transform" type="rotate" from="0 30 30" to="360 30 30" dur="10s" repeatCount="indefinite"/>' +
-      '</circle>' +
+      '<circle cx="30" cy="30" r="26" fill="rgba(41,224,201,0.08)" stroke="#29e0c9" stroke-width="2" stroke-dasharray="3 3"/>' +
       '<path d="M30 20v12l8 6" stroke="#29e0c9" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>' +
     '</svg>';
 
+  function escapeHtml(str) {
+    return String(str || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
   function renderAccordion() {
     var container = document.getElementById('cc-accordion-container');
+    if (!container) return;
     var config = OPERATOR_CONFIG[currentOperator] || { bgImg: "" };
     var bgImgHtml = config.bgImg ? '<div class="cc-acc-bgimg" style="background-image: url(\'' + config.bgImg + '\');"></div>' : '';
     var categories = CATEGORY_DATA[currentOperator] || [];
     var html = '';
 
-    if (categories.length === 0) {
+    if (categories.length === 0 || !categories.some(function(c){ return c.items && c.items.length > 0; })) {
       html = '<div class="cc-empty-state">' + EMPTY_STATE_SVG +
                 '<div class="cc-empty-state-title">Sayang banget, belum ada voucher</div>' +
-                '<div class="cc-empty-state-sub">Voucher untuk ' + currentOperator + ' belum tersedia saat ini. Coba cek operator lain atau pantau terus, ya!</div>' +
+                '<div class="cc-empty-state-sub">Voucher untuk ' + escapeHtml(currentOperator) + ' belum tersedia saat ini. Coba cek operator lain atau pantau terus, ya!</div>' +
               '</div>';
       container.innerHTML = html;
       return;
     }
 
     categories.forEach(function(cat, index) {
+      if (!cat.items || !cat.items.length) return;
       var isOpen = index === 0 ? ' open' : '';
       var isSingle = cat.items.length === 1;
 
       html += '<div class="cc-acc-card' + isOpen + '">' + bgImgHtml +
                 '<div class="cc-acc-header">' +
                   '<div class="cc-acc-info">' +
-                    '<div class="cc-acc-title">📶 ' + cat.title + '</div>' +
+                    '<div class="cc-acc-title">📶 ' + escapeHtml(cat.title) + '</div>' +
                     '<div class="cc-acc-price-info">' + cat.items.length + ' Pilihan Paket</div>' +
                   '</div>' +
                   '<div class="cc-acc-arrow">' +
@@ -1387,15 +941,21 @@ document.addEventListener('DOMContentLoaded', function () {
                   '</div>' +
                 '</div>' +
                 '<div class="cc-acc-body">' +
-                  '<div class="cc-acc-desc">📝 ' + cat.desc + '</div>' +
+                  '<div class="cc-acc-desc">📝 ' + escapeHtml(cat.desc) + '</div>' +
                   '<div class="cc-paket-list">';
 
       cat.items.forEach(function(item, ii) {
-        html += '<button type="button" class="cc-paket-card" data-op="' + currentOperator + '" data-cat="' + index + '" data-item="' + ii + '">' +
+        var isOut = item.stok === false;
+        var badgeHtml = isOut
+          ? '<span class="cc-paket-badge habis">Habis</span>'
+          : (item.badge ? '<span class="cc-paket-badge">' + escapeHtml(item.badge) + '</span>' : '');
+
+        html += '<button type="button" class="cc-paket-card ' + (isOut ? 'out-of-stock' : '') + '" data-op="' + escapeHtml(currentOperator) + '" data-cat="' + index + '" data-item="' + ii + '">' +
                   '<div class="cc-paket-head">' +
-                    '<span class="cc-paket-name">• ' + item.name + '</span>' +
-                    '<span class="cc-paket-price">Rp' + item.price.toLocaleString('id-ID') + '</span>' +
+                    '<span class="cc-paket-name">• ' + escapeHtml(item.name) + badgeHtml + '</span>' +
+                    '<span class="cc-paket-price">Rp' + Number(item.price || 0).toLocaleString('id-ID') + '</span>' +
                   '</div>' +
+                  '<div class="cc-paket-sub">' + escapeHtml(item.points && item.points[0] ? (item.points[0].label + ': ' + item.points[0].val) : '') + '</div>' +
                 '</button>';
       });
 
@@ -1413,12 +973,14 @@ document.addEventListener('DOMContentLoaded', function () {
     var cards = container.querySelectorAll('.cc-acc-card');
     cards.forEach(function(card) {
       var header = card.querySelector('.cc-acc-header');
-      header.addEventListener('click', function(e) {
-        e.stopPropagation();
-        var isOpen = card.classList.contains('open');
-        cards.forEach(function(c) { c.classList.remove('open'); });
-        if (!isOpen) card.classList.add('open');
-      });
+      if (header) {
+        header.addEventListener('click', function(e) {
+          e.stopPropagation();
+          var isOpen = card.classList.contains('open');
+          cards.forEach(function(c) { c.classList.remove('open'); });
+          if (!isOpen) card.classList.add('open');
+        });
+      }
     });
   }
 
@@ -1432,16 +994,149 @@ document.addEventListener('DOMContentLoaded', function () {
       pill.classList.add('cc-op-active');
       currentOperator = pill.dataset.op;
       renderAccordion();
-      var wrapRect = opWrapper.getBoundingClientRect();
-      var pillRect = pill.getBoundingClientRect();
-      var offset = (pillRect.left + pillRect.width / 2) - (wrapRect.left + wrapRect.width / 2);
-      opWrapper.scrollLeft += offset;
+      if (opWrapper) {
+        var wrapRect = opWrapper.getBoundingClientRect();
+        var pillRect = pill.getBoundingClientRect();
+        var offset = (pillRect.left + pillRect.width / 2) - (wrapRect.left + wrapRect.width / 2);
+        opWrapper.scrollLeft += offset;
+      }
     });
   });
 
-  renderAccordion();
+  /* =========================================================
+     INTEGRASI AUTO-SYNC & REFRESH INSTAN product.json
+  ========================================================= */
+  const CATALOG_STORAGE_KEY = 'cc_catalog_cache';
+  const CATALOG_SYNC_TIME_KEY = 'cc_catalog_last_sync';
+  const GH_RAW_CATALOG_URL = 'https://raw.githubusercontent.com/comersiodev/cocenter/main/product.json';
 
-  // MODAL LOGIC (semua sama kayak sebelumnya)
+  function loadCatalogFromData(catalog, saveToExternal) {
+    if (!catalog || !catalog.produk) return false;
+    if (catalog.wa_admin) dynamicWaAdmin = String(catalog.wa_admin).trim();
+
+    var opMapping = {
+      'indosat': 'Indosat',
+      'axis': 'Axis',
+      'three': 'Three',
+      'happy_three': 'Three',
+      '3': 'Three',
+      'smartfren': 'Smartfren',
+      'telkomsel': 'Telkomsel',
+      'xl': 'XL'
+    };
+
+    var newCategoryData = { "Indosat": [], "Axis": [], "Three": [], "Smartfren": [], "Telkomsel": [], "XL": [] };
+
+    for (var key in catalog.produk) {
+      if (!Object.prototype.hasOwnProperty.call(catalog.produk, key)) continue;
+      var prod = catalog.produk[key];
+      var opName = opMapping[key.toLowerCase()] || key;
+      if (!newCategoryData[opName]) newCategoryData[opName] = [];
+
+      var paketList = Array.isArray(prod.paket) ? prod.paket : [];
+      var mappedItems = paketList.map(function(p, idx) {
+        return {
+          name: p.nama || ('Paket ' + (idx + 1)),
+          price: Number(p.harga ?? p.price ?? 10000) || 10000,
+          stok: p.stok !== false,
+          badge: p.badge || '',
+          points: [
+            { label: 'Detail', val: p.detail || prod.judul_item || 'Paket Kuota Internet' },
+            { label: 'Masa Aktif', val: p.masa_aktif || 'Sesuai Ketentuan' }
+          ]
+        };
+      });
+
+      newCategoryData[opName].push({
+        title: prod.judul_item || (opName + ' Kuota Spesial'),
+        desc: prod.deskripsi || 'Paket internet resmi, jaringan stabil & langsung masuk ke nomor kamu.',
+        items: mappedItems
+      });
+    }
+
+    CATEGORY_DATA = newCategoryData;
+
+    if (saveToExternal) {
+      try {
+        localStorage.setItem(CATALOG_STORAGE_KEY, JSON.stringify(catalog));
+      } catch(e) {}
+    }
+
+    renderAccordion();
+    return true;
+  }
+
+  let toastTimer = null;
+  function showSyncToast(text, isError) {
+    const toastEl = document.getElementById('cc-sync-toast');
+    if (!toastEl) return;
+    toastEl.textContent = text;
+    toastEl.classList.toggle('error', Boolean(isError));
+    toastEl.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => { toastEl.classList.remove('show'); }, 2200);
+  }
+
+  async function refreshCatalogNow(showFeedback) {
+    const btn = document.getElementById('cc-refresh-catalog');
+    if (btn) btn.classList.add('spinning');
+
+    const bust = `?v=${Date.now()}`;
+    const sources = [
+      `${GH_RAW_CATALOG_URL}${bust}`,
+      `./product.json${bust}`
+    ];
+
+    let updated = false;
+    for (let i = 0; i < sources.length; i++) {
+      try {
+        const res = await fetch(sources[i], { cache: 'no-store' });
+        if (!res.ok) continue;
+        const data = await res.json();
+        if (loadCatalogFromData(data, true)) {
+          updated = true;
+          break;
+        }
+      } catch (err) {}
+    }
+
+    if (btn) {
+      setTimeout(() => btn.classList.remove('spinning'), 300);
+    }
+
+    if (showFeedback) {
+      if (updated) {
+        showSyncToast('✓ Data & harga berhasil diperbarui', false);
+      } else {
+        showSyncToast('⚠️ Belum ada update atau cek koneksi', true);
+      }
+    }
+  }
+
+  // Muat cache lokal jika ada
+  try {
+    var cachedRaw = localStorage.getItem(CATALOG_STORAGE_KEY);
+    if (cachedRaw) {
+      loadCatalogFromData(JSON.parse(cachedRaw), false);
+    } else {
+      renderAccordion();
+    }
+  } catch(e) {
+    renderAccordion();
+  }
+
+  // Auto-sync latar belakang dari GitHub
+  refreshCatalogNow(false);
+
+  var refreshBtn = document.getElementById('cc-refresh-catalog');
+  if (refreshBtn) {
+    refreshBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      refreshCatalogNow(true);
+    });
+  }
+
+  // MODAL LOGIC
   var modalBackdrop = document.getElementById('cc-modal-backdrop');
   var modalOp = document.getElementById('cc-modal-op');
   var modalTitle = document.getElementById('cc-modal-title');
@@ -1468,7 +1163,7 @@ document.addEventListener('DOMContentLoaded', function () {
   var currentMode = null;
 
   function updateConfirmState() {
-    var ready = !!currentMode && !!currentPay;
+    var ready = !!currentMode && !!currentPay && currentItem && currentItem.stok !== false;
     confirmBtn.classList.toggle('cc-disabled', !ready);
   }
 
@@ -1524,6 +1219,7 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   function openModal(op, item) {
+    if (item.stok === false) return; // Mencegah klik produk habis
     currentItem = item;
     currentItemOp = op;
     currentQty = 1;
@@ -1532,13 +1228,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
     modalOp.textContent = op;
     modalTitle.textContent = item.name;
-    modalPrice.textContent = 'Rp' + item.price.toLocaleString('id-ID');
+    modalPrice.textContent = 'Rp' + Number(item.price || 0).toLocaleString('id-ID');
 
     var pointsHtml = '';
     (item.points || []).forEach(function(p) {
       pointsHtml += '<div class="cc-detail-point">' +
                       '<svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>' +
-                      '<span><b>' + p.label + ':</b> ' + p.val + '</span>' +
+                      '<span><b>' + escapeHtml(p.label) + ':</b> ' + escapeHtml(p.val) + '</span>' +
                     '</div>';
     });
     modalPoints.innerHTML = pointsHtml;
@@ -1559,21 +1255,23 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function closeModal() { modalBackdrop.classList.remove('show'); }
   function updateTotal() {
-    var total = currentItem.price * currentQty;
+    var total = (currentItem ? currentItem.price : 0) * currentQty;
     modalTotal.textContent = 'Rp' + total.toLocaleString('id-ID');
   }
 
   document.getElementById('cc-accordion-container').addEventListener('click', function(e) {
     var card = e.target.closest('.cc-paket-card');
     if (!card) return;
+    if (card.classList.contains('out-of-stock')) return;
     var op = card.dataset.op;
-    var catIdx = parseInt(card.dataset.cat);
-    var itemIdx = parseInt(card.dataset.item);
-    var item = CATEGORY_DATA[op][catIdx].items[itemIdx];
-    openModal(op, item);
+    var catIdx = parseInt(card.dataset.cat, 10);
+    var itemIdx = parseInt(card.dataset.item, 10);
+    var item = CATEGORY_DATA[op] && CATEGORY_DATA[op][catIdx] && CATEGORY_DATA[op][catIdx].items[itemIdx];
+    if (item) openModal(op, item);
   });
 
-  document.getElementById('cc-modal-close').addEventListener('click', closeModal);
+  var modalCloseBtn = document.getElementById('cc-modal-close');
+  if (modalCloseBtn) modalCloseBtn.addEventListener('click', closeModal);
   modalBackdrop.addEventListener('click', function(e) {
     if (e.target === modalBackdrop) closeModal();
   });
@@ -1592,7 +1290,7 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   confirmBtn.addEventListener('click', function() {
-    if (!currentItem || !currentMode || !currentPay) return;
+    if (!currentItem || !currentMode || !currentPay || currentItem.stok === false) return;
     var orderId = generateOrderId();
     var total = currentItem.price * currentQty;
     var now = new Date();
@@ -1624,9 +1322,11 @@ document.addEventListener('DOMContentLoaded', function () {
       "💰 Total: Rp" + total.toLocaleString('id-ID') + "\n\n" +
       "Mohon segera diproses ya, terima kasih 🙏";
 
-    var waUrl = "https://wa.me/" + WA_NUMBER + "?text=" + encodeURIComponent(pesan);
-    toast.classList.add('show');
-    setTimeout(function() { toast.classList.remove('show'); }, 2500);
+    var waUrl = "https://wa.me/" + dynamicWaAdmin + "?text=" + encodeURIComponent(pesan);
+    if (toast) {
+      toast.classList.add('show');
+      setTimeout(function() { toast.classList.remove('show'); }, 2500);
+    }
     closeModal();
     window.open(waUrl, '_blank');
   });

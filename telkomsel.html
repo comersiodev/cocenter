@@ -10,45 +10,76 @@
 <style>
   #cc-container, #cc-container * { font-family:'JetBrains Mono', monospace!important; box-sizing:border-box; }
   html, body { margin:0!important; padding:0!important; height:100%!important; overflow:hidden!important; background:#05060a!important; color:#fff; }
-  #cc-container { position:fixed; top:0; left:0; width:100vw; height:100vh; z-index:999999; background:#05060a; overflow-y:auto; -webkit-overflow-scrolling:touch; padding-top:75px; padding-bottom:100px; }
-  .cc-bg.bg-default { position:fixed; inset:0; z-index:-1; background:#000 url('https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh9DocQHrQw9p05Lbkght7m-rpO8O2HS6s3VG28Nc7FW6LPePf_AYJ3E104I15aD8OUsQRINz7QGbgv7EeJXKZKXdecQ-RAHvowdbS5vPqDrfZ63ZC3w-FOPKWPcVBKY5IFdenDmRixqc-Jy8BvVpAp6ReI7Io5UdxjNnlzY_TZLuTW6xaepq9RkRMA92kV/s1600/11.gif') no-repeat center center; background-size:cover; }
-  .cc-overlay.bg-default { position:fixed; inset:0; z-index:-1; background:rgba(3,4,8,0.78); }
-  .cc-bg.bg-simple { position:fixed; inset:0; z-index:-1; background:linear-gradient(135deg,#090a0f 0%,#12151f 50%,#1a1614 100%) !important; }
-  .cc-overlay.bg-simple { position:fixed; inset:0; z-index:-1; background:rgba(12,10,8,0.65) !important; backdrop-filter:blur(10px); }
+  #cc-container { position:fixed; top:0; left:0; width:100vw; height:100vh; z-index:999999; background:transparent; overflow-y:auto; -webkit-overflow-scrolling:touch; padding-top:75px; padding-bottom:100px; }
+
+  .cc-bg { position:fixed; inset:0; z-index:0; background-color:#05060a; pointer-events:none; transition:background 0.3s ease; }
+  .cc-overlay { position:fixed; inset:0; z-index:1; pointer-events:none; transition:background 0.3s ease, backdrop-filter 0.3s ease; }
+  .cc-bg.bg-default { background:#000 url('https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh9DocQHrQw9p05Lbkght7m-rpO8O2HS6s3VG28Nc7FW6LPePf_AYJ3E104I15aD8OUsQRINz7QGbgv7EeJXKZKXdecQ-RAHvowdbS5vPqDrfZ63ZC3w-FOPKWPcVBKY5IFdenDmRixqc-Jy8BvVpAp6ReI7Io5UdxjNnlzY_TZLuTW6xaepq9RkRMA92kV/s1600/11.gif') no-repeat center center; background-size:cover; }
+  .cc-overlay.bg-default { background:rgba(3,4,8,0.78); }
+  .cc-bg.bg-simple { background:linear-gradient(135deg,#090a0f 0%,#12151f 50%,#1a1614 100%) !important; }
+  .cc-overlay.bg-simple { background:rgba(12,10,8,0.65) !important; backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); }
+  .cc-bg.bg-dark { background:#05060a !important; }
+  .cc-overlay.bg-dark { background:transparent !important; backdrop-filter:none !important; -webkit-backdrop-filter:none !important; }
+  .cc-bg.bg-custom { background-color:#05060a; background-position:center center; background-repeat:no-repeat; background-size:cover; }
+  .cc-overlay.bg-custom { background:rgba(3,4,8,0.72); }
+
   body.cc-simple-mode .cc-tutorial-bubble { animation:none !important; border-color:rgba(255,255,255,0.1) !important; background:#0d0f16 !important; }
   body.cc-simple-mode .cc-fab-main, body.cc-simple-mode .cc-fab-dock, body.cc-simple-mode .cc-fab-item { transition:none !important; }
   body.cc-simple-mode .cc-fab-stage.cc-fab-open .cc-fab-main { transform:none !important; }
+
   .cc-nav { display:flex; align-items:center; justify-content:space-between; padding:14px 24px; position:fixed; top:0; left:0; right:0; z-index:200; background:rgba(5,6,10,0.88); backdrop-filter:blur(14px); border-bottom:1px solid rgba(255,255,255,0.06); gap:10px; }
   .cc-brand-wrap { display:flex; flex-direction:column; gap:2px; flex-shrink:0; }
   .cc-brand-row { display:flex; align-items:center; gap:10px; }
   .cc-brand { font-weight:800; font-size:16px; color:#fff; letter-spacing:-0.5px; }
   .cc-subtitle { font-size:9px; font-weight:700; color:#a9b2c3; letter-spacing:2px; text-transform:uppercase; margin-left:42px; }
   .cc-img { width:32px; height:32px; border-radius:8px; object-fit:cover; }
-  .cc-nav-right { display:flex; align-items:center; gap:6px; position:relative; }
+  .cc-nav-right { display:flex; align-items:center; gap:8px; position:relative; }
+
+  /* TOMBOL REFRESH INSTAN */
+  @keyframes ccSpin { 0%{transform:rotate(0deg);} 100%{transform:rotate(360deg);} }
+  .cc-refresh-btn { width:32px; height:32px; border-radius:50%; border:1.5px solid rgba(41,224,201,0.5); background:#151824; color:#29e0c9; cursor:pointer; display:flex; align-items:center; justify-content:center; padding:0; transition:background 0.2s, border-color 0.2s, transform 0.15s; -webkit-tap-highlight-color:transparent; }
+  .cc-refresh-btn:hover { background:rgba(41,224,201,0.14); border-color:#29e0c9; }
+  .cc-refresh-btn:active { transform:scale(0.92); }
+  .cc-refresh-btn svg { width:15px; height:15px; stroke:currentColor; }
+  .cc-refresh-btn.spinning svg { animation:ccSpin 0.65s linear infinite; }
+
+  /* TOAST NOTIFIKASI SYNC */
+  .cc-sync-toast { position:fixed; top:70px; left:50%; transform:translateX(-50%) translateY(-12px); z-index:1200000; background:rgba(13,15,22,0.96); border:1px solid rgba(41,224,201,0.55); color:#29e0c9; font-family:'JetBrains Mono', monospace; font-size:11px; font-weight:700; padding:8px 14px; border-radius:999px; box-shadow:0 8px 24px rgba(0,0,0,0.65); opacity:0; visibility:hidden; pointer-events:none; transition:opacity 0.22s ease, transform 0.22s ease, visibility 0.22s; white-space:nowrap; }
+  .cc-sync-toast.show { opacity:1; visibility:visible; transform:translateX(-50%) translateY(0); }
+  .cc-sync-toast.error { border-color:rgba(255,45,106,0.6); color:#ff2d6a; }
+
   .cc-profile-wrap { position:relative; }
-  .cc-profile-btn { width:32px; height:32px; border-radius:50%; overflow:hidden; border:1.5px solid rgba(255,210,63,0.5); cursor:pointer; display:flex; align-items:center; justify-content:center; background:#151824; }
+  .cc-profile-btn { width:32px; height:32px; border-radius:50%; overflow:hidden; border:1.5px solid rgba(255,210,63,0.5); cursor:pointer; display:flex; align-items:center; justify-content:center; background:#151824; -webkit-tap-highlight-color:transparent; }
   .cc-profile-btn img { width:100%; height:100%; object-fit:cover; display:block; }
   .cc-profile-btn svg { width:18px; height:18px; fill:#ffd23f; }
-  .cc-profile-dropdown { position:absolute; top:calc(100% + 10px); right:0; width:180px; background:#0d0f16; border:1px solid rgba(255,255,255,0.15); border-radius:12px; padding:6px; z-index:100000; opacity:0; visibility:hidden; transform:translateY(-8px); transition:opacity 0.2s, transform 0.2s, visibility 0.2s; }
+  .cc-profile-dropdown { position:absolute; top:calc(100% + 10px); right:0; width:180px; background:#0d0f16; border:1px solid rgba(255,255,255,0.15); border-radius:12px; box-shadow:0 10px 30px rgba(0,0,0,0.6); padding:6px; z-index:100000; opacity:0; visibility:hidden; transform:translateY(-8px); transition:opacity 0.2s, transform 0.2s, visibility 0.2s; }
   .cc-profile-dropdown.show { opacity:1; visibility:visible; transform:translateY(0); }
   .cc-profile-dropdown a { display:flex; align-items:center; gap:10px; padding:10px 12px; color:#d5dae3; font-size:12px; font-weight:700; text-decoration:none; border-radius:8px; }
   .cc-profile-dropdown a svg { width:16px; height:16px; fill:currentColor; flex-shrink:0; }
   .cc-profile-dropdown a:hover { background:rgba(41,224,201,0.1); color:#29e0c9; }
   .cc-profile-dropdown .cc-dropdown-divider { height:1px; background:rgba(255,255,255,0.08); margin:4px 0; }
   .cc-profile-dropdown a.cc-logout { color:#ff2d6a; }
+
   @keyframes rgbStroke { 0%{background-position:0% 50%;} 100%{background-position:200% 50%;} }
   .cc-container { padding:10px 30px 20px; max-width:800px; margin:0 auto; position:relative; z-index:5; }
-  .cc-tutorial-bubble { border-radius:18px; border:2px solid transparent!important; background:linear-gradient(#0d0f16,#0d0f16) padding-box, linear-gradient(90deg,#ff2d6a,#ffd23f,#29e0c9,#7c5cff,#ff2d6a) border-box!important; background-size:200% 200%!important; animation:rgbStroke 4s linear infinite; overflow:hidden; }
+  .cc-tutorial-bubble { border-radius:18px; border:2px solid transparent!important; background:linear-gradient(#0d0f16,#0d0f16) padding-box, linear-gradient(90deg,#ff2d6a,#ffd23f,#29e0c9,#7c5cff,#ff2d6a) border-box!important; background-size:200% 200%!important; animation:rgbStroke 4s linear infinite; overflow:hidden; box-shadow:0 10px 30px rgba(0,0,0,0.5); }
   .cc-tutorial-img { width:100%; display:block; aspect-ratio:16/9; object-fit:cover; border-bottom:1px solid rgba(255,255,255,0.1); }
   .cc-tutorial-body { padding:25px 20px; }
+  .cc-section-head-row { display:flex; align-items:center; justify-content:space-between; gap:8px; margin:0 0 12px 0; }
+  .cc-section-head-row .cc-section-title { margin:0; }
+  .cc-sync-time { font-size:10px; color:#64748b; font-weight:700; }
   .cc-section-title { color:#29e0c9; font-weight:800; font-size:13px; text-transform:uppercase; margin:0 0 12px 0; }
   .cc-paket-list { display:flex; flex-direction:column; gap:12px; margin:0 0 25px 0; }
-  .cc-paket-card { background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:14px; padding:14px 16px; }
+  .cc-paket-card { background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:14px; padding:14px 16px; transition:border-color 0.2s, background 0.2s; }
+  .cc-paket-card.out-of-stock { opacity:0.55; border-color:rgba(255,45,106,0.35); }
   .cc-paket-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:6px; flex-wrap:wrap; gap:6px; }
   .cc-paket-name { font-size:13px; font-weight:800; color:#fff; }
   .cc-paket-price { font-size:13px; font-weight:800; color:#ffd23f; }
+  .cc-paket-card.out-of-stock .cc-paket-price { color:#ff2d6a; }
   .cc-paket-sub { font-size:12px; color:#94a3b8; line-height:1.5; }
   .cc-paket-badge { display:inline-block; font-size:9px; font-weight:800; color:#05060a; background:linear-gradient(90deg,#29e0c9,#7c5cff); padding:3px 8px; border-radius:6px; margin-left:6px; vertical-align:middle; }
+  .cc-paket-badge.habis { color:#fff; background:#ff2d6a; }
+
   .cc-tutorial-list { padding-left:18px; margin:0 0 25px 0; color:#ffd23f; font-weight:700; }
   .cc-tutorial-list li { font-size:13px; line-height:1.6; color:#e2e8f0; font-weight:400; margin-bottom:12px; }
   .cc-warning-box { background:rgba(255,45,106,0.08); border:1.5px solid rgba(255,45,106,0.35); border-radius:14px; padding:14px 16px; margin:0 0 25px 0; }
@@ -62,9 +93,10 @@
   .cc-highlight-text { color:#ffd23f; font-weight:bold; }
   .cc-footer-text { font-size:13px; line-height:1.6; color:#29e0c9; text-align:center; font-weight:bold; }
 
-  .cc-bottom-action-bubble { position:fixed; bottom:10px; left:12px; right:calc(50% + 40px); height:54px; z-index:999999; display:flex; align-items:center; padding:0 18px; border-radius:999px; background:linear-gradient(135deg, rgba(41,224,201,0.12), rgba(124,92,255,0.12)); border:1.5px solid rgba(41,224,201,0.45); color:#29e0c9; font-size:11px; font-weight:800; text-transform:uppercase; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; backdrop-filter:blur(10px); pointer-events:none; }
-  .cc-bottom-action-order { position:fixed; bottom:10px; left:calc(50% + 40px); right:12px; height:54px; z-index:999999; display:flex; align-items:center; justify-content:center; padding:0 22px; border-radius:999px; border:none; cursor:pointer; font-family:'JetBrains Mono', monospace; font-weight:800; font-size:12px; text-transform:uppercase; color:#05060a; background:linear-gradient(90deg, #29e0c9, #7c5cff); }
+  .cc-bottom-action-bubble { position:fixed; bottom:10px; left:12px; right:calc(50% + 40px); height:54px; z-index:999999; display:flex; align-items:center; padding:0 18px; border-radius:999px; background:linear-gradient(135deg, rgba(41,224,201,0.12), rgba(124,92,255,0.12)); border:1.5px solid rgba(41,224,201,0.45); color:#29e0c9; font-size:11px; font-weight:800; text-transform:uppercase; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); pointer-events:none; }
+  .cc-bottom-action-order { position:fixed; bottom:10px; left:calc(50% + 40px); right:12px; height:54px; z-index:999999; display:flex; align-items:center; justify-content:center; padding:0 22px; border-radius:999px; border:none; cursor:pointer; font-family:'JetBrains Mono', monospace; font-weight:800; font-size:12px; text-transform:uppercase; color:#05060a; background:linear-gradient(90deg, #29e0c9, #7c5cff); box-shadow:0 4px 18px rgba(41,224,201,0.45); -webkit-tap-highlight-color:transparent; transition:transform 0.15s ease, opacity 0.2s ease; }
   .cc-bottom-action-order:active { transform:scale(0.95); }
+  .cc-bottom-action-order:disabled { opacity:0.45; cursor:not-allowed; background:#334155; color:#94a3b8; box-shadow:none; }
 
   .cc-modal-backdrop { position:fixed; inset:0; z-index:1100000; display:flex; align-items:flex-end; justify-content:center; visibility:hidden; pointer-events:none; transition:background 0.4s, visibility 0.4s; }
   .cc-modal-backdrop.active { visibility:visible; pointer-events:auto; background:rgba(2,3,6,0.78); backdrop-filter:blur(6px); }
@@ -80,7 +112,7 @@
   .cc-modal-item-name { font-size:13px; font-weight:800; color:#fff; }
   .cc-modal-item-sub { font-size:11px; color:#94a3b8; }
   .cc-modal-item-price { font-size:12px; font-weight:800; color:#29e0c9; margin-top:4px; }
-  .cc-modal-body-scroll { flex:1 1 auto; overflow-y:auto; min-height:0; padding-right:6px; margin-right:-6px; }
+  .cc-modal-body-scroll { flex:1 1 auto; overflow-y:auto; min-height:0; padding-right:6px; margin-right:-6px; -webkit-overflow-scrolling:touch; }
   .cc-modal-body-scroll::-webkit-scrollbar { width:4px; }
   .cc-modal-body-scroll::-webkit-scrollbar-thumb { background:rgba(41,224,201,0.3); border-radius:4px; }
   .cc-modal-footer-static { flex-shrink:0; padding-top:14px; background:#0d0f16; }
@@ -134,6 +166,7 @@
   .cc-cselect-option:active { background:rgba(41,224,201,0.1); }
   .cc-cselect-option.selected { background:rgba(41,224,201,0.12); color:#29e0c9; font-weight:700; }
   .cc-cselect-option.selected::before { background:#29e0c9; box-shadow:0 0 8px rgba(41,224,201,0.8); }
+  .cc-cselect-option.out-of-stock { opacity:0.5; color:#ff2d6a; }
 
   .cc-fab-stage { position:fixed; left:50%; bottom:0; transform:translateX(-50%); width:200px; height:125px; z-index:1000001; pointer-events:none; }
   .cc-fab-stage.cc-fab-grabbable { filter:drop-shadow(0 0 6px rgba(255,210,63,0.45)); }
@@ -172,7 +205,8 @@
   .cc-fab-backdrop.cc-fab-backdrop-show { opacity:1; visibility:visible; pointer-events:auto; }
 </style>
 </head>
-<body>
+<body data-provider="telkomsel">
+<div class="cc-sync-toast" id="cc-sync-toast">✓ Data & harga diperbarui</div>
 <div id="cc-container">
   <div class="cc-bg bg-default" id="cc-bg-element"></div>
   <div class="cc-overlay bg-default" id="cc-overlay-element"></div>
@@ -182,9 +216,16 @@
         <img class="cc-img" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjgKAkQ6fTJOBPoOVz21klx2Vw6CXegaFe7QnvWoaDZTt1raufO5Ikvqu0JrP93QUf_iAcqVp8IkcTZjTx_e1mMqJENEYIpEjv-br9ApdDAeMiPcm8xoO-dFAmPJa-9y22yJdNme0Eb-EFxm-dS0Pd2UwUNu2cfB5pxS7KA7RP1JPKB-79xmqs5Vl9pSYHn/s1600/IMG_20260808_230713.png">
         CO CENTER
       </div>
-      <div class="cc-subtitle">Telkomsel Internet</div>
+      <div class="cc-subtitle" id="cc-header-subtitle">Telkomsel Internet</div>
     </div>
     <div class="cc-nav-right">
+      <button type="button" class="cc-refresh-btn" id="cc-refresh-catalog" title="Refresh Harga & Paket">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="23 4 23 10 17 10"></polyline>
+          <polyline points="1 20 1 14 7 14"></polyline>
+          <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+        </svg>
+      </button>
       <div class="cc-profile-wrap">
         <div class="cc-profile-btn" id="cc-profile-toggle" title="Menu Akun">
           <div id="header-avatar-container" style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
@@ -210,8 +251,11 @@
           Kuota super ngebut, jaringan terluas, langsung masuk ke nomor Telkomsel kamu tanpa ribet.<br><br>
           <span class="cc-highlight-text">⚡ Berlaku All Net & Jaringan Nasional Telkomsel</span>
         </div>
-        <h2 class="cc-section-title">📦 PILIHAN PAKET TELKOMSEL</h2>
-        <div class="cc-paket-list">
+        <div class="cc-section-head-row">
+          <h2 class="cc-section-title">📦 PILIHAN PAKET</h2>
+          <span class="cc-sync-time" id="cc-sync-time"></span>
+        </div>
+        <div class="cc-paket-list" id="cc-paket-list-box">
           <div class="cc-paket-card"><div class="cc-paket-head"><span class="cc-paket-name">Cek Paket Lainnya</span><span class="cc-paket-price">Kondisional</span></div><div class="cc-paket-sub">Layanan pengecekan ketersediaan paket lainnya</div></div>
           <div class="cc-paket-card"><div class="cc-paket-head"><span class="cc-paket-name">Telkomsel Data 8GB</span><span class="cc-paket-price">Rp12.500</span></div><div class="cc-paket-sub">8GB All Net · 1 Hari</div></div>
           <div class="cc-paket-card"><div class="cc-paket-head"><span class="cc-paket-name">Telkomsel Data 8GB</span><span class="cc-paket-price">Rp30.000</span></div><div class="cc-paket-sub">8GB All Net · 3 Hari</div></div>
@@ -385,6 +429,7 @@ function initCustomSelect(wrapId, onChangeFn) {
   list.querySelectorAll('.cc-cselect-option').forEach(function(opt) {
     opt.addEventListener('click', function(e) {
       e.stopPropagation();
+      if (opt.classList.contains('out-of-stock')) return;
       list.querySelectorAll('.cc-cselect-option').forEach(function(o){ o.classList.remove('selected'); });
       opt.classList.add('selected'); selectedOpt = opt;
       valueEl.textContent = opt.textContent.trim();
@@ -392,130 +437,547 @@ function initCustomSelect(wrapId, onChangeFn) {
       if (onChangeFn) onChangeFn(opt.getAttribute('data-value'));
     });
   });
-  return { get value(){ return selectedOpt.getAttribute('data-value'); }, get text(){ return selectedOpt.textContent.trim(); } };
+  return {
+    get value(){ return selectedOpt ? selectedOpt.getAttribute('data-value') : ''; },
+    get text(){ return selectedOpt ? selectedOpt.textContent.trim() : ''; },
+    setValue(val) {
+      const match = list.querySelector(`.cc-cselect-option[data-value="${val}"]`);
+      if (match && !match.classList.contains('out-of-stock')) {
+        list.querySelectorAll('.cc-cselect-option').forEach(o => o.classList.remove('selected'));
+        match.classList.add('selected');
+        selectedOpt = match;
+        valueEl.textContent = match.textContent.trim();
+      }
+    },
+    refreshOptions(newHtml, firstVal) {
+      list.innerHTML = newHtml;
+      list.querySelectorAll('.cc-cselect-option').forEach(function(opt) {
+        opt.addEventListener('click', function(e) {
+          e.stopPropagation();
+          if (opt.classList.contains('out-of-stock')) return;
+          list.querySelectorAll('.cc-cselect-option').forEach(function(o){ o.classList.remove('selected'); });
+          opt.classList.add('selected'); selectedOpt = opt;
+          valueEl.textContent = opt.textContent.trim();
+          wrap.classList.remove('open');
+          if (onChangeFn) onChangeFn(opt.getAttribute('data-value'));
+        });
+      });
+      if (firstVal !== undefined) {
+        this.setValue(firstVal);
+      } else {
+        const firstOpt = list.querySelector('.cc-cselect-option:not(.out-of-stock)') || list.querySelector('.cc-cselect-option');
+        if (firstOpt) {
+          this.setValue(firstOpt.getAttribute('data-value'));
+          selectedOpt = firstOpt;
+          valueEl.textContent = firstOpt.textContent.trim();
+        }
+      }
+    }
+  };
 }
 document.addEventListener('click', function(){ document.querySelectorAll('.cc-cselect.open').forEach(function(el){ el.classList.remove('open'); }); });
 
 document.addEventListener('DOMContentLoaded', function () {
-  function applyBackgroundSettings() { var bgEl = document.getElementById('cc-bg-element'), overlayEl = document.getElementById('cc-overlay-element'); var bgMode = localStorage.getItem('cc_bg_mode') || 'default';
-    if (bgEl && overlayEl) { if (bgMode === 'sederhana') { bgEl.className = 'cc-bg bg-simple'; overlayEl.className = 'cc-overlay bg-simple'; document.body.classList.add('cc-simple-mode'); }
-      else { bgEl.className = 'cc-bg bg-default'; overlayEl.className = 'cc-overlay bg-default'; document.body.classList.remove('cc-simple-mode'); } } }
+  function applyBackgroundSettings() {
+    var bgEl = document.getElementById('cc-bg-element');
+    var overlayEl = document.getElementById('cc-overlay-element');
+    if (!bgEl || !overlayEl) return;
+
+    var bgMode = (localStorage.getItem('cc_bg_mode') || 'default').trim().toLowerCase();
+    var customBg = (
+      localStorage.getItem('cc_bg_custom') ||
+      localStorage.getItem('cc_custom_bg') ||
+      localStorage.getItem('cc_bg_image') ||
+      localStorage.getItem('cc_bg_url') ||
+      ''
+    ).trim();
+    var customOverlay = localStorage.getItem('cc_bg_overlay');
+    var customBlur = localStorage.getItem('cc_bg_blur');
+
+    bgEl.style.background = '';
+    bgEl.style.backgroundImage = '';
+    overlayEl.style.background = '';
+    overlayEl.style.backdropFilter = '';
+    overlayEl.style.webkitBackdropFilter = '';
+
+    if (bgMode === 'sederhana' || bgMode === 'simple') {
+      bgEl.className = 'cc-bg bg-simple';
+      overlayEl.className = 'cc-overlay bg-simple';
+      document.body.classList.add('cc-simple-mode');
+    } else if (bgMode === 'polos' || bgMode === 'dark' || bgMode === 'gelap') {
+      bgEl.className = 'cc-bg bg-dark';
+      overlayEl.className = 'cc-overlay bg-dark';
+      document.body.classList.add('cc-simple-mode');
+    } else if (bgMode === 'custom' && customBg !== '') {
+      bgEl.className = 'cc-bg bg-custom';
+      overlayEl.className = 'cc-overlay bg-custom';
+      if (/^(#|rgb|hsl|linear-gradient|radial-gradient)/i.test(customBg)) {
+        bgEl.style.background = customBg;
+      } else {
+        bgEl.style.backgroundImage = 'url("' + customBg.replace(/"/g, '\\"') + '")';
+      }
+      if (customOverlay !== null && customOverlay !== '') {
+        var alpha = Math.max(0, Math.min(1, parseFloat(customOverlay)));
+        if (!isNaN(alpha)) overlayEl.style.background = 'rgba(3,4,8,' + alpha + ')';
+      }
+      if (customBlur !== null && customBlur !== '') {
+        var blurPx = Math.max(0, parseFloat(customBlur));
+        if (!isNaN(blurPx)) {
+          overlayEl.style.backdropFilter = 'blur(' + blurPx + 'px)';
+          overlayEl.style.webkitBackdropFilter = 'blur(' + blurPx + 'px)';
+        }
+      }
+      document.body.classList.remove('cc-simple-mode');
+    } else {
+      bgEl.className = 'cc-bg bg-default';
+      overlayEl.className = 'cc-overlay bg-default';
+      document.body.classList.remove('cc-simple-mode');
+    }
+  }
   applyBackgroundSettings();
-  function updateHeaderAvatar() { var c = document.getElementById('header-avatar-container'); var s = localStorage.getItem('cc_user_avatar');
-    if (c) { if (s && s.trim() !== "") c.innerHTML = '<img src="' + s + '" alt="Profile" style="width:100%;height:100%;object-fit:cover;display:block;">';
-      else c.innerHTML = '<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>'; } }
+
+  function updateHeaderAvatar() {
+    var c = document.getElementById('header-avatar-container');
+    var s = localStorage.getItem('cc_user_avatar');
+    if (c) {
+      if (s && s.trim() !== "") c.innerHTML = '<img src="' + s + '" alt="Profile" style="width:100%;height:100%;object-fit:cover;display:block;">';
+      else c.innerHTML = '<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>';
+    }
+  }
   updateHeaderAvatar();
+
   var subEl = document.querySelector('.cc-subtitle'), bubbleEl = document.getElementById('cc-page-bubble');
   if (subEl && bubbleEl) { var txt = subEl.textContent.trim(); if (txt) bubbleEl.textContent = txt; }
   var profileToggle = document.getElementById('cc-profile-toggle'), profileDropdown = document.getElementById('cc-profile-dropdown');
-  if (profileToggle && profileDropdown) { profileToggle.addEventListener('click', function(e) { e.stopPropagation(); profileDropdown.classList.toggle('show'); });
-    document.addEventListener('click', function(e) { if (!profileToggle.contains(e.target) && !profileDropdown.contains(e.target)) profileDropdown.classList.remove('show'); }); }
+  if (profileToggle && profileDropdown) {
+    profileToggle.addEventListener('click', function(e) { e.stopPropagation(); profileDropdown.classList.toggle('show'); });
+    document.addEventListener('click', function(e) { if (!profileToggle.contains(e.target) && !profileDropdown.contains(e.target)) profileDropdown.classList.remove('show'); });
+  }
+
   var fabStage = document.getElementById('cc-fab-stage'), fabMain = document.getElementById('cc-fab-main'), fabBackdrop = document.getElementById('cc-fab-backdrop');
   var savedPosBeforeOpen = null, DRAG_THRESHOLD = 8;
   var dragState = { active:false, hasMoved:false, isMovable:false, startX:0, startY:0, startLeft:0, startTop:0, pointerId:null };
   function isFabMovable() { return localStorage.getItem('cc_fab_movable') === 'true'; }
   function updateFabVisualState() { fabStage.classList.toggle('cc-fab-grabbable', isFabMovable()); }
-  function applySavedFabPosition() { if (!isFabMovable()) return; var p = localStorage.getItem('cc_fab_position'); if (!p) return;
+  function applySavedFabPosition() {
+    if (!isFabMovable()) return;
+    var p = localStorage.getItem('cc_fab_position'); if (!p) return;
     try { var pos = JSON.parse(p); if (typeof pos.left === 'number' && typeof pos.top === 'number') {
       var m1 = Math.max(0, window.innerWidth - fabStage.offsetWidth), m2 = Math.max(0, window.innerHeight - fabStage.offsetHeight);
       fabStage.style.left = Math.max(0, Math.min(m1, pos.left)) + 'px'; fabStage.style.top = Math.max(0, Math.min(m2, pos.top)) + 'px';
-      fabStage.style.bottom = 'auto'; fabStage.style.transform = 'none'; } } catch(e) {} }
+      fabStage.style.bottom = 'auto'; fabStage.style.transform = 'none';
+    } } catch(e) {}
+  }
   function resetFabPosition() { fabStage.style.left = ''; fabStage.style.top = ''; fabStage.style.bottom = ''; fabStage.style.transform = ''; }
-  function openFab() { if (isFabMovable()) { var r = fabStage.getBoundingClientRect(); savedPosBeforeOpen = { left: r.left, top: r.top };
+  function openFab() {
+    if (isFabMovable()) { var r = fabStage.getBoundingClientRect(); savedPosBeforeOpen = { left: r.left, top: r.top };
       fabStage.style.left = ''; fabStage.style.top = ''; fabStage.style.bottom = ''; fabStage.style.transform = ''; }
-    fabStage.classList.add('cc-fab-open'); fabBackdrop.classList.add('cc-fab-backdrop-show'); }
-  function closeFab() { fabStage.classList.remove('cc-fab-open'); fabBackdrop.classList.remove('cc-fab-backdrop-show');
-    if (isFabMovable() && savedPosBeforeOpen) { fabStage.style.left = savedPosBeforeOpen.left + 'px'; fabStage.style.top = savedPosBeforeOpen.top + 'px'; fabStage.style.bottom = 'auto'; fabStage.style.transform = 'none'; savedPosBeforeOpen = null; } }
+    fabStage.classList.add('cc-fab-open'); fabBackdrop.classList.add('cc-fab-backdrop-show');
+  }
+  function closeFab() {
+    fabStage.classList.remove('cc-fab-open'); fabBackdrop.classList.remove('cc-fab-backdrop-show');
+    if (isFabMovable() && savedPosBeforeOpen) { fabStage.style.left = savedPosBeforeOpen.left + 'px'; fabStage.style.top = savedPosBeforeOpen.top + 'px'; fabStage.style.bottom = 'auto'; fabStage.style.transform = 'none'; savedPosBeforeOpen = null; }
+  }
   fabBackdrop.addEventListener('click', closeFab);
   document.querySelectorAll('.cc-fab-item').forEach(function(item){ item.addEventListener('click', closeFab); });
-  fabMain.addEventListener('pointerdown', function(e) { e.preventDefault(); e.stopPropagation();
+  fabMain.addEventListener('pointerdown', function(e) {
+    e.preventDefault(); e.stopPropagation();
     dragState.active = true; dragState.hasMoved = false; dragState.pointerId = e.pointerId;
     dragState.isMovable = isFabMovable() && !fabStage.classList.contains('cc-fab-open');
     dragState.startX = e.clientX; dragState.startY = e.clientY;
     var r = fabStage.getBoundingClientRect(); dragState.startLeft = r.left; dragState.startTop = r.top;
-    try { fabMain.setPointerCapture(e.pointerId); } catch(err) {} });
-  fabMain.addEventListener('pointermove', function(e) { if (!dragState.active || !dragState.isMovable) return;
+    try { fabMain.setPointerCapture(e.pointerId); } catch(err) {}
+  });
+  fabMain.addEventListener('pointermove', function(e) {
+    if (!dragState.active || !dragState.isMovable) return;
     var dx = e.clientX - dragState.startX, dy = e.clientY - dragState.startY;
     if (!dragState.hasMoved) { if (Math.abs(dx) < DRAG_THRESHOLD && Math.abs(dy) < DRAG_THRESHOLD) return; dragState.hasMoved = true; }
     var nL = dragState.startLeft + dx, nT = dragState.startTop + dy;
     var m1 = window.innerWidth - fabStage.offsetWidth, m2 = window.innerHeight - fabStage.offsetHeight;
     nL = Math.max(0, Math.min(m1, nL)); nT = Math.max(0, Math.min(m2, nT));
-    fabStage.style.left = nL + 'px'; fabStage.style.top = nT + 'px'; fabStage.style.bottom = 'auto'; fabStage.style.transform = 'none'; });
-  fabMain.addEventListener('pointerup', function(e) { if (!dragState.active) return; dragState.active = false;
+    fabStage.style.left = nL + 'px'; fabStage.style.top = nT + 'px'; fabStage.style.bottom = 'auto'; fabStage.style.transform = 'none';
+  });
+  fabMain.addEventListener('pointerup', function(e) {
+    if (!dragState.active) return; dragState.active = false;
     try { fabMain.releasePointerCapture(dragState.pointerId); } catch(err) {}
     if (dragState.hasMoved) { var r = fabStage.getBoundingClientRect(); localStorage.setItem('cc_fab_position', JSON.stringify({ left: r.left, top: r.top })); }
-    else { if (fabStage.classList.contains('cc-fab-open')) closeFab(); else openFab(); } });
+    else { if (fabStage.classList.contains('cc-fab-open')) closeFab(); else openFab(); }
+  });
   fabMain.addEventListener('pointercancel', function(){ dragState.active = false; });
+
+  function syncAllSettings() {
+    applyBackgroundSettings();
+    updateHeaderAvatar();
+    updateFabVisualState();
+    if (!isFabMovable()) resetFabPosition();
+    else applySavedFabPosition();
+  }
+
   window.addEventListener('storage', function(e) {
+    if (!e.key || ['cc_bg_mode', 'cc_bg_custom', 'cc_custom_bg', 'cc_bg_image', 'cc_bg_url', 'cc_bg_overlay', 'cc_bg_blur'].indexOf(e.key) !== -1) {
+      applyBackgroundSettings();
+    }
     if (e.key === 'cc_user_avatar') updateHeaderAvatar();
-    if (e.key === 'cc_bg_mode') applyBackgroundSettings();
     if (e.key === 'cc_fab_movable') { updateFabVisualState(); if (!isFabMovable()) resetFabPosition(); else applySavedFabPosition(); }
-    if (e.key === 'cc_fab_position') { if (isFabMovable()) applySavedFabPosition(); } });
+    if (e.key === 'cc_fab_position') { if (isFabMovable()) applySavedFabPosition(); }
+    if (e.key === 'cc_catalog_cache' && e.newValue) {
+      try { applyCatalogData(JSON.parse(e.newValue), false); } catch(err) {}
+    }
+  });
+  window.addEventListener('pageshow', syncAllSettings);
+  document.addEventListener('visibilitychange', function() {
+    if (document.visibilityState === 'visible') syncAllSettings();
+  });
+
   updateFabVisualState(); applySavedFabPosition();
+
   const modalBackdrop = document.getElementById('order-modal-backdrop');
-  document.getElementById('open-order-modal-sticky').addEventListener('click', (e) => { e.stopPropagation(); modalBackdrop.classList.add('active'); });
-  document.getElementById('close-order-modal').addEventListener('click', (e) => { e.stopPropagation(); modalBackdrop.classList.remove('active'); document.querySelectorAll('.cc-cselect.open').forEach(function(el){ el.classList.remove('open'); }); });
+  const openOrderStickyBtn = document.getElementById('open-order-modal-sticky');
+
+  let isAnyVariantAvailable = true;
+  openOrderStickyBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (!isAnyVariantAvailable) return;
+    modalBackdrop.classList.add('active');
+  });
+
+  document.getElementById('close-order-modal').addEventListener('click', (e) => {
+    e.stopPropagation();
+    modalBackdrop.classList.remove('active');
+    document.querySelectorAll('.cc-cselect.open').forEach(function(el){ el.classList.remove('open'); });
+  });
   modalBackdrop.addEventListener('click', (e) => { if (e.target === modalBackdrop) modalBackdrop.classList.remove('active'); });
   modalBackdrop.querySelector('.cc-modal').addEventListener('click', (e) => e.stopPropagation());
+
   const paketSectionWrap = document.getElementById('paket-section-wrap');
   const cekLainnyaSectionWrap = document.getElementById('cek-lainnya-section-wrap');
   const voucherSectionWrap = document.getElementById('voucher-section-wrap');
   const modalProductTitle = document.getElementById('modal-product-title');
   const modalItemSub = document.getElementById('modal-item-sub');
   const modalItemPrice = document.getElementById('modal-item-price');
+
   let pricePerSlot = 12500, qty = 1, currentMode = 'paket', activeVoucher = null, verifiedLainnyaVal = null;
+  let dynamicWaAdmin = '6288971071456';
+  let dynamicItemName = 'Telkomsel Internet';
+  let dynamicPackets = [
+    { name: 'Cek Paket Lainnya', price: 0, detail: 'Layanan pengecekan ketersediaan paket lainnya', stok: true, badge: '', isCheck: true },
+    { name: 'Telkomsel Data 8GB', price: 12500, detail: '8GB All Net · 1 Hari', stok: true, badge: '' },
+    { name: 'Telkomsel Data 8GB', price: 30000, detail: '8GB All Net · 3 Hari', stok: true, badge: '' },
+    { name: 'Telkomsel Data 15GB', price: 52000, detail: '15GB All Net · 3 Hari', stok: true, badge: 'Hemat' },
+    { name: 'Telkomsel Data 2,5GB', price: 14000, detail: '2,5GB All Net · 5 Hari', stok: true, badge: '' },
+    { name: 'Telkomsel Data 3GB', price: 21000, detail: '3GB All Net · 7 Hari', stok: true, badge: '' },
+    { name: 'Telkomsel Data 5GB', price: 28000, detail: '5GB All Net · 7 Hari', stok: true, badge: '' },
+    { name: 'Telkomsel Data 10GB', price: 43500, detail: '10GB All Net · 7 Hari', stok: true, badge: 'Popular' },
+    { name: 'Telkomsel Data 10GB', price: 53000, detail: '10GB All Net · 30 Hari', stok: true, badge: '' },
+    { name: 'Telkomsel Data 15GB', price: 68000, detail: '15GB All Net · 30 Hari', stok: true, badge: 'Best Value' }
+  ];
+
   const qtyValueEl = document.getElementById('qty-value'), totalPriceEl = document.getElementById('total-price');
-  function formatRupiah(num) { return 'Rp' + num.toLocaleString('id-ID'); }
-  function updateTotal() { let subtotal = qty * pricePerSlot;
-    if (activeVoucher) { if (subtotal < 5000) { voucherHint.textContent = '❌ Gagal: Total kurang dari minimum voucher!'; voucherHint.className = 'cc-input-hint warn'; activeVoucher = null; }
-      else { subtotal -= 5000; voucherHint.textContent = '✔️ Voucher berhasil! Potongan Rp5.000'; voucherHint.className = 'cc-input-hint success'; } }
-    totalPriceEl.textContent = formatRupiah(subtotal); }
-  function updatePaketInfo() { const parts = paketSelect.value.split('|'); pricePerSlot = parseInt(parts[0], 10); const sub = parts[1];
-    modalItemSub.textContent = sub; modalItemPrice.textContent = formatRupiah(pricePerSlot) + ' / slot'; updateTotal(); }
+  const cekLainnyaInput = document.getElementById('cek-lainnya-input'), cekLainnyaBtn = document.getElementById('check-lainnya-btn'), cekLainnyaHint = document.getElementById('cek-lainnya-hint');
+  const voucherInput = document.getElementById('voucher-code'), voucherBtn = document.getElementById('apply-voucher'), voucherHint = document.getElementById('voucher-hint');
+
+  function formatRupiah(num) { return 'Rp' + Number(num || 0).toLocaleString('id-ID'); }
+  function escapeHtml(str) {
+    return String(str || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  let toastTimer = null;
+  function showSyncToast(text, isError) {
+    const toast = document.getElementById('cc-sync-toast');
+    if (!toast) return;
+    toast.textContent = text;
+    toast.classList.toggle('error', Boolean(isError));
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => { toast.classList.remove('show'); }, 2200);
+  }
+
+  function updateTotal() {
+    let subtotal = qty * pricePerSlot;
+    if (activeVoucher) {
+      if (subtotal < 5000) {
+        voucherHint.textContent = '❌ Gagal: Total kurang dari minimum voucher!';
+        voucherHint.className = 'cc-input-hint warn';
+        activeVoucher = null;
+      } else {
+        subtotal -= 5000;
+        voucherHint.textContent = '✔️ Voucher berhasil! Potongan Rp5.000';
+        voucherHint.className = 'cc-input-hint success';
+      }
+    }
+    totalPriceEl.textContent = formatRupiah(subtotal);
+  }
+
+  function updatePaketInfo() {
+    const val = paketSelect ? paketSelect.value : '';
+    if (!val) return;
+    const parts = val.split('|');
+    pricePerSlot = parseInt(parts[0], 10) || 12500;
+    const sub = parts[1] || '';
+    modalItemSub.textContent = sub;
+    modalItemPrice.textContent = formatRupiah(pricePerSlot) + ' / slot';
+    updateTotal();
+  }
+
   var serviceTypeSelect = initCustomSelect('service-type-select-wrap', function(val){
     currentMode = val;
-    if (currentMode === 'paket') { paketSectionWrap.style.display = 'block'; cekLainnyaSectionWrap.style.display = 'none'; voucherSectionWrap.style.display = 'block';
-      modalProductTitle.textContent = 'Telkomsel Internet'; updatePaketInfo(); }
-    else { paketSectionWrap.style.display = 'none'; cekLainnyaSectionWrap.style.display = 'block'; voucherSectionWrap.style.display = 'none';
+    if (currentMode === 'paket') {
+      paketSectionWrap.style.display = 'block';
+      cekLainnyaSectionWrap.style.display = 'none';
+      voucherSectionWrap.style.display = 'block';
+      modalProductTitle.textContent = dynamicItemName;
+      updatePaketInfo();
+    } else {
+      paketSectionWrap.style.display = 'none';
+      cekLainnyaSectionWrap.style.display = 'block';
+      voucherSectionWrap.style.display = 'none';
       modalProductTitle.textContent = 'Cek Paket Lainnya';
       modalItemSub.textContent = verifiedLainnyaVal ? `Cek: ${verifiedLainnyaVal}` : 'Belum diisi';
-      modalItemPrice.textContent = 'Kondisional'; }
+      modalItemPrice.textContent = 'Kondisional';
+    }
   });
+
   var paketSelect = initCustomSelect('paket-select-wrap', function(){ updatePaketInfo(); });
-  updatePaketInfo();
+
+  /* =========================================================
+     INTEGRASI AUTO-SYNC & REFRESH INSTAN product.json
+  ========================================================= */
+  const CATALOG_STORAGE_KEY = 'cc_catalog_cache';
+  const CATALOG_SYNC_TIME_KEY = 'cc_catalog_last_sync';
+  const GH_RAW_CATALOG_URL = 'https://raw.githubusercontent.com/comersiodev/cocenter/main/product.json';
+
+  function applyCatalogData(catalog, saveToExternal) {
+    if (!catalog || !catalog.produk) return false;
+    const provider = catalog.produk['telkomsel'];
+    if (!provider || !Array.isArray(provider.paket) || !provider.paket.length) return false;
+
+    if (saveToExternal) {
+      try {
+        localStorage.setItem(CATALOG_STORAGE_KEY, JSON.stringify(catalog));
+        const nowTime = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+        localStorage.setItem(CATALOG_SYNC_TIME_KEY, nowTime);
+        window.CC_EXTERNAL_CATALOG = catalog;
+        window.dispatchEvent(new CustomEvent('cc:catalog-updated', { detail: catalog }));
+      } catch (e) {}
+    }
+
+    const savedTime = localStorage.getItem(CATALOG_SYNC_TIME_KEY);
+    const syncTimeEl = document.getElementById('cc-sync-time');
+    if (syncTimeEl && savedTime) syncTimeEl.textContent = 'Sync ' + savedTime;
+
+    if (catalog.wa_admin) dynamicWaAdmin = String(catalog.wa_admin).trim();
+    if (provider.judul_item) {
+      dynamicItemName = provider.judul_item;
+      const subHeader = document.getElementById('cc-header-subtitle');
+      const stickyBubble = document.getElementById('cc-page-bubble');
+      if (subHeader) subHeader.textContent = provider.judul_item;
+      if (stickyBubble) stickyBubble.textContent = provider.judul_item;
+      if (currentMode === 'paket') modalProductTitle.textContent = provider.judul_item;
+    }
+
+    dynamicPackets = provider.paket.map((p, idx) => ({
+      name: p.nama || `Paket ${idx + 1}`,
+      price: Number(p.harga ?? p.price ?? 12500) || 12500,
+      detail: p.detail || 'Telkomsel Internet',
+      stok: p.stok !== false,
+      badge: p.badge || '',
+      isCheck: Boolean(p.isCheck || (p.nama && p.nama.toLowerCase().includes('cek paket')))
+    }));
+
+    isAnyVariantAvailable = dynamicPackets.some(v => v.stok);
+
+    // Update UI Cards di Halaman Utama
+    const paketListBox = document.getElementById('cc-paket-list-box');
+    if (paketListBox) {
+      let cardsHtml = '';
+      dynamicPackets.forEach(p => {
+        const isOut = p.stok === false;
+        const badgeHtml = isOut
+          ? '<span class="cc-paket-badge habis">Habis</span>'
+          : (p.badge ? `<span class="cc-paket-badge">${escapeHtml(p.badge)}</span>` : '');
+        const priceDisplay = p.isCheck ? 'Kondisional' : formatRupiah(p.price);
+        cardsHtml += `
+          <div class="cc-paket-card ${isOut ? 'out-of-stock' : ''}">
+            <div class="cc-paket-head">
+              <span class="cc-paket-name">${escapeHtml(p.name)}${badgeHtml}</span>
+              <span class="cc-paket-price">${priceDisplay}</span>
+            </div>
+            <div class="cc-paket-sub">${escapeHtml(p.detail)}</div>
+          </div>
+        `;
+      });
+      paketListBox.innerHTML = cardsHtml;
+    }
+
+    // Update Dropdown Paket Options di Modal (hanya paket non-check)
+    if (paketSelect) {
+      let listHtml = '';
+      let firstValToSelect = '';
+      const orderPackets = dynamicPackets.filter(p => !p.isCheck);
+      orderPackets.forEach((p, idx) => {
+        const valStr = `${p.price}|${p.detail}|${p.name}`;
+        if (idx === 0) firstValToSelect = valStr;
+        const badgeStr = p.badge ? ` [${p.badge}]` : '';
+        const habisStr = !p.stok ? ' (HABIS)' : '';
+        const optText = `${p.name}${badgeStr} (${formatRupiah(p.price)})${habisStr}`;
+        const cls = !p.stok ? 'cc-cselect-option out-of-stock' : 'cc-cselect-option';
+        listHtml += `<div class="${cls}" data-value="${escapeHtml(valStr)}">${escapeHtml(optText)}</div>`;
+      });
+      if (listHtml) {
+        paketSelect.refreshOptions(listHtml, firstValToSelect);
+      }
+    }
+
+    if (openOrderStickyBtn) {
+      openOrderStickyBtn.disabled = !isAnyVariantAvailable;
+      openOrderStickyBtn.textContent = isAnyVariantAvailable ? 'Order' : 'Semua Stok Habis';
+    }
+
+    updatePaketInfo();
+    return true;
+  }
+
+  async function refreshCatalogNow(showFeedback) {
+    const btn = document.getElementById('cc-refresh-catalog');
+    if (btn) btn.classList.add('spinning');
+
+    const bust = `?v=${Date.now()}`;
+    const sources = [
+      `${GH_RAW_CATALOG_URL}${bust}`,
+      `./product.json${bust}`
+    ];
+
+    let updated = false;
+    for (let i = 0; i < sources.length; i++) {
+      try {
+        const res = await fetch(sources[i], { cache: 'no-store' });
+        if (!res.ok) continue;
+        const data = await res.json();
+        if (applyCatalogData(data, true)) {
+          updated = true;
+          break;
+        }
+      } catch (err) {}
+    }
+
+    if (btn) {
+      setTimeout(() => btn.classList.remove('spinning'), 300);
+    }
+
+    if (showFeedback) {
+      if (updated) {
+        showSyncToast('✓ Data & harga berhasil diperbarui', false);
+      } else {
+        showSyncToast('⚠️ Belum ada update atau cek koneksi', true);
+      }
+    }
+  }
+
+  // 1. Muat cache lokal instan
+  try {
+    const cachedRaw = localStorage.getItem(CATALOG_STORAGE_KEY);
+    if (cachedRaw) applyCatalogData(JSON.parse(cachedRaw), false);
+    else updatePaketInfo();
+  } catch (e) {
+    updatePaketInfo();
+  }
+
+  // 2. Auto-sync latar belakang dari GitHub product.json
+  refreshCatalogNow(false);
+
+  // 3. Tombol Refresh Instan
+  const refreshBtn = document.getElementById('cc-refresh-catalog');
+  if (refreshBtn) {
+    refreshBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      refreshCatalogNow(true);
+    });
+  }
+
   document.getElementById('qty-minus').addEventListener('click', () => { if (qty > 1) { qty--; qtyValueEl.textContent = qty; updateTotal(); } });
   document.getElementById('qty-plus').addEventListener('click', () => { if (qty < 99) { qty++; qtyValueEl.textContent = qty; updateTotal(); } });
-  const cekLainnyaInput = document.getElementById('cek-lainnya-input'), cekLainnyaBtn = document.getElementById('check-lainnya-btn'), cekLainnyaHint = document.getElementById('cek-lainnya-hint');
-  cekLainnyaBtn.addEventListener('click', () => { const val = cekLainnyaInput.value.trim();
-    if (!val) { cekLainnyaHint.textContent = '⚠️ Masukkan nama atau detail paket terlebih dahulu.'; cekLainnyaHint.className = 'cc-input-hint warn'; verifiedLainnyaVal = null; return; }
-    verifiedLainnyaVal = val; cekLainnyaHint.textContent = `✔️ Paket "${val}" siap dikirim!`; cekLainnyaHint.className = 'cc-input-hint success'; modalItemSub.textContent = `Cek: ${val}`; });
-  const voucherInput = document.getElementById('voucher-code'), voucherBtn = document.getElementById('apply-voucher'), voucherHint = document.getElementById('voucher-hint');
-  voucherBtn.addEventListener('click', () => { const code = voucherInput.value.trim().toUpperCase();
-    if (!code) { voucherHint.textContent = '⚠️ Masukkan kode voucher terlebih dahulu.'; voucherHint.className = 'cc-input-hint warn'; activeVoucher = null; updateTotal(); return; }
-    if (code === 'COCENTER' || code === 'TELKOMSEL') activeVoucher = code;
-    else { voucherHint.textContent = `❌ Voucher "${code}" tidak valid atau kedaluwarsa!`; voucherHint.className = 'cc-input-hint warn'; activeVoucher = null; updateTotal(); return; }
-    updateTotal(); });
+
+  cekLainnyaBtn.addEventListener('click', () => {
+    const val = cekLainnyaInput.value.trim();
+    if (!val) {
+      cekLainnyaHint.textContent = '⚠️ Masukkan nama atau detail paket terlebih dahulu.';
+      cekLainnyaHint.className = 'cc-input-hint warn';
+      verifiedLainnyaVal = null;
+      return;
+    }
+    verifiedLainnyaVal = val;
+    cekLainnyaHint.textContent = `✔️ Paket "${val}" siap dikirim!`;
+    cekLainnyaHint.className = 'cc-input-hint success';
+    modalItemSub.textContent = `Cek: ${val}`;
+  });
+
+  voucherBtn.addEventListener('click', () => {
+    const code = voucherInput.value.trim().toUpperCase();
+    if (!code) {
+      voucherHint.textContent = '⚠️ Masukkan kode voucher terlebih dahulu.';
+      voucherHint.className = 'cc-input-hint warn';
+      activeVoucher = null;
+      updateTotal();
+      return;
+    }
+    if (code === 'COCENTER' || code === 'TELKOMSEL') {
+      activeVoucher = code;
+    } else {
+      voucherHint.textContent = `❌ Voucher "${code}" tidak valid atau kedaluwarsa!`;
+      voucherHint.className = 'cc-input-hint warn';
+      activeVoucher = null;
+      updateTotal();
+      return;
+    }
+    updateTotal();
+  });
+
   let selectedMethod = 'QRIS';
-  document.querySelectorAll('.cc-pay-option').forEach(opt => { opt.addEventListener('click', () => { document.querySelectorAll('.cc-pay-option').forEach(o => o.classList.remove('selected')); opt.classList.add('selected'); selectedMethod = opt.getAttribute('data-method'); }); });
+  document.querySelectorAll('.cc-pay-option').forEach(opt => {
+    opt.addEventListener('click', () => {
+      document.querySelectorAll('.cc-pay-option').forEach(o => o.classList.remove('selected'));
+      opt.classList.add('selected');
+      selectedMethod = opt.getAttribute('data-method');
+    });
+  });
+
   const tncCheckbox = document.getElementById('tnc-checkbox'), confirmBtn = document.getElementById('confirm-order');
-  tncCheckbox.addEventListener('change', () => { confirmBtn.disabled = !tncCheckbox.checked; });
-  function getFormattedDate() { const n = new Date(); const d = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu']; const m = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember']; return `${d[n.getDay()]}, ${n.getDate()} ${m[n.getMonth()]} ${n.getFullYear()} - ${String(n.getHours()).padStart(2,'0')}:${String(n.getMinutes()).padStart(2,'0')} WIB`; }
-  document.getElementById('confirm-order').addEventListener('click', () => { if (!tncCheckbox.checked) return;
-    const tanggal = getFormattedDate(), waNumber = '6288971071456';
+  tncCheckbox.addEventListener('change', () => { confirmBtn.disabled = !tncCheckbox.checked || !isAnyVariantAvailable; });
+
+  function getFormattedDate() {
+    const n = new Date();
+    const d = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+    const m = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+    return `${d[n.getDay()]}, ${n.getDate()} ${m[n.getMonth()]} ${n.getFullYear()} - ${String(n.getHours()).padStart(2,'0')}:${String(n.getMinutes()).padStart(2,'0')} WIB`;
+  }
+
+  document.getElementById('confirm-order').addEventListener('click', () => {
+    if (!tncCheckbox.checked || !isAnyVariantAvailable) return;
+    const tanggal = getFormattedDate(), waNumber = dynamicWaAdmin;
     const phoneLine = document.getElementById('user-phone').value.trim() || '(belum diisi)';
     let message = '';
+
     if (currentMode === 'paket') {
       const parts = paketSelect.value.split('|');
-      const itemName = `Telkomsel Internet (${parts[2]})`;
-      let finalSubtotal = qty * pricePerSlot; let voucherText = 'Tidak pakai';
-      if (activeVoucher) { finalSubtotal -= 5000; voucherText = `${activeVoucher} (Potongan Rp5.000)`; }
+      const itemName = `${dynamicItemName} (${parts[2]})`;
+      let finalSubtotal = qty * pricePerSlot;
+      let voucherText = 'Tidak pakai';
+      if (activeVoucher) {
+        finalSubtotal -= 5000;
+        voucherText = `${activeVoucher} (Potongan Rp5.000)`;
+      }
       const totalHargaText = formatRupiah(finalSubtotal);
       message = `Jenis Layanan : Paket Data Internet\nNama Item : ${itemName}\nJumlah Slot : ${qty}\nKode Voucher : ${voucherText}\nTotal Harga : ${totalHargaText}\nNomor Telepon Telkomsel Tujuan : ${phoneLine}\nTanggal Pemesanan : ${tanggal}\nMetode Pembayaran : ${selectedMethod}\nSetuju Rules & Ketentuan : Ya, saya menyetujui bahwa kesalahan input nomor tujuan bukan tanggung jawab Admin dan tidak dapat diajukan refund`;
     } else {
       const valLine = verifiedLainnyaVal ? verifiedLainnyaVal : (cekLainnyaInput.value.trim() || '(belum diinput)');
       message = `Jenis Layanan : Cek Paket Lainnya\nPaket yang Ditanyakan : ${valLine}\nNomor Telepon Telkomsel Tujuan : ${phoneLine}\nTanggal Pemesanan : ${tanggal}\nMetode Pembayaran : ${selectedMethod}\nSetuju Rules & Ketentuan : Ya, saya menyetujui bahwa kesalahan input nomor tujuan bukan tanggung jawab Admin dan tidak dapat diajukan refund`;
     }
-    window.open(`https://wa.me/${waNumber}?text=${encodeURIComponent(message)}`, '_blank'); });
+    window.open(`https://wa.me/${waNumber}?text=${encodeURIComponent(message)}`, '_blank');
+  });
 });
 </script>
 </body>
