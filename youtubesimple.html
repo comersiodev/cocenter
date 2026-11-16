@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Co Center - YouTube Premium Ketengan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<style>
+  #cc-container, #cc-container * { font-family:'JetBrains Mono', monospace!important; box-sizing:border-box; }
+  html, body { margin:0!important; padding:0!important; height:100%!important; overflow:hidden!important; background:#05060a!important; color:#fff; }
+  #cc-container { position:fixed; top:0; left:0; width:100vw; height:100vh; z-index:999999; background:#05060a; overflow-y:auto; -webkit-overflow-scrolling:touch; padding-top:75px; padding-bottom:100px; }
+
+  .cc-bg.bg-default { position:fixed; inset:0; z-index:-1; background:#000 url('https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh9DocQHrQw9p05Lbkght7m-rpO8O2HS6s3VG28Nc7FW6LPePf_AYJ3E104I15aD8OUsQRINz7QGbgv7EeJXKZKXdecQ-RAHvowdbS5vPqDrfZ63ZC3w-FOPKWPcVBKY5IFdenDmRixqc-Jy8BvVpAp6ReI7Io5UdxjNnlzY_TZLuTW6xaepq9RkRMA92kV/s1600/11.gif') no-repeat center center; background-size:cover; transition:background 0.3s ease; }
+  .cc-overlay.bg-default { position:fixed; inset:0; z-index:-1; background:rgba(3,4,8,0.78); transition:background 0.3s ease; }
+  .cc-bg.bg-simple { position:fixed; inset:0; z-index:-1; background:linear-gradient(135deg,#090a0f 0%,#12151f 50%,#1a1614 100%) !important; transition:background 0.3s ease; }
+  .cc-overlay.bg-simple { position:fixed; inset:0; z-index:-1; background:rgba(12,10,8,0.65) !important; backdrop-filter:blur(10px); transition:background 0.3s ease; }
+  body.cc-simple-mode .cc-tutorial-bubble { animation:none !important; border-color:rgba(255,255,255,0.1) !important; background:#0d0f16 !important; }
+  body.cc-simple-mode .cc-fab-main, body.cc-simple-mode .cc-fab-dock, body.cc-simple-mode .cc-fab-item { transition:none !important; }
+  body.cc-simple-mode .cc-fab-stage.cc-fab-open .cc-fab-main { transform:none !important; }
+
+  .cc-nav { display:flex; align-items:center; justify-content:space-between; padding:14px 24px; position:fixed; top:0; left:0; right:0; z-index:200; background:rgba(5,6,10,0.88); backdrop-filter:blur(14px); border-bottom:1px solid rgba(255,255,255,0.06); gap:10px; }
+  .cc-brand-wrap { display:flex; flex-direction:column; gap:2px; flex-shrink:0; }
+  .cc-brand-row { display:flex; align-items:center; gap:10px; }
+  .cc-brand { font-weight:800; font-size:16px; color:#fff; letter-spacing:-0.5px; }
+  .cc-subtitle { font-size:9px; font-weight:700; color:#a9b2c3; letter-spacing:2px; text-transform:uppercase; margin-left:42px; }
+  .cc-img { width:32px; height:32px; border-radius:8px; object-fit:cover; }
+  .cc-nav-right { display:flex; align-items:center; gap:6px; position:relative; }
+  .cc-profile-wrap { position:relative; }
+  .cc-profile-btn { width:32px; height:32px; border-radius:50%; overflow:hidden; border:1.5px solid rgba(255,210,63,0.5); cursor:pointer; display:flex; align-items:center; justify-content:center; background:#151824; -webkit-tap-highlight-color:transparent; }
+  .cc-profile-btn img { width:100%; height:100%; object-fit:cover; display:block; }
+  .cc-profile-btn svg { width:18px; height:18px; fill:#ffd23f; }
+  .cc-profile-dropdown { position:absolute; top:calc(100% + 10px); right:0; width:180px; background:#0d0f16; border:1px solid rgba(255,255,255,0.15); border-radius:12px; box-shadow:0 10px 30px rgba(0,0,0,0.6); padding:6px; z-index:100000; opacity:0; visibility:hidden; transform:translateY(-8px); transition:opacity 0.2s, transform 0.2s, visibility 0.2s; }
+  .cc-profile-dropdown.show { opacity:1; visibility:visible; transform:translateY(0); }
+  .cc-profile-dropdown a { display:flex; align-items:center; gap:10px; padding:10px 12px; color:#d5dae3; font-size:12px; font-weight:700; text-decoration:none; border-radius:8px; }
+  .cc-profile-dropdown a svg { width:16px; height:16px; fill:currentColor; flex-shrink:0; }
+  .cc-profile-dropdown a:hover { background:rgba(41,224,201,0.1); color:#29e0c9; }
+  .cc-profile-dropdown .cc-dropdown-divider { height:1px; background:rgba(255,255,255,0.08); margin:4px 0; }
+  .cc-profile-dropdown a.cc-logout { color:#ff2d6a; }
+
+  @keyframes rgbStroke { 0%{background-position:0% 50%;} 100%{background-position:200% 50%;} }
+  .cc-container { padding:10px 30px 20px; max-width:800px; margin:0 auto; position:relative; z-index:5; }
+  .cc-tutorial-bubble { border-radius:18px; border:2px solid transparent!important; background:linear-gradient(#0d0f16,#0d0f16) padding-box, linear-gradient(90deg,#ff2d6a,#ffd23f,#29e0c9,#7c5cff,#ff2d6a) border-box!important; background-size:200% 200%!important; animation:rgbStroke 4s linear infinite; overflow:hidden; box-shadow:0 10px 30px rgba(0,0,0,0.5); }
+  .cc-tutorial-img { width:100%; display:block; aspect-ratio:16/9; object-fit:cover; border-bottom:1px solid rgba(255,255,255,0.1); }
+  .cc-tutorial-body { padding:25px 20px; }
+
+  .cc-tab-buttons { display:grid; grid-template-columns:repeat(3, 1fr); gap:8px; margin-bottom:25px; background:rgba(255,255,255,0.03); padding:6px; border-radius:14px; border:1px solid rgba(255,255,255,0.06); }
+  .cc-tab-btn { padding:12px 6px; border-radius:10px; border:none; background:transparent; color:#94a3b8; font-family:'JetBrains Mono', monospace; font-weight:800; font-size:10.5px; text-transform:uppercase; letter-spacing:0.3px; cursor:pointer; text-align:center; transition:all 0.2s ease; -webkit-tap-highlight-color:transparent; }
+  .cc-tab-btn.active { background:linear-gradient(135deg, #29e0c9, #1fb3a1); color:#05060a; box-shadow:0 4px 15px rgba(41,224,201,0.3); }
+  .cc-tab-btn:active { transform:scale(0.97); }
+  .cc-tab-pane { display:none; }
+  .cc-tab-pane.active { display:block; }
+
+  .cc-section-title { color:#29e0c9; font-weight:800; font-size:13px; text-transform:uppercase; letter-spacing:1px; margin:0 0 12px 0; }
+  .cc-benefit-list { padding-left:18px; margin:0 0 25px 0; color:#29e0c9; }
+  .cc-benefit-list li { font-size:13px; line-height:1.6; color:#e2e8f0; margin-bottom:8px; }
+  .cc-tutorial-list { padding-left:18px; margin:0 0 25px 0; color:#ffd23f; font-weight:700; }
+  .cc-tutorial-list li { font-size:13px; line-height:1.6; color:#e2e8f0; font-weight:400; margin-bottom:12px; }
+  .cc-refund-list { padding-left:0; margin:0 0 25px 0; list-style:none; }
+  .cc-refund-list li { font-size:13px; line-height:1.6; color:#e2e8f0; margin-bottom:12px; }
+  .cc-refund-label { color:#ff2d6a; font-weight:700; display:inline-block; margin-right:4px; }
+  .cc-intro-text { font-size:13px; line-height:1.6; color:#e2e8f0; margin-bottom:25px; }
+  .cc-footer-text { font-size:13px; line-height:1.6; color:#29e0c9; margin-top:0; text-align:center; font-weight:bold; }
+
+  .cc-price-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:0 0 25px 0; }
+  .cc-price-card { background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:14px; padding:16px 12px; text-align:center; position:relative; overflow:hidden; }
+  .cc-price-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg, #29e0c9, #7c5cff); }
+  .cc-price-card .dur { font-size:11px; font-weight:800; color:#a9b2c3; text-transform:uppercase; letter-spacing:1px; margin-bottom:8px; }
+  .cc-price-card .val { font-size:22px; font-weight:800; color:#29e0c9; margin:0 0 4px; }
+  .cc-price-card .per { font-size:10px; color:#94a3b8; }
+
+  /* ============ BOTTOM ACTIONS: BUBBLE — FAB — ORDER ============ */
+  .cc-bottom-action-bubble { position:fixed; bottom:10px; left:12px; right:calc(50% + 40px); height:54px; z-index:999999; display:flex; align-items:center; justify-content:flex-start; padding:0 18px; border-radius:999px; background:linear-gradient(135deg, rgba(41,224,201,0.12), rgba(124,92,255,0.12)); border:1.5px solid rgba(41,224,201,0.45); color:#29e0c9; font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:0.6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; box-shadow:0 4px 15px rgba(41,224,201,0.2); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); pointer-events:none; }
+  .cc-bottom-action-order { position:fixed; bottom:10px; left:calc(50% + 40px); right:12px; height:54px; z-index:999999; display:flex; align-items:center; justify-content:center; padding:0 22px; border-radius:999px; border:none; cursor:pointer; font-family:'JetBrains Mono', monospace; font-weight:800; font-size:12px; letter-spacing:0.6px; text-transform:uppercase; color:#05060a; background:linear-gradient(90deg, #29e0c9, #7c5cff); box-shadow:0 4px 18px rgba(41,224,201,0.45); -webkit-tap-highlight-color:transparent; transition:transform 0.15s ease; }
+  .cc-bottom-action-order:active { transform:scale(0.95); }
+
+  /* ============ FAB (di atas semua bottom action) ============ */
+  .cc-fab-stage { position:fixed; left:50%; bottom:0; transform:translateX(-50%); width:200px; height:125px; z-index:1000001; pointer-events:none; }
+  .cc-fab-stage.cc-fab-grabbable { filter:drop-shadow(0 0 6px rgba(255,210,63,0.45)); }
+  .cc-fab-dock { position:absolute; left:50%; bottom:-95px; width:190px; height:190px; margin-left:-95px; border-radius:50%; background:#0d0f16; border:1.5px solid rgba(255,210,63,0.65); opacity:0; transform:scale(0.3) rotate(-180deg); transform-origin:50% 100%; transition:transform 0.55s, opacity 0.3s; pointer-events:none; overflow:hidden; }
+  .cc-fab-stage.cc-fab-open .cc-fab-dock { opacity:1; transform:scale(1) rotate(0deg); }
+  .cc-fab-slice { position:absolute; left:50%; top:50%; width:95px; height:95px; transform-origin:0% 0%; }
+  .cc-fab-slice[data-s="0"] { transform:rotate(-180deg) skewY(-45deg); background:rgba(255,210,63,0.06); }
+  .cc-fab-slice[data-s="1"] { transform:rotate(-135deg) skewY(-45deg); background:rgba(255,210,63,0.12); }
+  .cc-fab-slice[data-s="2"] { transform:rotate(-90deg) skewY(-45deg); background:rgba(255,210,63,0.06); }
+  .cc-fab-slice[data-s="3"] { transform:rotate(-45deg) skewY(-45deg); background:rgba(255,210,63,0.12); }
+  .cc-fab-slice-line { position:absolute; left:50%; top:50%; width:1px; height:95px; background:rgba(255,210,63,0.35); transform-origin:50% 0%; }
+  .cc-fab-slice-line[data-l="0"] { transform:rotate(-180deg); }
+  .cc-fab-slice-line[data-l="1"] { transform:rotate(-135deg); }
+  .cc-fab-slice-line[data-l="2"] { transform:rotate(-90deg); }
+  .cc-fab-slice-line[data-l="3"] { transform:rotate(-45deg); }
+  .cc-fab-slice-line[data-l="4"] { transform:rotate(0deg); }
+  .cc-fab-main { position:absolute; left:50%; bottom:10px; width:54px; height:54px; margin-left:-27px; border-radius:50%; background:#0d0f16; border:1px solid rgba(255,210,63,0.55); box-shadow:0 4px 14px rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center; cursor:pointer; pointer-events:auto; overflow:hidden; z-index:5; touch-action:none; transition:transform 0.4s, bottom 0.4s; -webkit-tap-highlight-color:transparent; }
+  .cc-fab-stage.cc-fab-open .cc-fab-main { bottom:-6px; background:#161822; transform:rotate(360deg); }
+  .cc-fab-main .cc-fab-logo { width:100%; height:100%; border-radius:50%; object-fit:cover; position:absolute; top:0; left:0; transition:opacity 0.2s, transform 0.35s; pointer-events:none; }
+  .cc-fab-main .cc-fab-icon-close { width:20px; height:20px; fill:none; stroke:#ffd23f; stroke-width:1.4; position:absolute; top:50%; left:50%; opacity:0; transform:translate(-50%,-50%) scale(0.4) rotate(-90deg); transition:opacity 0.2s, transform 0.35s; }
+  .cc-fab-stage.cc-fab-open .cc-fab-main .cc-fab-logo { opacity:0; transform:scale(0.4) rotate(90deg); }
+  .cc-fab-stage.cc-fab-open .cc-fab-main .cc-fab-icon-close { opacity:1; transform:translate(-50%,-50%) scale(1) rotate(0deg); }
+  .cc-fab-item { position:absolute; left:50%; bottom:12px; width:38px; height:38px; margin-left:-19px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; text-decoration:none; opacity:0; pointer-events:none; transform:translate(0,0) scale(0.3) rotate(-90deg); transition:transform 0.5s, opacity 0.25s; z-index:4; }
+  .cc-fab-item svg { width:16px; height:16px; fill:none; stroke:#ffd23f; stroke-width:1.4; }
+  .cc-fab-item span { font-size:7.5px; font-weight:700; color:#ffd23f; white-space:nowrap; }
+  .cc-fab-stage.cc-fab-open .cc-fab-item { opacity:1; pointer-events:auto; }
+  .cc-fab-item[data-i="0"] { transition-delay:0.10s; }
+  .cc-fab-item[data-i="1"] { transition-delay:0.22s; }
+  .cc-fab-item[data-i="2"] { transition-delay:0.34s; }
+  .cc-fab-item[data-i="3"] { transition-delay:0.46s; }
+  .cc-fab-stage.cc-fab-open .cc-fab-item[data-i="0"] { transform:translate(-54px,20px) scale(1) rotate(0deg); }
+  .cc-fab-stage.cc-fab-open .cc-fab-item[data-i="1"] { transform:translate(-26px,-34px) scale(1) rotate(0deg); }
+  .cc-fab-stage.cc-fab-open .cc-fab-item[data-i="2"] { transform:translate(26px,-34px) scale(1) rotate(0deg); }
+  .cc-fab-stage.cc-fab-open .cc-fab-item[data-i="3"] { transform:translate(54px,20px) scale(1) rotate(0deg); }
+  .cc-fab-backdrop { position:fixed; inset:0; z-index:1000000; background:rgba(3,4,8,0.4); opacity:0; visibility:hidden; pointer-events:none; transition:opacity 0.3s, visibility 0.3s; }
+  .cc-fab-backdrop.cc-fab-backdrop-show { opacity:1; visibility:visible; pointer-events:auto; }
+
+  /* ============ MODAL ============ */
+  .cc-modal-backdrop { position:fixed; inset:0; z-index:1100000; display:flex; align-items:flex-end; justify-content:center; visibility:hidden; pointer-events:none; transition:background 0.4s, visibility 0.4s; }
+  .cc-modal-backdrop.active { visibility:visible; pointer-events:auto; background:rgba(2,3,6,0.78); backdrop-filter:blur(6px); }
+  @media (min-width:640px) { .cc-modal-backdrop { align-items:center; } }
+  .cc-modal { width:100%; max-width:440px; max-height:90vh; overflow-y:auto; background:#0d0f16; border:2px solid transparent; background-image:linear-gradient(#0d0f16,#0d0f16), linear-gradient(90deg,#ff2d6a,#ffd23f,#29e0c9,#7c5cff,#ff2d6a); background-origin:border-box; background-clip:padding-box,border-box; background-size:100% 100%,200% 200%; animation:rgbStroke 4s linear infinite; border-radius:22px 22px 0 0; padding:24px 22px 30px; transform:translateY(60px) scale(0.96); opacity:0; transition:transform 0.5s, opacity 0.4s; }
+  @media (min-width:640px) { .cc-modal { border-radius:22px; } }
+  .cc-modal-backdrop.active .cc-modal { transform:translateY(0) scale(1); opacity:1; }
+  .cc-modal-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; }
+  .cc-modal-title { font-size:15px; font-weight:800; color:#fff; text-transform:uppercase; }
+  .cc-modal-close { width:30px; height:30px; border-radius:50%; border:none; cursor:pointer; background:rgba(255,255,255,0.08); color:#fff; font-size:16px; }
+  .cc-modal-item { display:flex; align-items:center; gap:12px; margin-bottom:20px; background:rgba(255,255,255,0.04); padding:12px; border-radius:14px; border:1px solid rgba(255,255,255,0.06); }
+  .cc-modal-item img { width:54px; height:54px; border-radius:10px; object-fit:cover; }
+  .cc-modal-item-name { font-size:13px; font-weight:800; color:#fff; }
+  .cc-modal-item-sub { font-size:11px; color:#94a3b8; }
+  .cc-modal-item-price { font-size:12px; font-weight:800; color:#29e0c9; margin-top:4px; }
+  .cc-field-label { font-size:12px; font-weight:800; color:#29e0c9; text-transform:uppercase; margin-bottom:10px; display:block; }
+  .cc-variant-options { display:grid; grid-template-columns:repeat(2, 1fr); gap:10px; margin-bottom:20px; }
+  .cc-variant-option { padding:14px 10px; border-radius:14px; cursor:pointer; border:2px solid rgba(255,255,255,0.08); background:rgba(255,255,255,0.03); text-align:center; transition:all 0.15s ease; }
+  .cc-variant-option.selected { border-color:#29e0c9; background:rgba(41,224,201,0.1); box-shadow:0 0 0 1px rgba(41,224,201,0.3); }
+  .cc-variant-option-label { font-size:12px; font-weight:800; color:#fff; letter-spacing:0.5px; }
+  .cc-variant-option-sub { font-size:13px; font-weight:800; color:#29e0c9; margin-top:4px; }
+  .cc-qty-row { display:flex; margin-bottom:20px; }
+  .cc-stepper { display:flex; align-items:center; gap:14px; background:rgba(255,255,255,0.05); border-radius:12px; padding:6px 8px; }
+  .cc-stepper button { width:32px; height:32px; border-radius:8px; border:none; cursor:pointer; background:rgba(255,255,255,0.08); color:#fff; font-size:16px; font-weight:800; }
+  .cc-stepper span { min-width:22px; text-align:center; font-size:15px; font-weight:800; color:#fff; }
+  .cc-total-row { display:flex; justify-content:space-between; margin:4px 0 20px; padding:14px 16px; border-radius:14px; background:rgba(41,224,201,0.08); border:1px solid rgba(41,224,201,0.2); }
+  .cc-total-label { font-size:12px; font-weight:800; color:#94a3b8; text-transform:uppercase; }
+  .cc-total-value { font-size:18px; font-weight:800; color:#29e0c9; }
+  .cc-input-wrap { margin-bottom:20px; }
+  .cc-input { width:100%; padding:14px; border-radius:14px; border:1px solid rgba(255,255,255,0.12); background:rgba(255,255,255,0.04); color:#fff; font-size:13px; outline:none; }
+  .cc-input::placeholder { color:#5b6472; }
+  .cc-input:focus { border-color:#29e0c9; }
+  .cc-input-hint { font-size:10px; color:#94a3b8; margin-top:6px; }
+  .cc-pay-options { display:flex; gap:10px; margin-bottom:20px; }
+  .cc-pay-option { flex:1; padding:14px 10px; border-radius:14px; cursor:pointer; border:2px solid rgba(255,255,255,0.08); background:rgba(255,255,255,0.03); text-align:center; transition:all 0.15s ease; }
+  .cc-pay-option.selected { border-color:#29e0c9; background:rgba(41,224,201,0.1); }
+  .cc-pay-option-label { font-size:12px; font-weight:800; color:#fff; }
+  .cc-pay-option-sub { font-size:10px; color:#94a3b8; margin-top:3px; }
+  .cc-modal-footer-note { font-size:11px; color:#94a3b8; margin-bottom:18px; background:rgba(255,45,106,0.06); border:1px solid rgba(255,45,106,0.15); padding:10px 12px; border-radius:10px; }
+  .cc-confirm-btn { width:100%; padding:16px; border-radius:14px; border:none; cursor:pointer; font-weight:800; font-size:13px; text-transform:uppercase; color:#fff; background:#25D366; display:flex; align-items:center; justify-content:center; gap:8px; }
+  .cc-confirm-btn svg { width:18px; height:18px; }
+  .cc-confirm-btn:disabled { opacity:0.4; cursor:not-allowed; }
+  .cc-tnc-row { display:flex; align-items:flex-start; gap:10px; margin-bottom:18px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); padding:12px 14px; border-radius:12px; cursor:pointer; }
+  .cc-tnc-checkbox { width:20px; height:20px; border-radius:6px; border:2px solid rgba(255,255,255,0.25); background-color:transparent; cursor:pointer; appearance:none; -webkit-appearance:none; background-repeat:no-repeat; background-position:center; background-size:12px 12px; }
+  .cc-tnc-checkbox:checked { background-color:#29e0c9; border-color:#29e0c9; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/3000/svg' viewBox='0 0 24 24' fill='none' stroke='%2305060a' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E"); }
+  .cc-tnc-text { font-size:12px; line-height:1.6; color:#cbd5e1; }
+  .cc-tnc-text b { color:#fff; }
+</style>
+</head>
+<body>
+
+<div id="cc-container">
+  <div class="cc-bg bg-default" id="cc-bg-element"></div>
+  <div class="cc-overlay bg-default" id="cc-overlay-element"></div>
+
+  <div class="cc-nav">
+    <div class="cc-brand-wrap">
+      <div class="cc-brand-row cc-brand">
+        <img class="cc-img" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjgKAkQ6fTJOBPoOVz21klx2Vw6CXegaFe7QnvWoaDZTt1raufO5Ikvqu0JrP93QUf_iAcqVp8IkcTZjTx_e1mMqJENEYIpEjv-br9ApdDAeMiPcm8xoO-dFAmPJa-9y22yJdNme0Eb-EFxm-dS0Pd2UwUNu2cfB5pxS7KA7RP1JPKB-79xmqs5Vl9pSYHn/s1600/IMG_20260808_230713.png">
+        CO CENTER
+      </div>
+      <div class="cc-subtitle">YouTube Ketengan</div>
+    </div>
+    <div class="cc-nav-right">
+      <div class="cc-profile-wrap">
+        <div class="cc-profile-btn" id="cc-profile-toggle" title="Menu Akun">
+          <div id="header-avatar-container" style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+          </div>
+        </div>
+        <div class="cc-profile-dropdown" id="cc-profile-dropdown">
+          <a href="profile.html"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>Profile</a>
+          <a href="pengaturan.html"><svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.47l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c-.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c-.24 0 .44-.17.47-.47l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>Pengaturan</a>
+          <div class="cc-dropdown-divider"></div>
+          <a href="login.html" class="cc-logout"><svg viewBox="0 0 24 24"><path d="M10.09 15.59L11.5 17l5-5-5-5-1.41 1.41L12.67 11H3v2h9.67l-2.58 2.59zM19 3H5c-1.11 0-2 .9-2 2v4h2V5h14v14H5v-4H3v4c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg>Akun / Login</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cc-container">
+    <div class="cc-tutorial-bubble">
+      <img class="cc-tutorial-img" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgROQcURT7YRk058BUIi6Ni6kTNL19tasrXsuMo0LJ_Hg7mZzne_4nMND_HvgopFbuPvxQylNZ2JegzMaY8s7cbC-rT5TJvoIAcD7qW52wFihYcLz5_DR8cPyCBkau6UCmWqi-rRelQhOU2BDjae-5hxQAv1P8_HLGSW2oBXAmeFlQfMXM5SWo_Y5NJBRpk/s736/dc6384229d0da2acb25ef930b078f4f0.jpg" alt="YouTube Premium Ketengan">
+      <div class="cc-tutorial-body">
+
+        <div class="cc-tab-buttons">
+          <button class="cc-tab-btn active" data-tab="tab-deskripsi">Deskripsi & Benefit</button>
+          <button class="cc-tab-btn" data-tab="tab-cara">Cara Order</button>
+          <button class="cc-tab-btn" data-tab="tab-garansi">Garansi</button>
+        </div>
+
+        <div class="cc-tab-pane active" id="tab-deskripsi">
+          <h2 class="cc-section-title">🔥 YOUTUBE PREMIUM KETENGAN 🔥</h2>
+          <div class="cc-intro-text">
+            Nikmati pengalaman menonton video tanpa jeda iklan, putar di latar belakang, serta akses penuh ke YouTube Music secara eksklusif dengan durasi fleksibel sesuai kebutuhanmu.<br><br>
+            Berikut adalah rincian harga paket ketengan:
+          </div>
+
+          <h2 class="cc-section-title">💰 Pilihan Harga Paket</h2>
+          <div class="cc-price-grid">
+            <div class="cc-price-card">
+              <div class="dur">7 Hari</div>
+              <div class="val">Rp3.000</div>
+              <div class="per">per item</div>
+            </div>
+            <div class="cc-price-card">
+              <div class="dur">14 Hari</div>
+              <div class="val">Rp6.000</div>
+              <div class="per">per item</div>
+            </div>
+          </div>
+
+          <h2 class="cc-section-title">✨ TOTAL BENEFIT</h2>
+          <ul class="cc-benefit-list">
+            <li><strong>Streaming Bebas Iklan:</strong> Tonton video favorit sepuasnya tanpa gangguan iklan komersial.</li>
+            <li><strong>Putar di Latar Belakang (Background Play):</strong> Tetap mendengarkan musik atau podcast meskipun layar HP dikunci atau membuka aplikasi lain.</li>
+            <li><strong>Akses YouTube Music Premium:</strong> Nikmati jutaan lagu dan album musik kualitas tinggi tanpa batas.</li>
+            <li><strong>YouTube Kids Premium:</strong> Hiburan anak yang lebih aman dan bersih dari iklan.</li>
+          </ul>
+        </div>
+
+        <div class="cc-tab-pane" id="tab-cara">
+          <h2 class="cc-section-title">📌 CARA ORDER & AKTIVASI</h2>
+          <ol class="cc-tutorial-list">
+            <li>Pesan YouTube Premium Ketengan via tombol order di bawah.</li>
+            <li>Lakukan konfirmasi pembayaran ke Admin.</li>
+            <li>Tunggu Admin mengirimkan Link Invitation YouTube Premium (via Family Link).</li>
+            <li>Buka dan klik link invitation yang dikirimkan.</li>
+            <li>Pilih akun Google yang ingin diaktifkan status Premium-nya.</li>
+            <li>Klik konfirmasi pada halaman browser.</li>
+            <li>Selesai! Akun YouTube kamu resmi jadi Premium.</li>
+          </ol>
+        </div>
+
+        <div class="cc-tab-pane" id="tab-garansi">
+          <h2 class="cc-section-title">⚠️ KETENTUAN KLAIM GARANSI & REFUND</h2>
+          <ul class="cc-refund-list">
+            <li><span class="cc-refund-label">Masa Garansi:</span> Berlaku selama seminggu (7 hari) terhitung setelah transaksi berhasil.</li>
+            <li><span class="cc-refund-label">Kebijakan Refund:</span> Jika aktivasi gagal dan kendala berasal dari sistem kami, dana kamu akan di-refund 100%.</li>
+            <li><span class="cc-refund-label">Syarat Utama:</span> Wajib melampirkan Screenshot bukti kendala atau error saat konfirmasi ke Admin.</li>
+            <li><span class="cc-refund-label">Sanksi:</span> ❌ Tidak mematuhi rules = GARANSI HANGUS.</li>
+          </ul>
+
+          <div class="cc-footer-text">
+            Terima kasih telah membaca rules.<br>Be smart buyers, guys! Selamat menikmati tontonannya! 🚀
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Bubble Nama Page (KIRI) -->
+<div class="cc-bottom-action-bubble" id="cc-page-bubble">YouTube Ketengan</div>
+
+<!-- Order Button (KANAN) -->
+<button class="cc-bottom-action-order" id="open-order-modal-sticky">Order</button>
+
+<!-- FAB (TENGAH) — z-index paling tinggi -->
+<div class="cc-fab-backdrop" id="cc-fab-backdrop"></div>
+<div class="cc-fab-stage" id="cc-fab-stage">
+  <div class="cc-fab-dock">
+    <div class="cc-fab-slice" data-s="0"></div><div class="cc-fab-slice" data-s="1"></div>
+    <div class="cc-fab-slice" data-s="2"></div><div class="cc-fab-slice" data-s="3"></div>
+    <div class="cc-fab-slice-line" data-l="0"></div><div class="cc-fab-slice-line" data-l="1"></div>
+    <div class="cc-fab-slice-line" data-l="2"></div><div class="cc-fab-slice-line" data-l="3"></div>
+    <div class="cc-fab-slice-line" data-l="4"></div>
+  </div>
+  <a class="cc-fab-item" data-i="0" href="menu.html"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>Menu</span></a>
+  <a class="cc-fab-item" data-i="1" href="https://lynk.id/cocenter" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg><span>Lynk.id</span></a>
+  <a class="cc-fab-item" data-i="2" href="transaksi.html"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/></svg><span>Transaksi</span></a>
+  <a class="cc-fab-item" data-i="3" href="profile.html"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>Profile</span></a>
+  <div class="cc-fab-main" id="cc-fab-main">
+    <img class="cc-fab-logo" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjgKAkQ6fTJOBPoOVz21klx2Vw6CXegaFe7QnvWoaDZTt1raufO5Ikvqu0JrP93QUf_iAcqVp8IkcTZjTx_e1mMqJENEYIpEjv-br9ApdDAeMiPcm8xoO-dFAmPJa-9y22yJdNme0Eb-EFxm-dS0Pd2UwUNu2cfB5pxS7KA7RP1JPKB-79xmqs5Vl9pSYHn/s1600/IMG_20260808_230713.png" alt="Co Center">
+    <svg class="cc-fab-icon-close" viewBox="0 0 24 24"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>
+  </div>
+</div>
+
+<div class="cc-modal-backdrop" id="order-modal-backdrop">
+  <div class="cc-modal">
+    <div class="cc-modal-header">
+      <div class="cc-modal-title">Form Order</div>
+      <button class="cc-modal-close" id="close-order-modal">&times;</button>
+    </div>
+    <div class="cc-modal-item">
+      <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiRfWcR4L1wSJTv5dz-33r8hRgAlLNFpeUMOy66SA0PB4zLty7xgWImXm3BZe7fTV_jnahHFU-h0lCm3S1i8kYOW-xhIOz1Ug_ydyETxJZRtHv-ueESw1MH8sYhSJKsL_8HQhtSrQiIaD8VmyPtpi_2ZfrgN2MAEOUBmhnjT2re1CqK-wsX7nI2ecX971FV/s1600/a1f5838deaa37d81fa9002c9e0ec99cf.jpg" alt="YouTube Premium Ketengan">
+      <div>
+        <div class="cc-modal-item-name">YouTube Premium Ketengan</div>
+        <div class="cc-modal-item-sub" id="modal-item-sub">7 Hari</div>
+        <div class="cc-modal-item-price" id="modal-item-price">Rp3.000 / item</div>
+      </div>
+    </div>
+    <label class="cc-field-label">Pilih Durasi</label>
+    <div class="cc-variant-options">
+      <div class="cc-variant-option selected" data-days="7" data-price="3000">
+        <div class="cc-variant-option-label">7 Hari</div>
+        <div class="cc-variant-option-sub">Rp3.000</div>
+      </div>
+      <div class="cc-variant-option" data-days="14" data-price="6000">
+        <div class="cc-variant-option-label">14 Hari</div>
+        <div class="cc-variant-option-sub">Rp6.000</div>
+      </div>
+    </div>
+    <label class="cc-field-label">Jumlah Item</label>
+    <div class="cc-qty-row">
+      <div class="cc-stepper">
+        <button id="qty-minus" type="button">&minus;</button>
+        <span id="qty-value">1</span>
+        <button id="qty-plus" type="button">+</button>
+      </div>
+    </div>
+    <div class="cc-total-row"><span class="cc-total-label">Total Harga</span><span class="cc-total-value" id="total-price">Rp3.000</span></div>
+    <label class="cc-field-label">Email / Kontak Akun</label>
+    <div class="cc-input-wrap">
+      <input type="email" class="cc-input" id="user-email" placeholder="contoh: namakamu@gmail.com">
+      <div class="cc-input-hint">Kontak ini akan dikirim ke Admin untuk proses invitation/pengiriman akun.</div>
+    </div>
+    <label class="cc-field-label">Metode Pembayaran</label>
+    <div class="cc-pay-options">
+      <div class="cc-pay-option selected" data-method="QRIS"><div class="cc-pay-option-label">QRIS</div><div class="cc-pay-option-sub">Semua e-wallet & bank</div></div>
+      <div class="cc-pay-option" data-method="GoPay"><div class="cc-pay-option-label">GoPay</div><div class="cc-pay-option-sub">Transfer langsung</div></div>
+    </div>
+    <div class="cc-modal-footer-note">Setelah klik konfirmasi, kamu akan diarahkan ke WhatsApp Admin dengan detail pesanan yang sudah terisi otomatis.</div>
+    <label class="cc-tnc-row" for="tnc-checkbox">
+      <input type="checkbox" class="cc-tnc-checkbox" id="tnc-checkbox">
+      <span class="cc-tnc-text">Saya sudah membaca dan <b>setuju</b> dengan Syarat & Ketentuan, Garansi, serta Kebijakan Refund Co Center.</span>
+    </label>
+    <button class="cc-confirm-btn" id="confirm-order" disabled>
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.28-1.39c1.45.79 3.08 1.21 4.76 1.21 5.46 0 9.91-4.45 9.91-9.91C21.95 6.45 17.5 2 12.04 2zm5.78 14.09c-.24.68-1.4 1.31-1.94 1.39-.5.08-1.12.11-1.81-.11-.42-.13-.95-.31-1.64-.6-2.89-1.25-4.77-4.15-4.92-4.34-.14-.19-1.18-1.57-1.18-3 0-1.43.75-2.13 1.02-2.42.27-.29.58-.36.78-.36.19 0 .39 0 .55.01.18.01.42-.07.65.5.24.58.81 2.01.88 2.15.07.15.11.32.02.51-.09.19-.14.31-.27.48-.14.17-.29.38-.41.51-.14.15-.28.31-.12.6.16.29.72 1.19 1.55 1.93 1.06.95 1.96 1.24 2.25 1.38.29.14.46.12.63-.07.17-.19.72-.84.91-1.13.19-.29.38-.24.64-.14.26.1 1.68.79 1.97.93.29.14.48.22.55.34.07.12.07.71-.17 1.39z"/></svg>
+      Konfirmasi ke WhatsApp
+    </button>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  function applyBackgroundSettings() {
+    var bgEl = document.getElementById('cc-bg-element');
+    var overlayEl = document.getElementById('cc-overlay-element');
+    var bgMode = localStorage.getItem('cc_bg_mode') || 'default';
+    if (bgEl && overlayEl) {
+      if (bgMode === 'sederhana') { bgEl.className = 'cc-bg bg-simple'; overlayEl.className = 'cc-overlay bg-simple'; document.body.classList.add('cc-simple-mode'); }
+      else { bgEl.className = 'cc-bg bg-default'; overlayEl.className = 'cc-overlay bg-default'; document.body.classList.remove('cc-simple-mode'); }
+    }
+  }
+  applyBackgroundSettings();
+
+  function updateHeaderAvatar() {
+    var container = document.getElementById('header-avatar-container');
+    var savedAvatar = localStorage.getItem('cc_user_avatar');
+    if (container) {
+      if (savedAvatar && savedAvatar.trim() !== "") container.innerHTML = '<img src="' + savedAvatar + '" alt="Profile" style="width:100%; height:100%; object-fit:cover; display:block;">';
+      else container.innerHTML = '<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>';
+    }
+  }
+  updateHeaderAvatar();
+
+  var subEl = document.querySelector('.cc-subtitle');
+  var bubbleEl = document.getElementById('cc-page-bubble');
+  if (subEl && bubbleEl) {
+    var txt = subEl.textContent.trim();
+    if (txt) bubbleEl.textContent = txt;
+  }
+
+  var profileToggle = document.getElementById('cc-profile-toggle'), profileDropdown = document.getElementById('cc-profile-dropdown');
+  if (profileToggle && profileDropdown) {
+    profileToggle.addEventListener('click', function(e) { e.stopPropagation(); profileDropdown.classList.toggle('show'); });
+    document.addEventListener('click', function(e) { if (!profileToggle.contains(e.target) && !profileDropdown.contains(e.target)) profileDropdown.classList.remove('show'); });
+  }
+
+  const tabBtns = document.querySelectorAll('.cc-tab-btn');
+  const tabPanes = document.querySelectorAll('.cc-tab-pane');
+  tabBtns.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const targetId = btn.getAttribute('data-tab');
+      tabBtns.forEach(b => b.classList.remove('active'));
+      tabPanes.forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(targetId).classList.add('active');
+    });
+  });
+
+  // FAB
+  var fabStage = document.getElementById('cc-fab-stage'), fabMain = document.getElementById('cc-fab-main'), fabBackdrop = document.getElementById('cc-fab-backdrop');
+  var savedPosBeforeOpen = null, DRAG_THRESHOLD = 8;
+  var dragState = { active:false, hasMoved:false, isMovable:false, startX:0, startY:0, startLeft:0, startTop:0, pointerId:null };
+  function isFabMovable() { return localStorage.getItem('cc_fab_movable') === 'true'; }
+  function updateFabVisualState() { fabStage.classList.toggle('cc-fab-grabbable', isFabMovable()); }
+  function applySavedFabPosition() { if (!isFabMovable()) return; var savedPos = localStorage.getItem('cc_fab_position'); if (!savedPos) return;
+    try { var pos = JSON.parse(savedPos); if (typeof pos.left === 'number' && typeof pos.top === 'number') {
+      var maxLeft = Math.max(0, window.innerWidth - fabStage.offsetWidth), maxTop = Math.max(0, window.innerHeight - fabStage.offsetHeight);
+      fabStage.style.left = Math.max(0, Math.min(maxLeft, pos.left)) + 'px'; fabStage.style.top = Math.max(0, Math.min(maxTop, pos.top)) + 'px';
+      fabStage.style.bottom = 'auto'; fabStage.style.transform = 'none'; } } catch(e) {} }
+  function resetFabPosition() { fabStage.style.left = ''; fabStage.style.top = ''; fabStage.style.bottom = ''; fabStage.style.transform = ''; }
+  function openFab() { if (isFabMovable()) { var rect = fabStage.getBoundingClientRect(); savedPosBeforeOpen = { left: rect.left, top: rect.top };
+      fabStage.style.left = ''; fabStage.style.top = ''; fabStage.style.bottom = ''; fabStage.style.transform = ''; }
+    fabStage.classList.add('cc-fab-open'); fabBackdrop.classList.add('cc-fab-backdrop-show'); }
+  function closeFab() { fabStage.classList.remove('cc-fab-open'); fabBackdrop.classList.remove('cc-fab-backdrop-show');
+    if (isFabMovable() && savedPosBeforeOpen) { fabStage.style.left = savedPosBeforeOpen.left + 'px'; fabStage.style.top = savedPosBeforeOpen.top + 'px'; fabStage.style.bottom = 'auto'; fabStage.style.transform = 'none'; savedPosBeforeOpen = null; } }
+  fabBackdrop.addEventListener('click', closeFab);
+  document.querySelectorAll('.cc-fab-item').forEach(function(item){ item.addEventListener('click', closeFab); });
+  fabMain.addEventListener('pointerdown', function(e) { e.preventDefault(); e.stopPropagation();
+    dragState.active = true; dragState.hasMoved = false; dragState.pointerId = e.pointerId;
+    dragState.isMovable = isFabMovable() && !fabStage.classList.contains('cc-fab-open');
+    dragState.startX = e.clientX; dragState.startY = e.clientY;
+    var rect = fabStage.getBoundingClientRect(); dragState.startLeft = rect.left; dragState.startTop = rect.top;
+    try { fabMain.setPointerCapture(e.pointerId); } catch(err) {} });
+  fabMain.addEventListener('pointermove', function(e) { if (!dragState.active || !dragState.isMovable) return;
+    var dx = e.clientX - dragState.startX, dy = e.clientY - dragState.startY;
+    if (!dragState.hasMoved) { if (Math.abs(dx) < DRAG_THRESHOLD && Math.abs(dy) < DRAG_THRESHOLD) return; dragState.hasMoved = true; }
+    var newLeft = dragState.startLeft + dx, newTop = dragState.startTop + dy;
+    var maxLeft = window.innerWidth - fabStage.offsetWidth, maxTop = window.innerHeight - fabStage.offsetHeight;
+    newLeft = Math.max(0, Math.min(maxLeft, newLeft)); newTop = Math.max(0, Math.min(maxTop, newTop));
+    fabStage.style.left = newLeft + 'px'; fabStage.style.top = newTop + 'px'; fabStage.style.bottom = 'auto'; fabStage.style.transform = 'none'; });
+  fabMain.addEventListener('pointerup', function(e) { if (!dragState.active) return; dragState.active = false;
+    try { fabMain.releasePointerCapture(dragState.pointerId); } catch(err) {}
+    if (dragState.hasMoved) { var rect = fabStage.getBoundingClientRect(); localStorage.setItem('cc_fab_position', JSON.stringify({ left: rect.left, top: rect.top })); }
+    else { if (fabStage.classList.contains('cc-fab-open')) closeFab(); else openFab(); } });
+  fabMain.addEventListener('pointercancel', function(){ dragState.active = false; });
+  window.addEventListener('storage', function(e) {
+    if (e.key === 'cc_user_avatar') updateHeaderAvatar();
+    if (e.key === 'cc_bg_mode') applyBackgroundSettings();
+    if (e.key === 'cc_fab_movable') { updateFabVisualState(); if (!isFabMovable()) resetFabPosition(); else applySavedFabPosition(); }
+    if (e.key === 'cc_fab_position') { if (isFabMovable()) applySavedFabPosition(); } });
+  updateFabVisualState(); applySavedFabPosition();
+
+  const modalBackdrop = document.getElementById('order-modal-backdrop');
+  document.getElementById('open-order-modal-sticky').addEventListener('click', (e) => { e.stopPropagation(); modalBackdrop.classList.add('active'); });
+  document.getElementById('close-order-modal').addEventListener('click', (e) => { e.stopPropagation(); modalBackdrop.classList.remove('active'); });
+  modalBackdrop.addEventListener('click', (e) => { if (e.target === modalBackdrop) modalBackdrop.classList.remove('active'); });
+  modalBackdrop.querySelector('.cc-modal').addEventListener('click', (e) => e.stopPropagation());
+
+  let selectedDays = 7, selectedPricePerItem = 3000, qty = 1;
+  const variantOptions = document.querySelectorAll('.cc-variant-option');
+  const modalItemSub = document.getElementById('modal-item-sub'), modalItemPrice = document.getElementById('modal-item-price');
+  const qtyValueEl = document.getElementById('qty-value'), totalPriceEl = document.getElementById('total-price');
+  function formatRupiah(num) { return 'Rp' + num.toLocaleString('id-ID'); }
+  function updateTotal() { totalPriceEl.textContent = formatRupiah(qty * selectedPricePerItem); }
+  variantOptions.forEach(opt => { opt.addEventListener('click', () => {
+    variantOptions.forEach(o => o.classList.remove('selected')); opt.classList.add('selected');
+    selectedDays = parseInt(opt.getAttribute('data-days'), 10);
+    selectedPricePerItem = parseInt(opt.getAttribute('data-price'), 10);
+    modalItemSub.textContent = selectedDays + ' Hari';
+    modalItemPrice.textContent = formatRupiah(selectedPricePerItem) + ' / item';
+    updateTotal(); }); });
+  document.getElementById('qty-minus').addEventListener('click', () => { if (qty > 1) { qty--; qtyValueEl.textContent = qty; updateTotal(); } });
+  document.getElementById('qty-plus').addEventListener('click', () => { if (qty < 99) { qty++; qtyValueEl.textContent = qty; updateTotal(); } });
+  let selectedMethod = 'QRIS';
+  document.querySelectorAll('.cc-pay-option').forEach(opt => { opt.addEventListener('click', () => { document.querySelectorAll('.cc-pay-option').forEach(o => o.classList.remove('selected')); opt.classList.add('selected'); selectedMethod = opt.getAttribute('data-method'); }); });
+  const tncCheckbox = document.getElementById('tnc-checkbox'), confirmBtn = document.getElementById('confirm-order');
+  tncCheckbox.addEventListener('change', () => { confirmBtn.disabled = !tncCheckbox.checked; });
+  function getFormattedDate() { const now = new Date(); const days = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu']; const months = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember']; return `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()} - ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')} WIB`; }
+  document.getElementById('confirm-order').addEventListener('click', () => {
+    if (!tncCheckbox.checked) return;
+    const itemName = `YouTube Premium Ketengan (${selectedDays} Hari)`;
+    const tanggal = getFormattedDate(), waNumber = '6288971071456', totalHarga = formatRupiah(qty * selectedPricePerItem);
+    const emailInput = document.getElementById('user-email').value.trim();
+    const emailLine = emailInput ? emailInput : '(belum diisi)';
+    const message = `Nama Item : ${itemName}\nJumlah Item : ${qty}\nTotal Harga : ${totalHarga}\nEmail / Kontak : ${emailLine}\nTanggal Pemesanan : ${tanggal}\nMetode Pembayaran : ${selectedMethod}\nSetuju S&K : Ya, saya menyetujui Syarat & Ketentuan, Garansi, dan Kebijakan Refund Co Center`;
+    window.open(`https://wa.me/${waNumber}?text=${encodeURIComponent(message)}`, '_blank');
+  });
+});
+</script>
+
+</body>
+</html>

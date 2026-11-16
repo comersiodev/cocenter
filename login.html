@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Co Center - Autentikasi Akun</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+  #cc-container, #cc-container * {
+    font-family: 'JetBrains Mono', monospace !important;
+    box-sizing: border-box;
+  }
+  html, body {
+    margin: 0 !important; padding: 0 !important; height: 100% !important;
+    overflow: hidden !important; background: #05060a !important; color: #fff;
+  }
+  #cc-container {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    z-index: 999999; background: #05060a; overflow-y: auto; -webkit-overflow-scrolling: touch;
+    padding-bottom: 90px; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  }
+  .cc-bg.bg-default {
+    position: fixed; inset: 0; z-index: -1;
+    background: #000 url('https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh9DocQHrQw9p05Lbkght7m-rpO8O2HS6s3VG28Nc7FW6LPePf_AYJ3E104I15aD8OUsQRINz7QGbgv7EeJXKZKXdecQ-RAHvowdbS5vPqDrfZ63ZC3w-FOPKWPcVBKY5IFdenDmRixqc-Jy8BvVpAp6ReI7Io5UdxjNnlzY_TZLuTW6xaepq9RkRMA92kV/s1600/11.gif') no-repeat center center;
+    background-size: cover;
+  }
+  .cc-overlay.bg-default { position: fixed; inset: 0; z-index: -1; background: rgba(3,4,8,0.85); }
+  .cc-bg.bg-simple {
+    position: fixed; inset: 0; z-index: -1;
+    background: linear-gradient(135deg, #090a0f 0%, #12151f 50%, #1a1614 100%) !important;
+    background-size: cover;
+  }
+  .cc-overlay.bg-simple {
+    position: fixed; inset: 0; z-index: -1;
+    background: rgba(12, 10, 8, 0.75) !important; backdrop-filter: blur(10px);
+  }
+  .cc-login-card {
+    width: 100%; max-width: 380px; background: #0d0f16;
+    border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 20px;
+    padding: 30px 24px; display: flex; flex-direction: column; gap: 20px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.6); margin: 20px;
+  }
+  .cc-login-header { text-align: center; display: flex; flex-direction: column; gap: 6px; }
+  .cc-login-title { font-weight: 800; font-size: 18px; color: #ffd23f; }
+  .cc-login-subtitle { font-size: 11px; color: #a9b2c3; line-height: 1.4; }
+  .cc-form-group { display: flex; flex-direction: column; gap: 6px; text-align: left; }
+  .cc-label { font-size: 11px; font-weight: 700; color: #a9b2c3; text-transform: uppercase; letter-spacing: 0.5px; }
+  .cc-input {
+    width: 100%; background: #05060a; border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 12px; padding: 12px 16px; color: #fff; font-size: 13px; font-weight: 700; outline: none;
+  }
+  .cc-input:focus { border-color: #ffd23f; }
+  .cc-btn {
+    width: 100%; padding: 12px; border-radius: 12px; font-weight: 800; font-size: 12px;
+    cursor: pointer; border: none; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none;
+  }
+  .cc-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+  .cc-btn-primary { background: #ffd23f; color: #0b1226; }
+  .cc-btn-google { background: #fff; color: #000; border: 1px solid rgba(0,0,0,0.2); }
+  .cc-error-msg { font-size: 11px; color: #ff2d6a; font-weight: 700; text-align: center; display: none; }
+  .cc-back-link { text-align: center; font-size: 11px; font-weight: 700; color: #a9b2c3; text-decoration: none; margin-top: 5px; }
+  .cc-back-link:hover { color: #ffd23f; }
+  .cc-toast {
+    position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%) translateY(20px);
+    background: rgba(13, 15, 22, 0.95); border: 1px solid #ffd23f; color: #ffd23f;
+    padding: 10px 20px; border-radius: 20px; font-size: 12px; font-weight: 800;
+    z-index: 1000000; opacity: 0; visibility: hidden; transition: all 0.3s ease;
+    max-width: 90vw; text-align: center;
+  }
+  .cc-toast.show { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<div id="cc-container">
+  <div class="cc-bg bg-default" id="cc-bg-element"></div>
+  <div class="cc-overlay bg-default" id="cc-overlay-element"></div>
+
+  <!-- COMÉRCIO LOGIN -->
+  <div class="cc-login-card" id="card-comersio" style="display: none;">
+    <div class="cc-login-header">
+      <div class="cc-login-title">Comérsio Akun</div>
+      <div class="cc-login-subtitle">Masukkan email & password.<br><i>Min. 6 karakter & min. 2 angka.</i></div>
+    </div>
+    <div class="cc-form-group">
+      <label class="cc-label">Email Akun</label>
+      <input type="email" class="cc-input" id="comersio-email" placeholder="nama@email.com" autocomplete="email">
+    </div>
+    <div class="cc-form-group">
+      <label class="cc-label">Password</label>
+      <input type="password" class="cc-input" id="comersio-pass" placeholder="Min 6 karakter & 2 angka" autocomplete="current-password">
+    </div>
+    <div class="cc-error-msg" id="comersio-error">Password salah format!</div>
+    <button class="cc-btn cc-btn-primary" id="btn-submit-comersio">Masuk / Daftar</button>
+    <a class="cc-back-link" href="profile.html">Kembali ke Profil</a>
+  </div>
+
+  <!-- GOOGLE LOGIN -->
+  <div class="cc-login-card" id="card-google" style="display: none;">
+    <div class="cc-login-header">
+      <div class="cc-login-title">Autentikasi Google</div>
+      <div class="cc-login-subtitle">Hubungkan akun Google asli via Supabase OAuth.</div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 10px 0;">
+      <button class="cc-btn cc-btn-google" type="button" id="btn-google">
+        <svg viewBox="0 0 24 24" style="width:16px;height:16px;flex-shrink:0;">
+          <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/>
+          <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.13 0-5.78-2.11-6.73-4.96H1.15v3.14C3.13 21.32 7.22 24 12 24z"/>
+          <path fill="#FBBC05" d="M5.27 14.24c-.25-.72-.38-1.49-.38-2.24s.13-1.52.38-2.24V6.62H1.15C.42 8.09 0 9.75 0 11.5s.42 3.41 1.15 4.88l4.12-3.14z"/>
+          <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.22 0 3.13 2.68 1.15 6.62l4.12 3.14c.95-2.85 3.6-4.96 6.73-4.96z"/>
+        </svg>
+        <span>Masuk dengan Google</span>
+      </button>
+    </div>
+
+    <a class="cc-back-link" href="profile.html">Kembali ke Profil</a>
+  </div>
+
+  <div class="cc-toast" id="cc-toast">Berhasil masuk!</div>
+</div>
+
+<script>
+  /* =========================================================
+     ⚙️  KONFIGURASI SUPABASE
+     ========================================================= */
+  const SUPABASE_URL = 'https://xunmofaxuuqhtnyqwvir.supabase.co';
+
+  // ⚠️ GANTI DENGAN ANON KEY ASLI DARI: Supabase → Settings → API → anon public
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.GANTI_INI_DENGAN_ANON_KEY_ASLI';
+
+  // ⚠️ GANTI dengan nama file halaman ini (kalau bukan auth.html)
+  const THIS_PAGE = 'auth.html';
+  const REDIRECT_AFTER_LOGIN = 'profile.html';
+
+  const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+    auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
+  });
+
+  /* =========================================================
+     TOAST
+     ========================================================= */
+  const toast = document.getElementById('cc-toast');
+  let toastTimer = null;
+  function showToast(msg, ms = 2200) {
+    if (!toast) return;
+    toast.textContent = msg;
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove('show'), ms);
+  }
+
+  /* =========================================================
+     AUTH: GOOGLE OAUTH
+     ========================================================= */
+  async function loginWithGoogle() {
+    const btn = document.getElementById('btn-google');
+    try {
+      if (btn) btn.disabled = true;
+      showToast('Menghubungkan ke Google...');
+      const { error } = await _supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: window.location.origin + window.location.pathname + '?type=google'
+        }
+      });
+      if (error) throw error;
+    } catch (err) {
+      showToast('Gagal: ' + (err.message || err));
+      if (btn) btn.disabled = false;
+    }
+  }
+
+  /* =========================================================
+     AUTH: EMAIL / PASSWORD (auto signup kalau belum terdaftar)
+     ========================================================= */
+  async function loginOrSignup(email, password) {
+    // 1. Coba login
+    let { data, error } = await _supabase.auth.signInWithPassword({ email, password });
+    if (!error && data?.user) return { ok: true, mode: 'login', user: data.user };
+
+    // 2. Kalau kredensial invalid → coba daftar
+    if (error && /invalid login credentials/i.test(error.message)) {
+      const res = await _supabase.auth.signUp({ email, password });
+      if (res.error) return { ok: false, msg: res.error.message };
+
+      // Kalau email confirmation ON → gak ada session
+      if (!res.data.session) {
+        return { ok: false, msg: 'Cek email buat verifikasi dulu, bre.' };
+      }
+      return { ok: true, mode: 'signup', user: res.data.user };
+    }
+
+    return { ok: false, msg: error?.message || 'Login gagal' };
+  }
+
+  /* =========================================================
+     SYNC: PUSH lokal → cloud (dengan guard anti-loop)
+     ========================================================= */
+  let isSyncing = false;
+  let syncTimer = null;
+
+  async function syncToCloud() {
+    if (isSyncing) return;
+    const { data: { session } } = await _supabase.auth.getSession();
+    if (!session?.user) return;
+
+    isSyncing = true;
+    try {
+      const appData = {};
+      for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i);
+        if (!k || k.startsWith('sb-')) continue;   // skip token Supabase
+        if (k.startsWith('cc_')) continue;          // skip flag lokal (opsional, biar bersih)
+        appData[k] = localStorage.getItem(k);
+      }
+
+      const profileData = {
+        username: localStorage.getItem('cc_temp_google_name') || localStorage.getItem('username') || '',
+        email: localStorage.getItem('cc_google_email') || localStorage.getItem('cc_comersio_email') || localStorage.getItem('email') || '',
+        profile_picture: localStorage.getItem('cc_temp_google_avatar') || localStorage.getItem('profile_picture') || ''
+      };
+
+      const { error } = await _supabase.from('kostku_user_data').upsert({
+        user_id: session.user.id,
+        profile_data: profileData,
+        app_data: appData,
+        updated_at: new Date().toISOString()
+      });
+      if (error) console.error('sync error:', error.message);
+    } catch (e) {
+      console.error('sync exception:', e);
+    } finally {
+      isSyncing = false;
+    }
+  }
+
+  function scheduleSync(delay = 1500) {
+    clearTimeout(syncTimer);
+    syncTimer = setTimeout(syncToCloud, delay);
+  }
+
+  /* =========================================================
+     SYNC: PULL cloud → lokal
+     ========================================================= */
+  async function loadFromCloud() {
+    const { data: { session } } = await _supabase.auth.getSession();
+    if (!session?.user) return;
+
+    const { data, error } = await _supabase
+      .from('kostku_user_data')
+      .select('*')
+      .eq('user_id', session.user.id)
+      .maybeSingle();
+
+    if (error) { console.error('load error:', error.message); return; }
+    if (!data) return;
+
+    isSyncing = true; // guard biar setItem di bawah gak re-trigger sync
+    try {
+      if (data.app_data && typeof data.app_data === 'object') {
+        for (const k in data.app_data) {
+          if (data.app_data[k] !== null && data.app_data[k] !== undefined) {
+            localStorage.setItem(k, data.app_data[k]);
+          }
+        }
+      }
+      if (data.profile_data?.username) {
+        localStorage.setItem('cc_temp_google_name', data.profile_data.username);
+      }
+      if (data.profile_data?.profile_picture) {
+        localStorage.setItem('cc_temp_google_avatar', data.profile_data.profile_picture);
+      }
+    } finally {
+      isSyncing = false;
+    }
+  }
+
+  /* =========================================================
+     INTERCEPTOR localStorage (auto-sync tiap ada perubahan)
+     ========================================================= */
+  const _origSet = localStorage.setItem.bind(localStorage);
+  const _origRem = localStorage.removeItem.bind(localStorage);
+
+  localStorage.setItem = function (k, v) {
+    _origSet(k, v);
+    if (!isSyncing && !k.startsWith('sb-')) scheduleSync();
+  };
+  localStorage.removeItem = function (k) {
+    _origRem(k);
+    if (!isSyncing && !k.startsWith('sb-')) scheduleSync();
+  };
+
+  /* =========================================================
+     LISTENER SESSION
+     ========================================================= */
+  _supabase.auth.onAuthStateChange(async (event, session) => {
+    console.log('[auth]', event);
+
+    if ((event === 'SIGNED_IN' || event === 'INITIAL_SESSION') && session?.user) {
+      localStorage.setItem('cc_linked', 'true');
+      const meta = session.user.user_metadata || {};
+      if (session.user.email) localStorage.setItem('cc_user_email', session.user.email);
+      if (meta.full_name) localStorage.setItem('cc_temp_google_name', meta.full_name);
+      if (meta.avatar_url) localStorage.setItem('cc_temp_google_avatar', meta.avatar_url);
+
+      await loadFromCloud();
+      await syncToCloud();
+
+      if (event === 'SIGNED_IN') {
+        showToast('Login Berhasil!');
+        setTimeout(() => { window.location.href = REDIRECT_AFTER_LOGIN; }, 900);
+      }
+    }
+
+    if (event === 'SIGNED_OUT') {
+      ['cc_linked', 'cc_user_email'].forEach(k => localStorage.removeItem(k));
+    }
+  });
+
+  /* =========================================================
+     INIT
+     ========================================================= */
+  document.addEventListener('DOMContentLoaded', async () => {
+    // Background mode
+    const bgEl = document.getElementById('cc-bg-element');
+    const ovEl = document.getElementById('cc-overlay-element');
+    const mode = localStorage.getItem('cc_bg_mode') || 'default';
+    if (bgEl) bgEl.className = 'cc-bg ' + (mode === 'sederhana' ? 'bg-simple' : 'bg-default');
+    if (ovEl) ovEl.className = 'cc-overlay ' + (mode === 'sederhana' ? 'bg-simple' : 'bg-default');
+
+    // Tentukan kartu mana yang tampil
+    const type = new URLSearchParams(location.search).get('type');
+    const cardComersio = document.getElementById('card-comersio');
+    const cardGoogle = document.getElementById('card-google');
+    if (!type || type === 'comersio') cardComersio.style.display = 'flex';
+    if (type === 'google') cardGoogle.style.display = 'flex';
+
+    // Tombol Google
+    const btnGoogle = document.getElementById('btn-google');
+    if (btnGoogle) btnGoogle.addEventListener('click', loginWithGoogle);
+
+    // Submit Comérsio
+    const btnSubmit = document.getElementById('btn-submit-comersio');
+    if (btnSubmit) {
+      btnSubmit.addEventListener('click', async () => {
+        const email = document.getElementById('comersio-email').value.trim();
+        const pass = document.getElementById('comersio-pass').value;
+        const err = document.getElementById('comersio-error');
+        err.style.display = 'none';
+
+        if (!email || !pass) {
+          err.textContent = 'Email & password wajib diisi!';
+          err.style.display = 'block';
+          return;
+        }
+        if (pass.length < 6 || (pass.match(/\d/g) || []).length < 2) {
+          err.textContent = 'Password min. 6 karakter & min. 2 angka!';
+          err.style.display = 'block';
+          return;
+        }
+
+        btnSubmit.disabled = true;
+        showToast('Memproses...');
+
+        const r = await loginOrSignup(email, pass);
+        btnSubmit.disabled = false;
+
+        if (!r.ok) {
+          err.textContent = r.msg;
+          err.style.display = 'block';
+          showToast('Gagal: ' + r.msg);
+          return;
+        }
+
+        localStorage.setItem('cc_comersio_linked', 'true');
+        localStorage.setItem('cc_comersio_email', email);
+        showToast(r.mode === 'signup' ? 'Akun dibuat!' : 'Login sukses!');
+        // onAuthStateChange bakal handle redirect + sync
+      });
+    }
+
+    // Kalau sudah ada session aktif (refresh / balik dari OAuth)
+    const { data: { session } } = await _supabase.auth.getSession();
+    if (session?.user) {
+      await loadFromCloud();
+      await syncToCloud();
+      showToast('Session aktif, redirect...');
+      setTimeout(() => { window.location.href = REDIRECT_AFTER_LOGIN; }, 700);
+    }
+  });
+
+  /* =========================================================
+     EXPOSE GLOBAL (biar tombol lain bisa pakai)
+     ========================================================= */
+  window.loginWithGoogle = loginWithGoogle;
+  window.ccSyncNow = syncToCloud;
+  window.ccSignOut = async () => {
+    await syncToCloud(); // simpan dulu sebelum logout
+    await _supabase.auth.signOut();
+    window.location.href = REDIRECT_AFTER_LOGIN;
+  };
+</script>
+</body>
+</html>

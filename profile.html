@@ -1,0 +1,1308 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Co Center - Profil Pengguna</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,700;0,800;1,400&display=swap" rel="stylesheet">
+
+<style>
+  #cc-container, #cc-container * {
+    font-family: 'JetBrains Mono', monospace !important;
+    box-sizing: border-box;
+  }
+  html, body {
+    margin: 0 !important; padding: 0 !important; height: 100% !important;
+    overflow: hidden !important; background: #05060a !important; color: #fff;
+  }
+  #cc-container {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; height: 100dvh;
+    z-index: 999999; background: #05060a; overflow-y: auto; -webkit-overflow-scrolling: touch;
+    padding-top: calc(75px + env(safe-area-inset-top, 0px));
+    padding-bottom: calc(95px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .cc-main-shell {
+    width: 100%;
+    max-width: 540px;
+    margin: 0 auto;
+  }
+
+  /* ================= VARIAN BACKGROUND (SINKRON PENGATURAN.HTML) ================= */
+  .cc-bg.bg-simple {
+    position: fixed; inset: 0; z-index: -1;
+    background: linear-gradient(135deg, #090a0f 0%, #12151f 50%, #1a1614 100%) !important;
+    background-size: cover;
+    transition: background 0.3s ease;
+  }
+  .cc-overlay.bg-simple {
+    position: fixed; inset: 0; z-index: -1;
+    background: rgba(12, 10, 8, 0.65) !important;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: background 0.3s ease;
+  }
+
+  .cc-bg.bg-default {
+    position: fixed; inset: 0; z-index: -1;
+    background: #000 url('https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh9DocQHrQw9p05Lbkght7m-rpO8O2HS6s3VG28Nc7FW6LPePf_AYJ3E104I15aD8OUsQRINz7QGbgv7EeJXKZKXdecQ-RAHvowdbS5vPqDrfZ63ZC3w-FOPKWPcVBKY5IFdenDmRixqc-Jy8BvVpAp6ReI7Io5UdxjNnlzY_TZLuTW6xaepq9RkRMA92kV/s1600/11.gif') no-repeat center center;
+    background-size: cover;
+    transition: background 0.3s ease;
+  }
+  .cc-overlay.bg-default {
+    position: fixed; inset: 0; z-index: -1;
+    background: rgba(3,4,8,0.78);
+    transition: background 0.3s ease;
+  }
+
+  /* ============ HEADER FIXED ============ */
+  .cc-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: calc(15px + env(safe-area-inset-top, 0px)) 20px 15px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    z-index: 100;
+    background: rgba(5, 6, 10, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .cc-nav-inner {
+    width: 100%;
+    max-width: 540px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .cc-brand { display:flex; align-items:center; gap:12px; font-weight:800; font-size:18px; color:#fff; letter-spacing:-0.5px; }
+  .cc-img { width:35px; height:35px; border-radius:10px; object-fit: cover; }
+  .cc-brand-wrap { display:flex; flex-direction:column; gap:2px; }
+  .cc-brand-row { display:flex; align-items:center; gap:12px; }
+  .cc-subtitle { font-size: 10px; font-weight:700; color:#a9b2c3; letter-spacing: 2px; text-transform: uppercase; margin-left: 47px; }
+  
+  .cc-settings-badge {
+    display: flex; align-items: center; gap: 6px; background: rgba(255, 210, 63, 0.1);
+    border: 1px solid rgba(255, 210, 63, 0.35); color: #ffd23f; font-weight: 800; font-size: 11px;
+    padding: 6px 12px; border-radius: 20px; text-decoration: none;
+    transition: transform 0.15s ease, background 0.2s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .cc-settings-badge:hover {
+    background: rgba(255, 210, 63, 0.18);
+  }
+  .cc-settings-badge:active {
+    transform: scale(0.95);
+  }
+  .cc-settings-badge svg { width: 14px; height: 14px; fill: currentColor; }
+
+  .cc-section { padding: 15px 20px; display: flex; flex-direction: column; align-items: center; }
+
+  /* ================= PROFILE CARD + BANNER ================= */
+  .cc-profile-box {
+    width: 100%;
+    max-width: 440px;
+    background: #0d0f16;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  }
+
+  .cc-banner-container {
+    position: relative;
+    width: 100%;
+    height: 132px;
+    background: linear-gradient(135deg, #171b29 0%, #241f14 55%, #121520 100%);
+    border-bottom: 1px solid rgba(255, 210, 63, 0.25);
+    overflow: hidden;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .cc-banner-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .cc-banner-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    color: rgba(255, 210, 63, 0.65);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    pointer-events: none;
+  }
+  .cc-banner-placeholder svg {
+    width: 24px;
+    height: 24px;
+    fill: currentColor;
+    opacity: 0.85;
+  }
+  .cc-banner-actions {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    z-index: 3;
+  }
+  .cc-banner-pill-btn {
+    background: rgba(13, 15, 22, 0.82);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 210, 63, 0.45);
+    color: #ffd23f;
+    font-size: 9.5px;
+    font-weight: 800;
+    padding: 5px 9px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    transition: background 0.15s ease, transform 0.15s ease;
+  }
+  .cc-banner-pill-btn:hover {
+    background: rgba(255, 210, 63, 0.18);
+  }
+  .cc-banner-pill-btn:active {
+    transform: scale(0.94);
+  }
+  .cc-banner-pill-btn svg {
+    width: 12px;
+    height: 12px;
+    fill: currentColor;
+  }
+  .cc-banner-pill-btn.is-danger {
+    border-color: rgba(255, 45, 106, 0.5);
+    color: #ff2d6a;
+  }
+  .cc-banner-pill-btn.is-danger:hover {
+    background: rgba(255, 45, 106, 0.18);
+  }
+
+  .cc-profile-body {
+    padding: 0 24px 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+  }
+
+  .cc-avatar-container {
+    position: relative;
+    width: 96px;
+    height: 96px;
+    margin-top: -48px;
+    z-index: 4;
+    border-radius: 50%;
+    border: 3px solid #ffd23f;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.65);
+    overflow: hidden;
+    background: #151824;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .cc-avatar-container img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .cc-avatar-container svg { width: 40px; height: 40px; fill: #ffd23f; }
+  .cc-avatar-overlay {
+    position: absolute; inset: 0; background: rgba(0,0,0,0.55);
+    display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.2s ease;
+  }
+  .cc-avatar-container:hover .cc-avatar-overlay { opacity: 1; }
+  .cc-avatar-overlay svg { width: 24px; height: 24px; fill: #fff; }
+
+  .cc-form-group { width: 100%; display: flex; flex-direction: column; gap: 8px; text-align: left; }
+  .cc-label { font-size: 11px; font-weight: 700; color: #a9b2c3; text-transform: uppercase; }
+  .cc-input {
+    width: 100%; background: #05060a; border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 12px; padding: 12px 16px; color: #fff; font-size: 13px; font-weight: 700; outline: none;
+  }
+  .cc-input:focus { border-color: #ffd23f; }
+
+  .cc-link-row {
+    display: flex; align-items: center; justify-content: space-between;
+    background: #05060a; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 10px 14px; width: 100%;
+  }
+  .cc-link-info { display: flex; flex-direction: column; gap: 2px; max-width: 190px; }
+  .cc-link-title { font-size: 12px; font-weight: 800; color: #fff; }
+  .cc-link-status { font-size: 10px; font-weight: 700; color: #29e0c9; }
+  .cc-link-email { font-size: 10px; color: #ffd23f; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-top: 2px; }
+
+  .cc-btn {
+    padding: 8px 14px; border-radius: 8px; font-weight: 800; font-size: 11px; cursor: pointer; border: none;
+    display: flex; align-items: center; justify-content: center; gap: 6px; text-decoration: none;
+    transition: transform 0.15s ease, opacity 0.15s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .cc-btn:active { transform: scale(0.96); }
+  .cc-btn-primary { width: 100%; padding: 12px; border-radius: 12px; font-size: 12px; background: #ffd23f; color: #0b1226; }
+  .cc-btn-action { background: rgba(41, 224, 201, 0.15); color: #29e0c9; border: 1px solid rgba(41, 224, 201, 0.4); }
+  .cc-btn-unbind { background: rgba(255, 45, 106, 0.15); color: #ff2d6a; border: 1px solid rgba(255, 45, 106, 0.4); display: none; }
+
+  /* ================= MODAL CROP AVATAR & BANNER ================= */
+  .cc-crop-modal {
+    position: fixed; inset: 0; z-index: 1000000; background: rgba(3,4,8,0.9); backdrop-filter: blur(8px);
+    display: flex; align-items: center; justify-content: center; padding: 20px; opacity: 0; visibility: hidden; transition: all 0.3s ease;
+  }
+  .cc-crop-modal.show { opacity: 1; visibility: visible; }
+  .cc-crop-box {
+    background: #0d0f16; border: 1px solid rgba(255,255,255,0.15); border-radius: 20px; padding: 20px; width: 100%; max-width: 380px;
+    display: flex; flex-direction: column; align-items: center; gap: 14px;
+  }
+  .cc-crop-title { font-weight: 800; font-size: 13px; color: #ffd23f; text-transform: uppercase; }
+  .cc-crop-hint { font-size: 10px; color: #a9b2c3; text-align: center; margin-top: -6px; }
+  .cc-canvas-wrap {
+    width: 260px; height: 260px; border: 2px dashed #29e0c9; border-radius: 12px; overflow: hidden; background: #000;
+    display: flex; align-items: center; justify-content: center;
+    touch-action: none;
+    cursor: grab;
+  }
+  .cc-canvas-wrap:active { cursor: grabbing; }
+  .cc-canvas-wrap.is-banner {
+    width: 320px;
+    height: 112px;
+  }
+  .cc-crop-actions { display: flex; gap: 10px; width: 100%; }
+
+  .cc-toast {
+    position: fixed; bottom: 88px; left: 50%; transform: translateX(-50%) translateY(20px);
+    background: rgba(13, 15, 22, 0.95); border: 1px solid #ffd23f; color: #ffd23f;
+    padding: 10px 20px; border-radius: 20px; font-size: 12px; font-weight: 800; z-index: 1000000; opacity: 0; visibility: hidden; transition: all 0.3s ease;
+    white-space: nowrap;
+  }
+  .cc-toast.show { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
+
+  /* ============================================================
+     ===== NAVBAR BAWAH BIASA (DEFAULT — SINKRON PENGATURAN) =====
+     ============================================================ */
+  .cc-bottom-nav {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 999999;
+    background: rgba(11, 13, 20, 0.94);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-top: 1px solid rgba(255, 210, 63, 0.25);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    box-shadow: 0 -6px 24px rgba(0, 0, 0, 0.55);
+  }
+  .cc-bottom-nav-inner {
+    width: 100%;
+    max-width: 540px;
+    margin: 0 auto;
+    height: 60px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    align-items: center;
+  }
+  .cc-bnav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    height: 100%;
+    text-decoration: none;
+    color: #a9b2c3;
+    transition: color 0.18s ease, transform 0.15s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .cc-bnav-item svg {
+    width: 19px;
+    height: 19px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .cc-bnav-item span {
+    font-size: 9.5px;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+  }
+  .cc-bnav-item:hover,
+  .cc-bnav-item.is-active {
+    color: #ffd23f;
+  }
+  .cc-bnav-item:active {
+    transform: scale(0.92);
+  }
+
+  /* ============================================================
+     ===== FAB FAN MENU GOLD — REVOLVER RELOAD + DRAG SUPPORT =====
+     ============================================================ */
+  .cc-fab-stage {
+    position: fixed;
+    left: 50%;
+    bottom: env(safe-area-inset-bottom, 0px);
+    transform: translateX(-50%);
+    width: 200px;
+    height: 125px;
+    z-index: 999999;
+    pointer-events: none;
+    transition: filter 0.2s ease;
+  }
+  .cc-fab-stage.cc-fab-grabbable {
+    filter: drop-shadow(0 0 6px rgba(255, 210, 63, 0.45));
+  }
+
+  .cc-fab-dock {
+    position: absolute;
+    left: 50%;
+    bottom: -95px;
+    width: 190px;
+    height: 190px;
+    margin-left: -95px;
+    border-radius: 50%;
+    background: #0d0f16;
+    border: 1.5px solid rgba(255, 210, 63, 0.65);
+    box-shadow: 0 -6px 20px rgba(0,0,0,0.5), 0 0 12px rgba(255,210,63,0.1);
+    opacity: 0;
+    transform: scale(0.3) rotate(-180deg);
+    transform-origin: 50% 100%;
+    transition: transform 0.55s cubic-bezier(0.34, 1.2, 0.64, 1), opacity 0.3s ease;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .cc-fab-stage.cc-fab-open .cc-fab-dock {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+
+  .cc-fab-slice {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 95px;
+    height: 95px;
+    transform-origin: 0% 0%;
+    pointer-events: none;
+  }
+  .cc-fab-slice[data-s="0"] { transform: rotate(-180deg) skewY(-45deg); background: rgba(255,210,63,0.06); }
+  .cc-fab-slice[data-s="1"] { transform: rotate(-135deg) skewY(-45deg); background: rgba(255,210,63,0.12); }
+  .cc-fab-slice[data-s="2"] { transform: rotate(-90deg)  skewY(-45deg); background: rgba(255,210,63,0.06); }
+  .cc-fab-slice[data-s="3"] { transform: rotate(-45deg)  skewY(-45deg); background: rgba(255,210,63,0.12); }
+
+  .cc-fab-slice-line {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 1px;
+    height: 95px;
+    background: rgba(255,210,63,0.35);
+    transform-origin: 50% 0%;
+  }
+  .cc-fab-slice-line[data-l="0"] { transform: rotate(-180deg); }
+  .cc-fab-slice-line[data-l="1"] { transform: rotate(-135deg); }
+  .cc-fab-slice-line[data-l="2"] { transform: rotate(-90deg); }
+  .cc-fab-slice-line[data-l="3"] { transform: rotate(-45deg); }
+  .cc-fab-slice-line[data-l="4"] { transform: rotate(0deg); }
+
+  .cc-fab-main {
+    position: absolute;
+    left: 50%;
+    bottom: 10px;
+    width: 54px;
+    height: 54px;
+    margin-left: -27px;
+    border-radius: 50%;
+    background: #0d0f16;
+    border: 1px solid rgba(255, 210, 63, 0.55);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    pointer-events: auto;
+    overflow: hidden;
+    z-index: 5;
+    touch-action: none;
+    transition:
+      transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+      bottom 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+      border-color 0.3s ease,
+      background 0.3s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .cc-fab-stage.cc-fab-open .cc-fab-main {
+    bottom: -6px;
+    background: #161822;
+    border-color: rgba(255, 210, 63, 0.4);
+    transform: rotate(360deg);
+  }
+
+  .cc-fab-main:active { transform: scale(0.94) rotate(0deg); }
+  .cc-fab-stage.cc-fab-open .cc-fab-main:active { transform: scale(0.94) rotate(360deg); }
+
+  .cc-fab-main .cc-fab-logo {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+    position: absolute;
+    top: 0; left: 0;
+    transform: scale(1) rotate(0deg);
+    transition: opacity 0.2s ease, transform 0.35s ease;
+    pointer-events: none;
+  }
+
+  .cc-fab-main .cc-fab-icon-close {
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: #ffd23f;
+    stroke-width: 1.4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    position: absolute;
+    top: 50%; left: 50%;
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.4) rotate(-90deg);
+    transition: opacity 0.2s ease, transform 0.35s ease;
+  }
+
+  .cc-fab-stage.cc-fab-open .cc-fab-main .cc-fab-logo {
+    opacity: 0;
+    transform: scale(0.4) rotate(90deg);
+  }
+  .cc-fab-stage.cc-fab-open .cc-fab-main .cc-fab-icon-close {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1) rotate(0deg);
+  }
+
+  .cc-fab-item {
+    position: absolute;
+    left: 50%;
+    bottom: 12px;
+    width: 38px;
+    height: 38px;
+    margin-left: -19px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    text-decoration: none;
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(0px, 0px) scale(0.3) rotate(-90deg);
+    transition:
+      transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
+      opacity 0.25s ease;
+    z-index: 4;
+  }
+  .cc-fab-item svg {
+    width: 16px; height: 16px;
+    fill: none;
+    stroke: #ffd23f;
+    stroke-width: 1.4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    filter: drop-shadow(0 2px 3px rgba(0,0,0,0.6));
+  }
+  .cc-fab-item span {
+    font-size: 7.5px;
+    font-weight: 700;
+    color: #ffd23f;
+    white-space: nowrap;
+    text-shadow: 0 2px 3px rgba(0,0,0,0.8);
+  }
+  .cc-fab-item.cc-fab-item-disabled svg,
+  .cc-fab-item.cc-fab-item-disabled span { stroke: #ffd23f; color: #ffd23f; }
+
+  .cc-fab-stage.cc-fab-open .cc-fab-item {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .cc-fab-item[data-i="0"] { transition-delay: 0.10s; }
+  .cc-fab-item[data-i="1"] { transition-delay: 0.22s; }
+  .cc-fab-item[data-i="2"] { transition-delay: 0.34s; }
+  .cc-fab-item[data-i="3"] { transition-delay: 0.46s; }
+
+  .cc-fab-stage.cc-fab-open .cc-fab-item[data-i="0"] { transform: translate(-54px, 20px) scale(1) rotate(0deg); }
+  .cc-fab-stage.cc-fab-open .cc-fab-item[data-i="1"] { transform: translate(-26px, -34px) scale(1) rotate(0deg); }
+  .cc-fab-stage.cc-fab-open .cc-fab-item[data-i="2"] { transform: translate(26px, -34px) scale(1) rotate(0deg); }
+  .cc-fab-stage.cc-fab-open .cc-fab-item[data-i="3"] { transform: translate(54px, 20px) scale(1) rotate(0deg); }
+
+  .cc-fab-backdrop {
+    position: fixed; inset: 0;
+    z-index: 999998;
+    background: rgba(3,4,8,0.4);
+    opacity: 0; visibility: hidden; pointer-events: none;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+  }
+  .cc-fab-backdrop.cc-fab-backdrop-show {
+    opacity: 1; visibility: visible; pointer-events: auto;
+  }
+
+  @media (min-width: 480px) {
+    .cc-nav { padding-left: 30px; padding-right: 30px; }
+    .cc-section { padding-left: 30px; padding-right: 30px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="cc-container">
+  <div class="cc-bg bg-simple" id="cc-bg-element"></div>
+  <div class="cc-overlay bg-simple" id="cc-overlay-element"></div>
+
+  <!-- Sinkronisasi awal tema latar dari pengaturan.html (default: sederhana) -->
+  <script>
+    (function () {
+      var mode = localStorage.getItem('cc_bg_mode') || 'sederhana';
+      var bgEl = document.getElementById('cc-bg-element');
+      var overlayEl = document.getElementById('cc-overlay-element');
+      if (bgEl && overlayEl) {
+        if (mode === 'default' || mode === 'animated') {
+          bgEl.className = 'cc-bg bg-default';
+          overlayEl.className = 'cc-overlay bg-default';
+        } else {
+          bgEl.className = 'cc-bg bg-simple';
+          overlayEl.className = 'cc-overlay bg-simple';
+        }
+      }
+    })();
+  </script>
+
+  <div class="cc-nav">
+    <div class="cc-nav-inner">
+      <div class="cc-brand-wrap">
+        <div class="cc-brand-row cc-brand">
+          <img class="cc-img" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjgKAkQ6fTJOBPoOVz21klx2Vw6CXegaFe7QnvWoaDZTt1raufO5Ikvqu0JrP93QUf_iAcqVp8IkcTZjTx_e1mMqJENEYIpEjv-br9ApdDAeMiPcm8xoO-dFAmPJa-9y22yJdNme0Eb-EFxm-dS0Pd2UwUNu2cfB5pxS7KA7RP1JPKB-79xmqs5Vl9pSYHn/s1600/IMG_20260808_230713.png">
+          CO CENTER
+        </div>
+        <div class="cc-subtitle">Profil Pengguna</div>
+      </div>
+      <a class="cc-settings-badge" href="pengaturan.html">
+        <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.47l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.47l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+        Pengaturan
+      </a>
+    </div>
+  </div>
+
+  <div class="cc-main-shell">
+    <div class="cc-section">
+      <div class="cc-profile-box">
+
+        <!-- BANNER PROFIL (KLIK UNTUK UPLOAD) -->
+        <div class="cc-banner-container" id="trigger-banner" title="Klik untuk ubah banner profil">
+          <div id="banner-preview-wrap" style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
+            <div class="cc-banner-placeholder">
+              <svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
+              <span>Upload Banner Profil</span>
+            </div>
+          </div>
+
+          <div class="cc-banner-actions">
+            <button type="button" class="cc-banner-pill-btn" id="btn-change-banner">
+              <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+              Banner
+            </button>
+            <button type="button" class="cc-banner-pill-btn is-danger" id="btn-remove-banner" style="display:none;" title="Hapus Banner">
+              Hapus
+            </button>
+          </div>
+        </div>
+        <input type="file" id="input-banner-file" accept="image/*" style="display: none;">
+
+        <div class="cc-profile-body">
+          <div class="cc-avatar-container" id="trigger-file" title="Klik untuk ubah foto profil">
+            <div id="avatar-preview-wrap" style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
+              <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+            </div>
+            <div class="cc-avatar-overlay">
+              <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+            </div>
+          </div>
+          <input type="file" id="input-file" accept="image/*" style="display: none;">
+
+          <div class="cc-form-group">
+            <label class="cc-label">Nama Pengguna</label>
+            <input type="text" class="cc-input" id="input-username" placeholder="Masukkan nama Anda...">
+          </div>
+
+          <div class="cc-form-group">
+            <label class="cc-label">Integrasi Akun</label>
+            
+            <div class="cc-link-row">
+              <div class="cc-link-info">
+                <div class="cc-link-title">Google</div>
+                <div class="cc-link-status" id="google-status">Belum dikaitkan</div>
+                <div class="cc-link-email" id="google-account-email"></div>
+              </div>
+              <div style="display: flex; gap: 6px;">
+                <a class="cc-btn cc-btn-action" id="btn-link-google" href="login.html?type=google">Kaitkan</a>
+                <button class="cc-btn cc-btn-unbind" id="btn-unbind-google">Putuskan</button>
+              </div>
+            </div>
+
+            <div class="cc-link-row" style="margin-top: 8px;">
+              <div class="cc-link-info">
+                <div class="cc-link-title">Comérsio Akun</div>
+                <div class="cc-link-status" id="comersio-status">Belum dikaitkan</div>
+                <div class="cc-link-email" id="comersio-account-email"></div>
+              </div>
+              <div style="display: flex; gap: 6px;">
+                <a class="cc-btn cc-btn-action" id="btn-link-comersio" href="login.html?type=comersio">Kaitkan</a>
+                <button class="cc-btn cc-btn-unbind" id="btn-unbind-comersio">Putuskan</button>
+              </div>
+            </div>
+          </div>
+
+          <button class="cc-btn cc-btn-primary" id="btn-save-profile">Simpan Perubahan</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL CROPPER (MENDUKUNG AVATAR 1:1 & BANNER 16:5.6) -->
+  <div class="cc-crop-modal" id="crop-modal">
+    <div class="cc-crop-box">
+      <div class="cc-crop-title" id="crop-modal-title">Sesuaikan Foto (1:1)</div>
+      <div class="cc-crop-hint">Geser gambar untuk mengatur posisi</div>
+      <div class="cc-canvas-wrap" id="crop-canvas-wrap">
+        <canvas id="crop-canvas" width="240" height="240"></canvas>
+      </div>
+      <div class="cc-crop-actions">
+        <button class="cc-btn" id="btn-cancel-crop" style="background:rgba(255,255,255,0.1); color:#fff; width:100%;">Batal</button>
+        <button class="cc-btn cc-btn-primary" id="btn-apply-crop" style="width:100%;">Gunakan Gambar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="cc-toast" id="cc-toast">Profil berhasil disimpan!</div>
+
+</div>
+
+<!-- ===== NAVBAR BAWAH BIASA (DEFAULT — SINKRON PENGATURAN.HTML) ===== -->
+<nav class="cc-bottom-nav" id="cc-bottom-nav">
+  <div class="cc-bottom-nav-inner">
+    <a class="cc-bnav-item" href="index.html">
+      <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      <span>Menu</span>
+    </a>
+
+    <a class="cc-bnav-item" href="https://lynk.id/cocenter" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+      <span>Lynk.id</span>
+    </a>
+
+    <a class="cc-bnav-item" href="transaksi.html">
+      <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/></svg>
+      <span>Transaksi</span>
+    </a>
+
+    <div class="cc-bnav-item is-active" title="Kamu sedang di halaman ini">
+      <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      <span>Profile</span>
+    </div>
+  </div>
+</nav>
+
+<!-- ===== BACKDROP FAB ===== -->
+<div class="cc-fab-backdrop" id="cc-fab-backdrop" style="display:none;"></div>
+
+<!-- ===== FAB FAN MENU GOLD (OPSI 2 — SINKRON PENGATURAN.HTML) ===== -->
+<div class="cc-fab-stage" id="cc-fab-stage" style="display:none;">
+
+  <div class="cc-fab-dock">
+    <div class="cc-fab-slice" data-s="0"></div>
+    <div class="cc-fab-slice" data-s="1"></div>
+    <div class="cc-fab-slice" data-s="2"></div>
+    <div class="cc-fab-slice" data-s="3"></div>
+    <div class="cc-fab-slice-line" data-l="0"></div>
+    <div class="cc-fab-slice-line" data-l="1"></div>
+    <div class="cc-fab-slice-line" data-l="2"></div>
+    <div class="cc-fab-slice-line" data-l="3"></div>
+    <div class="cc-fab-slice-line" data-l="4"></div>
+  </div>
+
+  <a class="cc-fab-item" data-i="0" href="index.html">
+    <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    <span>Menu</span>
+  </a>
+
+  <a class="cc-fab-item" data-i="1" href="https://lynk.id/cocenter" target="_blank" rel="noopener">
+    <svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+    <span>Lynk.id</span>
+  </a>
+
+  <a class="cc-fab-item" data-i="2" href="transaksi.html">
+    <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/></svg>
+    <span>Transaksi</span>
+  </a>
+
+  <div class="cc-fab-item cc-fab-item-disabled" data-i="3" title="Kamu sedang di halaman ini">
+    <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    <span>Profile</span>
+  </div>
+
+  <div class="cc-fab-main" id="cc-fab-main">
+    <img class="cc-fab-logo" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjgKAkQ6fTJOBPoOVz21klx2Vw6CXegaFe7QnvWoaDZTt1raufO5Ikvqu0JrP93QUf_iAcqVp8IkcTZjTx_e1mMqJENEYIpEjv-br9ApdDAeMiPcm8xoO-dFAmPJa-9y22yJdNme0Eb-EFxm-dS0Pd2UwUNu2cfB5pxS7KA7RP1JPKB-79xmqs5Vl9pSYHn/s1600/IMG_20260808_230713.png" alt="Co Center">
+
+    <svg class="cc-fab-icon-close" viewBox="0 0 24 24">
+      <line x1="6" y1="6" x2="18" y2="18"/>
+      <line x1="18" y1="6" x2="6" y2="18"/>
+    </svg>
+  </div>
+</div>
+
+<!-- Sinkronisasi awal gaya navigasi (Navbar Biasa default vs FAB) tanpa flicker -->
+<script>
+  (function () {
+    var navMode = localStorage.getItem('cc_nav_mode') || 'navbar';
+    var bNav = document.getElementById('cc-bottom-nav');
+    var fStage = document.getElementById('cc-fab-stage');
+    var fBack = document.getElementById('cc-fab-backdrop');
+    if (navMode === 'fab') {
+      if (bNav) bNav.style.display = 'none';
+      if (fStage) fStage.style.display = 'block';
+      if (fBack) fBack.style.display = 'block';
+    } else {
+      if (bNav) bNav.style.display = 'block';
+      if (fStage) fStage.style.display = 'none';
+      if (fBack) fBack.style.display = 'none';
+    }
+  })();
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+  // ================= 1. SINKRONISASI BACKGROUND (PENGATURAN.HTML) =================
+  var bgEl = document.getElementById('cc-bg-element');
+  var overlayEl = document.getElementById('cc-overlay-element');
+
+  function syncBackground() {
+    var bgMode = localStorage.getItem('cc_bg_mode') || 'sederhana';
+    if (bgEl && overlayEl) {
+      if (bgMode === 'default' || bgMode === 'animated') {
+        bgEl.className = 'cc-bg bg-default';
+        overlayEl.className = 'cc-overlay bg-default';
+      } else {
+        bgEl.className = 'cc-bg bg-simple';
+        overlayEl.className = 'cc-overlay bg-simple';
+      }
+    }
+  }
+  syncBackground();
+
+  // ================= 2. SINKRONISASI NAVIGASI BAWAH (NAVBAR VS FAB) =================
+  var bottomNavEl = document.getElementById('cc-bottom-nav');
+  var fabStage = document.getElementById('cc-fab-stage');
+  var fabMain = document.getElementById('cc-fab-main');
+  var fabBackdrop = document.getElementById('cc-fab-backdrop');
+
+  var savedPosBeforeOpen = null;
+  var DRAG_THRESHOLD = 8;
+  var dragState = {
+    active: false, hasMoved: false, isMovable: false,
+    startX: 0, startY: 0, startLeft: 0, startTop: 0, pointerId: null
+  };
+
+  function getNavMode() {
+    return localStorage.getItem('cc_nav_mode') === 'fab' ? 'fab' : 'navbar';
+  }
+
+  function isFabMovable() {
+    return localStorage.getItem('cc_fab_movable') === 'true';
+  }
+
+  function updateFabVisualState() {
+    if (!fabStage) return;
+    if (isFabMovable()) fabStage.classList.add('cc-fab-grabbable');
+    else fabStage.classList.remove('cc-fab-grabbable');
+  }
+
+  function applySavedFabPosition() {
+    if (!fabStage || !isFabMovable()) return;
+    var savedPos = localStorage.getItem('cc_fab_position');
+    if (!savedPos) return;
+    try {
+      var pos = JSON.parse(savedPos);
+      if (typeof pos.left === 'number' && typeof pos.top === 'number') {
+        var maxLeft = Math.max(0, window.innerWidth - fabStage.offsetWidth);
+        var maxTop = Math.max(0, window.innerHeight - fabStage.offsetHeight);
+        var clampedLeft = Math.max(0, Math.min(maxLeft, pos.left));
+        var clampedTop = Math.max(0, Math.min(maxTop, pos.top));
+        fabStage.style.left = clampedLeft + 'px';
+        fabStage.style.top = clampedTop + 'px';
+        fabStage.style.bottom = 'auto';
+        fabStage.style.transform = 'none';
+      }
+    } catch(e) {}
+  }
+
+  function resetFabPosition() {
+    if (!fabStage) return;
+    fabStage.style.left = '';
+    fabStage.style.top = '';
+    fabStage.style.bottom = '';
+    fabStage.style.transform = '';
+  }
+
+  function openFab() {
+    if (!fabStage || !fabBackdrop) return;
+    if (isFabMovable()) {
+      var rect = fabStage.getBoundingClientRect();
+      savedPosBeforeOpen = { left: rect.left, top: rect.top };
+      fabStage.style.left = '';
+      fabStage.style.top = '';
+      fabStage.style.bottom = '';
+      fabStage.style.transform = '';
+    }
+    fabStage.classList.add('cc-fab-open');
+    fabBackdrop.classList.add('cc-fab-backdrop-show');
+  }
+
+  function closeFab() {
+    if (!fabStage || !fabBackdrop) return;
+    fabStage.classList.remove('cc-fab-open');
+    fabBackdrop.classList.remove('cc-fab-backdrop-show');
+    if (isFabMovable() && savedPosBeforeOpen) {
+      fabStage.style.left = savedPosBeforeOpen.left + 'px';
+      fabStage.style.top = savedPosBeforeOpen.top + 'px';
+      fabStage.style.bottom = 'auto';
+      fabStage.style.transform = 'none';
+      savedPosBeforeOpen = null;
+    }
+  }
+
+  function syncNavModeFromStorage() {
+    var mode = getNavMode();
+    if (mode === 'fab') {
+      if (bottomNavEl) bottomNavEl.style.display = 'none';
+      if (fabStage) fabStage.style.display = 'block';
+      if (fabBackdrop) fabBackdrop.style.display = 'block';
+      updateFabVisualState();
+      if (!isFabMovable()) resetFabPosition();
+      else applySavedFabPosition();
+    } else {
+      closeFab();
+      if (fabStage) fabStage.style.display = 'none';
+      if (fabBackdrop) fabBackdrop.style.display = 'none';
+      if (bottomNavEl) bottomNavEl.style.display = 'block';
+    }
+  }
+
+  if (fabBackdrop) fabBackdrop.addEventListener('click', closeFab);
+
+  document.querySelectorAll('.cc-fab-item').forEach(function (item) {
+    item.addEventListener('click', function () {
+      closeFab();
+    });
+  });
+
+  if (fabMain) {
+    fabMain.addEventListener('pointerdown', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      dragState.active = true;
+      dragState.hasMoved = false;
+      dragState.pointerId = e.pointerId;
+      dragState.isMovable = isFabMovable() && !fabStage.classList.contains('cc-fab-open');
+      dragState.startX = e.clientX;
+      dragState.startY = e.clientY;
+      var rect = fabStage.getBoundingClientRect();
+      dragState.startLeft = rect.left;
+      dragState.startTop = rect.top;
+      try { fabMain.setPointerCapture(e.pointerId); } catch(err) {}
+    });
+
+    fabMain.addEventListener('pointermove', function(e) {
+      if (!dragState.active || !dragState.isMovable) return;
+      var dx = e.clientX - dragState.startX;
+      var dy = e.clientY - dragState.startY;
+      if (!dragState.hasMoved) {
+        if (Math.abs(dx) < DRAG_THRESHOLD && Math.abs(dy) < DRAG_THRESHOLD) return;
+        dragState.hasMoved = true;
+      }
+      var newLeft = dragState.startLeft + dx;
+      var newTop = dragState.startTop + dy;
+      var maxLeft = window.innerWidth - fabStage.offsetWidth;
+      var maxTop = window.innerHeight - fabStage.offsetHeight;
+      newLeft = Math.max(0, Math.min(maxLeft, newLeft));
+      newTop = Math.max(0, Math.min(maxTop, newTop));
+      fabStage.style.left = newLeft + 'px';
+      fabStage.style.top = newTop + 'px';
+      fabStage.style.bottom = 'auto';
+      fabStage.style.transform = 'none';
+    });
+
+    fabMain.addEventListener('pointerup', function(e) {
+      if (!dragState.active) return;
+      dragState.active = false;
+      try { fabMain.releasePointerCapture(e.pointerId); } catch(err) {}
+      if (dragState.hasMoved) {
+        var rect = fabStage.getBoundingClientRect();
+        localStorage.setItem('cc_fab_position', JSON.stringify({ left: rect.left, top: rect.top }));
+      } else {
+        if (fabStage.classList.contains('cc-fab-open')) closeFab();
+        else openFab();
+      }
+    });
+
+    fabMain.addEventListener('pointercancel', function() {
+      dragState.active = false;
+    });
+  }
+
+  syncNavModeFromStorage();
+
+  // ================= 3. DATA PROFIL, AVATAR & BANNER =================
+  var googleFetchedName = localStorage.getItem('cc_temp_google_name');
+  var googleFetchedAvatar = localStorage.getItem('cc_temp_google_avatar');
+  if (googleFetchedName) {
+    localStorage.setItem('cc_user_name', googleFetchedName);
+    localStorage.setItem('cc_google_linked', 'true');
+    localStorage.removeItem('cc_temp_google_name');
+  }
+  if (googleFetchedAvatar) {
+    localStorage.setItem('cc_user_avatar', googleFetchedAvatar);
+    localStorage.removeItem('cc_temp_google_avatar');
+  }
+
+  var inputUsername = document.getElementById('input-username');
+  var avatarPreviewWrap = document.getElementById('avatar-preview-wrap');
+  var bannerPreviewWrap = document.getElementById('banner-preview-wrap');
+  var btnRemoveBanner = document.getElementById('btn-remove-banner');
+  var toast = document.getElementById('cc-toast');
+
+  var DEFAULT_AVATAR_SVG = '<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>';
+  var DEFAULT_BANNER_HTML = '<div class="cc-banner-placeholder"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg><span>Upload Banner Profil</span></div>';
+
+  var savedName = localStorage.getItem('cc_user_name') || '';
+  var savedAvatar = localStorage.getItem('cc_user_avatar') || '';
+  var savedBanner = localStorage.getItem('cc_user_banner') || '';
+  var isGoogleLinked = localStorage.getItem('cc_google_linked') === 'true';
+  var isComersioLinked = localStorage.getItem('cc_comersio_linked') === 'true';
+  
+  var googleEmail = localStorage.getItem('cc_google_email') || 'Akun Google Terkait';
+  var comersioEmail = localStorage.getItem('cc_comersio_email') || '';
+
+  function renderAvatar(src) {
+    if (!avatarPreviewWrap) return;
+    if (src && src.trim() !== '') {
+      avatarPreviewWrap.innerHTML = '<img src="' + src + '" alt="Avatar">';
+    } else {
+      avatarPreviewWrap.innerHTML = DEFAULT_AVATAR_SVG;
+    }
+  }
+
+  function renderBanner(src) {
+    if (!bannerPreviewWrap) return;
+    if (src && src.trim() !== '') {
+      bannerPreviewWrap.innerHTML = '<img src="' + src + '" alt="Banner Profil">';
+      if (btnRemoveBanner) btnRemoveBanner.style.display = 'flex';
+    } else {
+      bannerPreviewWrap.innerHTML = DEFAULT_BANNER_HTML;
+      if (btnRemoveBanner) btnRemoveBanner.style.display = 'none';
+    }
+  }
+
+  if (inputUsername) inputUsername.value = savedName;
+  renderAvatar(savedAvatar);
+  renderBanner(savedBanner);
+
+  var btnG = document.getElementById('btn-link-google');
+  var btnUnbindG = document.getElementById('btn-unbind-google');
+  if (isGoogleLinked) {
+    document.getElementById('google-status').textContent = 'Terkait';
+    document.getElementById('google-status').style.color = '#29e0c9';
+    document.getElementById('google-account-email').textContent = googleEmail;
+    btnG.style.display = 'none';
+    btnUnbindG.style.display = 'flex';
+  } else {
+    document.getElementById('google-status').textContent = 'Belum dikaitkan';
+    document.getElementById('google-status').style.color = '#a9b2c3';
+    document.getElementById('google-account-email').textContent = '';
+    btnG.style.display = 'flex';
+    btnUnbindG.style.display = 'none';
+  }
+
+  var btnC = document.getElementById('btn-link-comersio');
+  var btnUnbindC = document.getElementById('btn-unbind-comersio');
+  if (isComersioLinked) {
+    document.getElementById('comersio-status').textContent = 'Terkait';
+    document.getElementById('comersio-status').style.color = '#29e0c9';
+    document.getElementById('comersio-account-email').textContent = comersioEmail;
+    btnC.style.display = 'none';
+    btnUnbindC.style.display = 'flex';
+  } else {
+    document.getElementById('comersio-status').textContent = 'Belum dikaitkan';
+    document.getElementById('comersio-status').style.color = '#a9b2c3';
+    document.getElementById('comersio-account-email').textContent = '';
+    btnC.style.display = 'flex';
+    btnUnbindC.style.display = 'none';
+  }
+
+  function showToast(msg) {
+    if (!toast) return;
+    toast.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(function() { toast.classList.remove('show'); }, 2500);
+  }
+
+  btnUnbindG.addEventListener('click', function() {
+    localStorage.removeItem('cc_google_linked');
+    localStorage.removeItem('cc_google_email');
+    showToast('Akun Google berhasil diputuskan!');
+    setTimeout(function() { location.reload(); }, 1000);
+  });
+
+  btnUnbindC.addEventListener('click', function() {
+    localStorage.removeItem('cc_comersio_linked');
+    localStorage.removeItem('cc_comersio_email');
+    showToast('Comérsio Akun berhasil diputuskan!');
+    setTimeout(function() { location.reload(); }, 1000);
+  });
+
+  // ================= 4. CROPPER LOGIC (AVATAR 1:1 & BANNER) =================
+  var triggerFile = document.getElementById('trigger-file');
+  var inputFile = document.getElementById('input-file');
+  var triggerBanner = document.getElementById('trigger-banner');
+  var btnChangeBanner = document.getElementById('btn-change-banner');
+  var inputBannerFile = document.getElementById('input-banner-file');
+
+  var cropModal = document.getElementById('crop-modal');
+  var cropModalTitle = document.getElementById('crop-modal-title');
+  var cropCanvasWrap = document.getElementById('crop-canvas-wrap');
+  var cropCanvas = document.getElementById('crop-canvas');
+  var ctx = cropCanvas.getContext('2d');
+
+  var currentCropTarget = 'avatar'; // 'avatar' | 'banner'
+  var imgObj = new Image();
+  var imgX = 0, imgY = 0, imgScale = 1;
+  var finalCroppedAvatar = '';
+  var finalCroppedBanner = '';
+  var bannerRemovedFlag = false;
+
+  // Drag pan di dalam canvas cropper
+  var cropDrag = { active: false, startX: 0, startY: 0, origX: 0, origY: 0 };
+
+  function drawCropCanvas() {
+    var cw = cropCanvas.width;
+    var ch = cropCanvas.height;
+    var drawW = imgObj.width * imgScale;
+    var drawH = imgObj.height * imgScale;
+
+    // Batasi posisi agar tidak keluar area kosong
+    imgX = Math.min(0, Math.max(cw - drawW, imgX));
+    imgY = Math.min(0, Math.max(ch - drawH, imgY));
+
+    ctx.clearRect(0, 0, cw, ch);
+    ctx.drawImage(imgObj, imgX, imgY, drawW, drawH);
+  }
+
+  function openImageCropper(file, targetType) {
+    if (!file) return;
+    currentCropTarget = targetType;
+
+    if (targetType === 'banner') {
+      cropModalTitle.textContent = 'Sesuaikan Banner Profil';
+      cropCanvasWrap.classList.add('is-banner');
+      cropCanvas.width = 640;
+      cropCanvas.height = 224;
+    } else {
+      cropModalTitle.textContent = 'Sesuaikan Foto (1:1)';
+      cropCanvasWrap.classList.remove('is-banner');
+      cropCanvas.width = 240;
+      cropCanvas.height = 240;
+    }
+
+    var reader = new FileReader();
+    reader.onload = function(evt) {
+      imgObj.onload = function() {
+        var cw = cropCanvas.width;
+        var ch = cropCanvas.height;
+        var scaleX = cw / imgObj.width;
+        var scaleY = ch / imgObj.height;
+        imgScale = Math.max(scaleX, scaleY);
+        imgX = (cw - (imgObj.width * imgScale)) / 2;
+        imgY = (ch - (imgObj.height * imgScale)) / 2;
+        drawCropCanvas();
+        cropModal.classList.add('show');
+      };
+      imgObj.src = evt.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  cropCanvasWrap.addEventListener('pointerdown', function(e) {
+    cropDrag.active = true;
+    cropDrag.startX = e.clientX;
+    cropDrag.startY = e.clientY;
+    cropDrag.origX = imgX;
+    cropDrag.origY = imgY;
+    try { cropCanvasWrap.setPointerCapture(e.pointerId); } catch(err) {}
+  });
+
+  cropCanvasWrap.addEventListener('pointermove', function(e) {
+    if (!cropDrag.active) return;
+    var ratioX = cropCanvas.width / cropCanvasWrap.clientWidth;
+    var ratioY = cropCanvas.height / cropCanvasWrap.clientHeight;
+    imgX = cropDrag.origX + (e.clientX - cropDrag.startX) * ratioX;
+    imgY = cropDrag.origY + (e.clientY - cropDrag.startY) * ratioY;
+    drawCropCanvas();
+  });
+
+  cropCanvasWrap.addEventListener('pointerup', function(e) {
+    cropDrag.active = false;
+    try { cropCanvasWrap.releasePointerCapture(e.pointerId); } catch(err) {}
+  });
+
+  cropCanvasWrap.addEventListener('pointercancel', function() {
+    cropDrag.active = false;
+  });
+
+  // Trigger Avatar
+  if (triggerFile && inputFile) {
+    triggerFile.addEventListener('click', function() { inputFile.click(); });
+    inputFile.addEventListener('change', function(e) {
+      if (e.target.files && e.target.files[0]) {
+        openImageCropper(e.target.files[0], 'avatar');
+      }
+    });
+  }
+
+  // Trigger Banner
+  if (triggerBanner && inputBannerFile) {
+    triggerBanner.addEventListener('click', function(e) {
+      if (btnRemoveBanner && btnRemoveBanner.contains(e.target)) return;
+      inputBannerFile.click();
+    });
+    if (btnChangeBanner) {
+      btnChangeBanner.addEventListener('click', function(e) {
+        e.stopPropagation();
+        inputBannerFile.click();
+      });
+    }
+    inputBannerFile.addEventListener('change', function(e) {
+      if (e.target.files && e.target.files[0]) {
+        openImageCropper(e.target.files[0], 'banner');
+      }
+    });
+  }
+
+  // Hapus Banner
+  if (btnRemoveBanner) {
+    btnRemoveBanner.addEventListener('click', function(e) {
+      e.stopPropagation();
+      finalCroppedBanner = '';
+      bannerRemovedFlag = true;
+      localStorage.removeItem('cc_user_banner');
+      renderBanner('');
+      showToast('Banner profil dihapus!');
+    });
+  }
+
+  document.getElementById('btn-cancel-crop').addEventListener('click', function() {
+    cropModal.classList.remove('show');
+    inputFile.value = '';
+    inputBannerFile.value = '';
+  });
+
+  document.getElementById('btn-apply-crop').addEventListener('click', function() {
+    var dataUrl = cropCanvas.toDataURL('image/jpeg', 0.85);
+    if (currentCropTarget === 'banner') {
+      finalCroppedBanner = dataUrl;
+      bannerRemovedFlag = false;
+      renderBanner(finalCroppedBanner);
+      try { localStorage.setItem('cc_user_banner', finalCroppedBanner); } catch (err) {}
+      showToast('Banner profil diterapkan!');
+    } else {
+      finalCroppedAvatar = dataUrl;
+      renderAvatar(finalCroppedAvatar);
+      showToast('Foto profil dipotong (1:1)!');
+    }
+    cropModal.classList.remove('show');
+    inputFile.value = '';
+    inputBannerFile.value = '';
+  });
+
+  document.getElementById('btn-save-profile').addEventListener('click', function() {
+    var nameVal = inputUsername.value.trim();
+    if (!nameVal) {
+      showToast('Nama pengguna tidak boleh kosong!');
+      return;
+    }
+    try {
+      localStorage.setItem('cc_user_name', nameVal);
+      localStorage.setItem('cc_is_logged', 'true');
+      if (finalCroppedAvatar) {
+        localStorage.setItem('cc_user_avatar', finalCroppedAvatar);
+      }
+      if (bannerRemovedFlag) {
+        localStorage.removeItem('cc_user_banner');
+      } else if (finalCroppedBanner) {
+        localStorage.setItem('cc_user_banner', finalCroppedBanner);
+      }
+      showToast('Perubahan disimpan!');
+    } catch (err) {
+      showToast('Ukuran gambar terlalu besar!');
+    }
+  });
+
+  // ================= 5. REAL-TIME SYNC ANTAR TAB / HALAMAN =================
+  window.addEventListener('storage', function(e) {
+    if (e.key === 'cc_bg_mode' || !e.key) syncBackground();
+    if (e.key === 'cc_nav_mode' || !e.key) syncNavModeFromStorage();
+    if (e.key === 'cc_fab_movable') {
+      updateFabVisualState();
+      if (!isFabMovable()) resetFabPosition();
+      else applySavedFabPosition();
+    }
+    if (e.key === 'cc_fab_position') {
+      if (isFabMovable()) applySavedFabPosition();
+    }
+    if (e.key === 'cc_user_avatar') {
+      renderAvatar(localStorage.getItem('cc_user_avatar') || '');
+    }
+    if (e.key === 'cc_user_banner') {
+      renderBanner(localStorage.getItem('cc_user_banner') || '');
+    }
+  });
+
+  window.addEventListener('pageshow', function () {
+    syncBackground();
+    syncNavModeFromStorage();
+  });
+
+  window.addEventListener('focus', function () {
+    syncBackground();
+    syncNavModeFromStorage();
+  });
+
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,1300 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Co Center - Log Transaksi</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,700;0,800;1,400&display=swap" rel="stylesheet">
+
+<style>
+  #cc-container, #cc-container * {
+    font-family: 'JetBrains Mono', monospace !important;
+    box-sizing: border-box;
+  }
+
+  html, body {
+    margin: 0 !important; padding: 0 !important; height: 100% !important;
+    overflow: hidden !important; background: #05060a !important; color: #fff;
+  }
+
+  #cc-container {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; height: 100dvh;
+    z-index: 999999; background: #05060a; overflow-y: auto; -webkit-overflow-scrolling: touch;
+    padding-top: calc(75px + env(safe-area-inset-top, 0px));
+    padding-bottom: calc(95px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .cc-main-shell {
+    width: 100%;
+    max-width: 540px;
+    margin: 0 auto;
+  }
+
+  /* ================= VARIAN BACKGROUND (SINKRON PENGATURAN.HTML) ================= */
+  .cc-bg.bg-simple {
+    position: fixed; inset: 0; z-index: -1;
+    background: linear-gradient(135deg, #090a0f 0%, #12151f 50%, #1a1614 100%) !important;
+    background-size: cover;
+    transition: background 0.3s ease;
+  }
+  .cc-overlay.bg-simple {
+    position: fixed; inset: 0; z-index: -1;
+    background: rgba(12, 10, 8, 0.65) !important;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: background 0.3s ease;
+  }
+
+  .cc-bg.bg-default {
+    position: fixed; inset: 0; z-index: -1;
+    background: #000 url('https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh9DocQHrQw9p05Lbkght7m-rpO8O2HS6s3VG28Nc7FW6LPePf_AYJ3E104I15aD8OUsQRINz7QGbgv7EeJXKZKXdecQ-RAHvowdbS5vPqDrfZ63ZC3w-FOPKWPcVBKY5IFdenDmRixqc-Jy8BvVpAp6ReI7Io5UdxjNnlzY_TZLuTW6xaepq9RkRMA92kV/s1600/11.gif') no-repeat center center;
+    background-size: cover;
+    transition: background 0.3s ease;
+  }
+  .cc-overlay.bg-default {
+    position: fixed; inset: 0; z-index: -1; background: rgba(3,4,8,0.78);
+    transition: background 0.3s ease;
+  }
+
+  /* ============ HEADER FIXED (STATIS DI ATAS) ============ */
+  .cc-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: calc(15px + env(safe-area-inset-top, 0px)) 20px 15px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    z-index: 100;
+    background: rgba(5, 6, 10, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .cc-nav-inner {
+    width: 100%;
+    max-width: 540px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .cc-brand { display:flex; align-items:center; gap:12px; font-weight:800; font-size:18px; color:#fff; letter-spacing:-0.5px; }
+  .cc-img { width:35px; height:35px; border-radius:10px; cursor:default; object-fit: cover; }
+
+  .cc-brand-wrap { display:flex; flex-direction:column; gap:2px; }
+  .cc-brand-row { display:flex; align-items:center; gap:12px; }
+  .cc-subtitle {
+    font-size: 10px; font-weight:700; color:#a9b2c3;
+    letter-spacing: 2px; text-transform: uppercase; margin-left: 47px;
+  }
+
+  /* ============ NAV KANAN & PROFILE DROPDOWN ============ */
+  .cc-nav-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    position: relative;
+  }
+
+  .cc-profile-wrap {
+    position: relative;
+  }
+  .cc-profile-btn {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 1.5px solid rgba(255, 210, 63, 0.5);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #151824;
+    transition: transform 0.15s ease, border-color 0.2s ease, background 0.2s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .cc-profile-btn svg {
+    width: 20px;
+    height: 20px;
+    fill: #ffd23f;
+  }
+  .cc-profile-btn img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .cc-profile-btn:active {
+    transform: scale(0.92);
+  }
+  .cc-profile-btn:hover {
+    border-color: #ffd23f;
+    background: rgba(255, 210, 63, 0.1);
+  }
+
+  .cc-profile-dropdown {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    width: 180px;
+    background: #0d0f16;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+    padding: 6px;
+    z-index: 100000;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-8px);
+    transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
+  }
+  .cc-profile-dropdown.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+  .cc-profile-dropdown a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    color: #d5dae3;
+    font-size: 12px;
+    font-weight: 700;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+  .cc-profile-dropdown a svg {
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
+    flex-shrink: 0;
+  }
+  .cc-profile-dropdown a:hover {
+    background: rgba(41, 224, 201, 0.1);
+    color: #29e0c9;
+  }
+  .cc-profile-dropdown .cc-dropdown-divider {
+    height: 1px;
+    background: rgba(255, 255, 255, 0.08);
+    margin: 4px 0;
+  }
+  .cc-profile-dropdown a.cc-logout {
+    color: #ff2d6a;
+  }
+  .cc-profile-dropdown a.cc-logout:hover {
+    background: rgba(255, 45, 106, 0.1);
+    color: #ff2d6a;
+  }
+
+  /* KONTEN UTAMA */
+  .cc-section { padding: 15px 20px; }
+
+  /* HEADER SALDO / RINGKASAN M-BANKING STYLE */
+  .cc-balance-card {
+    background: linear-gradient(135deg, #0d0f16 0%, #171b29 100%);
+    border: 1.5px solid rgba(41, 224, 201, 0.3);
+    border-radius: 18px;
+    padding: 18px 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .cc-balance-col { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+  .cc-balance-col.right { align-items: flex-end; text-align: right; }
+  .cc-balance-title { font-size: 10px; font-weight: 700; color: #a9b2c3; text-transform: uppercase; letter-spacing: 0.8px; }
+  .cc-balance-amount { font-size: 19px; font-weight: 800; color: #29e0c9; }
+  .cc-balance-debt { font-size: 17px; font-weight: 800; color: #ffd23f; }
+  .cc-balance-debt.is-clear { color: #29e0c9; }
+
+  .cc-sec-title {
+    font-weight: 800; color: #ffd23f; margin-bottom: 15px; font-size: 12px;
+    text-transform: uppercase; letter-spacing: 1px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .cc-sec-title::after { content:''; flex:1; height:1px; background: rgba(255,210,63,0.25); }
+
+  /* LIST TRANSAKSI M-BANKING STYLE */
+  .cc-tx-list { display: flex; flex-direction: column; gap: 12px; }
+
+  .cc-tx-item {
+    background: #0d0f16;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 14px;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  }
+
+  .cc-tx-info { display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0; }
+  .cc-tx-icon {
+    width: 40px; height: 40px; border-radius: 10px; background: rgba(41, 224, 201, 0.1);
+    border: 1px solid rgba(41, 224, 201, 0.3); display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; color: #29e0c9;
+  }
+  .cc-tx-icon.icon-beli {
+    background: rgba(255, 45, 106, 0.12);
+    border-color: rgba(255, 45, 106, 0.35);
+    color: #ff5c8a;
+  }
+  .cc-tx-icon.icon-bayar {
+    background: rgba(41, 224, 201, 0.12);
+    border-color: rgba(41, 224, 201, 0.35);
+    color: #29e0c9;
+  }
+  .cc-tx-icon svg { width: 20px; height: 20px; fill: currentColor; }
+
+  .cc-tx-details { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+  .cc-tx-name { font-weight: 800; font-size: 13px; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .cc-tx-sub {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 10.5px;
+    font-weight: 700;
+    color: #ffd23f;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .cc-tx-sub.is-bayar { color: #29e0c9; }
+  .cc-tx-cat-pill {
+    font-size: 8.5px;
+    font-weight: 800;
+    color: #a9b2c3;
+    background: rgba(255, 255, 255, 0.07);
+    padding: 1px 6px;
+    border-radius: 5px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+  .cc-tx-date { font-size: 9.5px; color: #7d879c; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  .cc-tx-action-wrap { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; flex-shrink: 0; }
+
+  /* STATUS BADGE - WARNA DINAMIS SESUAI STATUS */
+  .cc-tx-status {
+    font-size: 10px; font-weight: 800; padding: 2px 8px; border-radius: 6px;
+    white-space: nowrap;
+  }
+  .cc-tx-status.status-diproses,
+  .cc-tx-status.status-pending,
+  .cc-tx-status.status-beli     { color: #ffd23f; background: rgba(255, 210, 63, 0.12); }
+  .cc-tx-status.status-selesai,
+  .cc-tx-status.status-berhasil,
+  .cc-tx-status.status-bayar    { color: #29e0c9; background: rgba(41, 224, 201, 0.12); }
+  .cc-tx-status.status-dibatalkan,
+  .cc-tx-status.status-gagal    { color: #ff2d6a; background: rgba(255, 45, 106, 0.12); }
+
+  .cc-tx-id-tag {
+    font-size: 9px;
+    font-weight: 700;
+    color: #9aa4b8;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 2px 6px;
+    border-radius: 5px;
+    letter-spacing: 0.4px;
+  }
+
+  .cc-btn-cancel {
+    background: rgba(255, 45, 106, 0.15);
+    border: 1px solid rgba(255, 45, 106, 0.4);
+    color: #ff2d6a; font-size: 10px; font-weight: 800;
+    padding: 5px 10px; border-radius: 8px; cursor: pointer;
+    text-decoration: none; display: flex; align-items: center; gap: 4px;
+    transition: transform 0.15s ease, background 0.2s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .cc-btn-cancel:active { transform: scale(0.95); background: rgba(255, 45, 106, 0.3); }
+
+  /* KONDISI KOSONG */
+  .cc-empty-state {
+    text-align: center; padding: 40px 20px; color: #a9b2c3; font-size: 12px; font-weight: 700;
+    background: #0d0f16; border: 1px dashed rgba(255,255,255,0.15); border-radius: 14px;
+  }
+
+  /* ============================================================
+     ===== NAVBAR BAWAH BIASA (DEFAULT — SINKRON PENGATURAN) =====
+     ============================================================ */
+  .cc-bottom-nav {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 999999;
+    background: rgba(11, 13, 20, 0.94);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-top: 1px solid rgba(255, 210, 63, 0.25);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    box-shadow: 0 -6px 24px rgba(0, 0, 0, 0.55);
+  }
+  .cc-bottom-nav-inner {
+    width: 100%;
+    max-width: 540px;
+    margin: 0 auto;
+    height: 60px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    align-items: center;
+  }
+  .cc-bnav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    height: 100%;
+    text-decoration: none;
+    color: #a9b2c3;
+    transition: color 0.18s ease, transform 0.15s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .cc-bnav-item svg {
+    width: 19px;
+    height: 19px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .cc-bnav-item span {
+    font-size: 9.5px;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+  }
+  .cc-bnav-item:hover,
+  .cc-bnav-item.is-active {
+    color: #ffd23f;
+  }
+  .cc-bnav-item:active {
+    transform: scale(0.92);
+  }
+
+  /* ============================================================
+     ===== FAB FAN MENU GOLD — REVOLVER RELOAD + DRAG SUPPORT =====
+     ============================================================ */
+  .cc-fab-stage {
+    position: fixed;
+    left: 50%;
+    bottom: env(safe-area-inset-bottom, 0px);
+    transform: translateX(-50%);
+    width: 200px;
+    height: 125px;
+    z-index: 999999;
+    pointer-events: none;
+    transition: filter 0.2s ease;
+  }
+
+  .cc-fab-stage.cc-fab-grabbable {
+    filter: drop-shadow(0 0 6px rgba(255, 210, 63, 0.45));
+  }
+
+  .cc-fab-dock {
+    position: absolute;
+    left: 50%;
+    bottom: -95px;
+    width: 190px;
+    height: 190px;
+    margin-left: -95px;
+    border-radius: 50%;
+    background: #0d0f16;
+    border: 1.5px solid rgba(255, 210, 63, 0.65);
+    box-shadow: 0 -6px 20px rgba(0,0,0,0.5), 0 0 12px rgba(255,210,63,0.1);
+    opacity: 0;
+    transform: scale(0.3) rotate(-180deg);
+    transform-origin: 50% 100%;
+    transition: transform 0.55s cubic-bezier(0.34, 1.2, 0.64, 1), opacity 0.3s ease;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .cc-fab-stage.cc-fab-open .cc-fab-dock {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+
+  .cc-fab-slice {
+    position: absolute; left: 50%; top: 50%; width: 95px; height: 95px;
+    transform-origin: 0% 0%; pointer-events: none;
+  }
+  .cc-fab-slice[data-s="0"] { transform: rotate(-180deg) skewY(-45deg); background: rgba(255,210,63,0.06); }
+  .cc-fab-slice[data-s="1"] { transform: rotate(-135deg) skewY(-45deg); background: rgba(255,210,63,0.12); }
+  .cc-fab-slice[data-s="2"] { transform: rotate(-90deg)  skewY(-45deg); background: rgba(255,210,63,0.06); }
+  .cc-fab-slice[data-s="3"] { transform: rotate(-45deg)  skewY(-45deg); background: rgba(255,210,63,0.12); }
+
+  .cc-fab-slice-line {
+    position: absolute; left: 50%; top: 50%; width: 1px; height: 95px;
+    background: rgba(255,210,63,0.35); transform-origin: 50% 0%;
+  }
+  .cc-fab-slice-line[data-l="0"] { transform: rotate(-180deg); }
+  .cc-fab-slice-line[data-l="1"] { transform: rotate(-135deg); }
+  .cc-fab-slice-line[data-l="2"] { transform: rotate(-90deg); }
+  .cc-fab-slice-line[data-l="3"] { transform: rotate(-45deg); }
+  .cc-fab-slice-line[data-l="4"] { transform: rotate(0deg); }
+
+  .cc-fab-main {
+    position: absolute;
+    left: 50%;
+    bottom: 10px;
+    width: 54px;
+    height: 54px;
+    margin-left: -27px;
+    border-radius: 50%;
+    background: #0d0f16;
+    border: 1px solid rgba(255, 210, 63, 0.55);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    pointer-events: auto;
+    overflow: hidden;
+    z-index: 5;
+    touch-action: none;
+    transition:
+      transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+      bottom 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+      border-color 0.3s ease,
+      background 0.3s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .cc-fab-stage.cc-fab-open .cc-fab-main {
+    bottom: -6px;
+    background: #161822;
+    border-color: rgba(255, 210, 63, 0.4);
+    transform: rotate(360deg);
+  }
+
+  .cc-fab-main:active { transform: scale(0.94) rotate(0deg); }
+  .cc-fab-stage.cc-fab-open .cc-fab-main:active { transform: scale(0.94) rotate(360deg); }
+
+  .cc-fab-main .cc-fab-logo {
+    width: 100%; height: 100%; border-radius: 50%;
+    object-fit: cover; object-position: center;
+    display: block; position: absolute; top: 0; left: 0;
+    transform: scale(1) rotate(0deg);
+    transition: opacity 0.2s ease, transform 0.35s ease;
+    pointer-events: none;
+  }
+
+  .cc-fab-main .cc-fab-icon-close {
+    width: 20px; height: 20px;
+    fill: none; stroke: #ffd23f; stroke-width: 1.4;
+    stroke-linecap: round; stroke-linejoin: round;
+    position: absolute; top: 50%; left: 50%;
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.4) rotate(-90deg);
+    transition: opacity 0.2s ease, transform 0.35s ease;
+  }
+
+  .cc-fab-stage.cc-fab-open .cc-fab-main .cc-fab-logo {
+    opacity: 0; transform: scale(0.4) rotate(90deg);
+  }
+  .cc-fab-stage.cc-fab-open .cc-fab-main .cc-fab-icon-close {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1) rotate(0deg);
+  }
+
+  .cc-fab-item {
+    position: absolute;
+    left: 50%; bottom: 12px; width: 38px; height: 38px;
+    margin-left: -19px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+    text-decoration: none;
+    opacity: 0; pointer-events: none;
+    transform: translate(0px, 0px) scale(0.3) rotate(-90deg);
+    transition:
+      transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
+      opacity 0.25s ease;
+    z-index: 4;
+  }
+  .cc-fab-item svg {
+    width: 16px; height: 16px;
+    fill: none; stroke: #ffd23f; stroke-width: 1.4;
+    stroke-linecap: round; stroke-linejoin: round;
+    filter: drop-shadow(0 2px 3px rgba(0,0,0,0.6));
+  }
+  .cc-fab-item span {
+    font-size: 7.5px; font-weight: 700; color: #ffd23f;
+    white-space: nowrap; text-shadow: 0 2px 3px rgba(0,0,0,0.8);
+  }
+  .cc-fab-item.cc-fab-item-disabled svg,
+  .cc-fab-item.cc-fab-item-disabled span { stroke: #ffd23f; color: #ffd23f; }
+
+  .cc-fab-stage.cc-fab-open .cc-fab-item {
+    opacity: 1; pointer-events: auto;
+  }
+
+  .cc-fab-item[data-i="0"] { transition-delay: 0.10s; }
+  .cc-fab-item[data-i="1"] { transition-delay: 0.22s; }
+  .cc-fab-item[data-i="2"] { transition-delay: 0.34s; }
+  .cc-fab-item[data-i="3"] { transition-delay: 0.46s; }
+
+  .cc-fab-stage.cc-fab-open .cc-fab-item[data-i="0"] { transform: translate(-54px, 20px) scale(1) rotate(0deg); }
+  .cc-fab-stage.cc-fab-open .cc-fab-item[data-i="1"] { transform: translate(-26px, -34px) scale(1) rotate(0deg); }
+  .cc-fab-stage.cc-fab-open .cc-fab-item[data-i="2"] { transform: translate(26px, -34px) scale(1) rotate(0deg); }
+  .cc-fab-stage.cc-fab-open .cc-fab-item[data-i="3"] { transform: translate(54px, 20px) scale(1) rotate(0deg); }
+
+  .cc-fab-backdrop {
+    position: fixed; inset: 0;
+    z-index: 999998;
+    background: rgba(3,4,8,0.4);
+    opacity: 0; visibility: hidden; pointer-events: none;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+  }
+  .cc-fab-backdrop.cc-fab-backdrop-show {
+    opacity: 1; visibility: visible; pointer-events: auto;
+  }
+
+  @media (min-width: 480px) {
+    .cc-nav { padding-left: 30px; padding-right: 30px; }
+    .cc-section { padding-left: 30px; padding-right: 30px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="cc-container">
+  <div class="cc-bg bg-simple" id="cc-bg-element"></div>
+  <div class="cc-overlay bg-simple" id="cc-overlay-element"></div>
+
+  <!-- Sinkronisasi awal tema latar dari pengaturan.html (default: sederhana) -->
+  <script>
+    (function () {
+      var mode = localStorage.getItem('cc_bg_mode') || 'sederhana';
+      var bgEl = document.getElementById('cc-bg-element');
+      var overlayEl = document.getElementById('cc-overlay-element');
+      if (bgEl && overlayEl) {
+        if (mode === 'default' || mode === 'animated') {
+          bgEl.className = 'cc-bg bg-default';
+          overlayEl.className = 'cc-overlay bg-default';
+        } else {
+          bgEl.className = 'cc-bg bg-simple';
+          overlayEl.className = 'cc-overlay bg-simple';
+        }
+      }
+    })();
+  </script>
+
+  <div class="cc-nav">
+    <div class="cc-nav-inner">
+      <div class="cc-brand-wrap">
+        <div class="cc-brand-row cc-brand">
+          <img class="cc-img" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjgKAkQ6fTJOBPoOVz21klx2Vw6CXegaFe7QnvWoaDZTt1raufO5Ikvqu0JrP93QUf_iAcqVp8IkcTZjTx_e1mMqJENEYIpEjv-br9ApdDAeMiPcm8xoO-dFAmPJa-9y22yJdNme0Eb-EFxm-dS0Pd2UwUNu2cfB5pxS7KA7RP1JPKB-79xmqs5Vl9pSYHn/s1600/IMG_20260808_230713.png">
+          CO CENTER
+        </div>
+        <div class="cc-subtitle">Log Transaksi</div>
+      </div>
+
+      <div class="cc-nav-right">
+        <div class="cc-profile-wrap">
+          <div class="cc-profile-btn" id="cc-profile-toggle" title="Menu Akun">
+            <div id="header-avatar-container" style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
+              <svg viewBox="0 0 24 24">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
+              </svg>
+            </div>
+          </div>
+          <div class="cc-profile-dropdown" id="cc-profile-dropdown">
+            <a href="profile.html">
+              <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+              Profile
+            </a>
+            <a href="pengaturan.html">
+              <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.47l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.47l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+              Pengaturan
+            </a>
+            <div class="cc-dropdown-divider"></div>
+            <a href="login.html" class="cc-logout">
+              <svg viewBox="0 0 24 24"><path d="M10.09 15.59L11.5 17l5-5-5-5-1.41 1.41L12.67 11H3v2h9.67l-2.58 2.59zM19 3H5c-1.11 0-2 .9-2 2v4h2V5h14v14H5v-4H3v4c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg>
+              Akun / Login
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cc-main-shell">
+    <div class="cc-section">
+      
+      <div class="cc-balance-card">
+        <div class="cc-balance-col">
+          <div class="cc-balance-title">Total Log Tercatat</div>
+          <div class="cc-balance-amount" id="tx-total-count">0 Transaksi</div>
+        </div>
+        <div class="cc-balance-col right">
+          <div class="cc-balance-title">Sisa Utang</div>
+          <div class="cc-balance-debt is-clear" id="tx-unpaid-debt">Rp 0</div>
+        </div>
+      </div>
+
+      <div class="cc-sec-title">Riwayat Log Real-Time</div>
+      
+      <div class="cc-tx-list" id="cc-tx-container"></div>
+
+    </div>
+  </div>
+
+</div>
+
+<!-- ===== NAVBAR BAWAH BIASA (DEFAULT — SINKRON PENGATURAN.HTML) ===== -->
+<nav class="cc-bottom-nav" id="cc-bottom-nav">
+  <div class="cc-bottom-nav-inner">
+    <a class="cc-bnav-item" href="index.html">
+      <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      <span>Menu</span>
+    </a>
+
+    <a class="cc-bnav-item" href="https://lynk.id/cocenter" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+      <span>Lynk.id</span>
+    </a>
+
+    <div class="cc-bnav-item is-active" title="Kamu sedang di halaman ini">
+      <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/></svg>
+      <span>Transaksi</span>
+    </div>
+
+    <a class="cc-bnav-item" href="profile.html">
+      <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      <span>Profile</span>
+    </a>
+  </div>
+</nav>
+
+<!-- ===== BACKDROP FAB ===== -->
+<div class="cc-fab-backdrop" id="cc-fab-backdrop" style="display:none;"></div>
+
+<!-- ===== FAB FAN MENU GOLD (OPSI 2 — SINKRON PENGATURAN.HTML) ===== -->
+<div class="cc-fab-stage" id="cc-fab-stage" style="display:none;">
+
+  <div class="cc-fab-dock">
+    <div class="cc-fab-slice" data-s="0"></div>
+    <div class="cc-fab-slice" data-s="1"></div>
+    <div class="cc-fab-slice" data-s="2"></div>
+    <div class="cc-fab-slice" data-s="3"></div>
+    <div class="cc-fab-slice-line" data-l="0"></div>
+    <div class="cc-fab-slice-line" data-l="1"></div>
+    <div class="cc-fab-slice-line" data-l="2"></div>
+    <div class="cc-fab-slice-line" data-l="3"></div>
+    <div class="cc-fab-slice-line" data-l="4"></div>
+  </div>
+
+  <a class="cc-fab-item" data-i="0" href="index.html">
+    <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    <span>Menu</span>
+  </a>
+
+  <a class="cc-fab-item" data-i="1" href="https://lynk.id/cocenter" target="_blank" rel="noopener">
+    <svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+    <span>Lynk.id</span>
+  </a>
+
+  <div class="cc-fab-item cc-fab-item-disabled" data-i="2" title="Kamu sedang di halaman ini">
+    <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/></svg>
+    <span>Transaksi</span>
+  </div>
+
+  <a class="cc-fab-item" data-i="3" href="profile.html">
+    <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    <span>Profile</span>
+  </a>
+
+  <div class="cc-fab-main" id="cc-fab-main">
+    <img class="cc-fab-logo" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjgKAkQ6fTJOBPoOVz21klx2Vw6CXegaFe7QnvWoaDZTt1raufO5Ikvqu0JrP93QUf_iAcqVp8IkcTZjTx_e1mMqJENEYIpEjv-br9ApdDAeMiPcm8xoO-dFAmPJa-9y22yJdNme0Eb-EFxm-dS0Pd2UwUNu2cfB5pxS7KA7RP1JPKB-79xmqs5Vl9pSYHn/s1600/IMG_20260808_230713.png" alt="Co Center">
+
+    <svg class="cc-fab-icon-close" viewBox="0 0 24 24">
+      <line x1="6" y1="6" x2="18" y2="18"/>
+      <line x1="18" y1="6" x2="6" y2="18"/>
+    </svg>
+  </div>
+</div>
+
+<!-- Sinkronisasi awal gaya navigasi (Navbar Biasa default vs FAB) tanpa flicker -->
+<script>
+  (function () {
+    var navMode = localStorage.getItem('cc_nav_mode') || 'navbar';
+    var bNav = document.getElementById('cc-bottom-nav');
+    var fStage = document.getElementById('cc-fab-stage');
+    var fBack = document.getElementById('cc-fab-backdrop');
+    if (navMode === 'fab') {
+      if (bNav) bNav.style.display = 'none';
+      if (fStage) fStage.style.display = 'block';
+      if (fBack) fBack.style.display = 'block';
+    } else {
+      if (bNav) bNav.style.display = 'block';
+      if (fStage) fStage.style.display = 'none';
+      if (fBack) fBack.style.display = 'none';
+    }
+  })();
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+  // ================= 1. BACKGROUND THEME SYNC =================
+  var bgEl = document.getElementById('cc-bg-element');
+  var overlayEl = document.getElementById('cc-overlay-element');
+
+  function syncBackground() {
+    var bgMode = localStorage.getItem('cc_bg_mode') || 'sederhana';
+    if (bgEl && overlayEl) {
+      if (bgMode === 'default' || bgMode === 'animated') {
+        bgEl.className = 'cc-bg bg-default';
+        overlayEl.className = 'cc-overlay bg-default';
+      } else {
+        bgEl.className = 'cc-bg bg-simple';
+        overlayEl.className = 'cc-overlay bg-simple';
+      }
+    }
+  }
+  syncBackground();
+
+  // ================= SINKRONISASI ICON / FOTO PROFIL HEADER =================
+  function updateHeaderAvatar() {
+    var container = document.getElementById('header-avatar-container');
+    var savedAvatar = localStorage.getItem('cc_user_avatar');
+
+    if (container) {
+      if (savedAvatar && savedAvatar.trim() !== "") {
+        container.innerHTML = '<img src="' + savedAvatar + '" alt="Profile" style="width:100%; height:100%; object-fit:cover; display:block;">';
+      } else {
+        container.innerHTML = '<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>';
+      }
+    }
+  }
+  updateHeaderAvatar();
+
+  var profileToggle = document.getElementById('cc-profile-toggle');
+  var profileDropdown = document.getElementById('cc-profile-dropdown');
+
+  if (profileToggle && profileDropdown) {
+    profileToggle.addEventListener('click', function(e) {
+      e.stopPropagation();
+      profileDropdown.classList.toggle('show');
+    });
+
+    document.addEventListener('click', function(e) {
+      if (!profileToggle.contains(e.target) && !profileDropdown.contains(e.target)) {
+        profileDropdown.classList.remove('show');
+      }
+    });
+  }
+
+  // ================= 2. NAVIGASI BAWAH (NAVBAR BIASA DEFAULT VS FAB) =================
+  var bottomNavEl = document.getElementById('cc-bottom-nav');
+  var fabStage = document.getElementById('cc-fab-stage');
+  var fabMain = document.getElementById('cc-fab-main');
+  var fabBackdrop = document.getElementById('cc-fab-backdrop');
+
+  var savedPosBeforeOpen = null;
+  var DRAG_THRESHOLD = 8;
+  var dragState = {
+    active: false, hasMoved: false, isMovable: false,
+    startX: 0, startY: 0, startLeft: 0, startTop: 0, pointerId: null
+  };
+
+  function getNavMode() {
+    var mode = localStorage.getItem('cc_nav_mode');
+    return mode === 'fab' ? 'fab' : 'navbar';
+  }
+
+  function isFabMovable() {
+    return localStorage.getItem('cc_fab_movable') === 'true';
+  }
+
+  function updateFabVisualState() {
+    if (!fabStage) return;
+    if (isFabMovable()) {
+      fabStage.classList.add('cc-fab-grabbable');
+    } else {
+      fabStage.classList.remove('cc-fab-grabbable');
+    }
+  }
+
+  function applySavedFabPosition() {
+    if (!fabStage || !isFabMovable()) return;
+    var savedPos = localStorage.getItem('cc_fab_position');
+    if (!savedPos) return;
+    try {
+      var pos = JSON.parse(savedPos);
+      if (typeof pos.left === 'number' && typeof pos.top === 'number') {
+        var maxLeft = Math.max(0, window.innerWidth - fabStage.offsetWidth);
+        var maxTop = Math.max(0, window.innerHeight - fabStage.offsetHeight);
+        var clampedLeft = Math.max(0, Math.min(maxLeft, pos.left));
+        var clampedTop = Math.max(0, Math.min(maxTop, pos.top));
+        fabStage.style.left = clampedLeft + 'px';
+        fabStage.style.top = clampedTop + 'px';
+        fabStage.style.bottom = 'auto';
+        fabStage.style.transform = 'none';
+      }
+    } catch(e) {}
+  }
+
+  function resetFabPosition() {
+    if (!fabStage) return;
+    fabStage.style.left = '';
+    fabStage.style.top = '';
+    fabStage.style.bottom = '';
+    fabStage.style.transform = '';
+  }
+
+  function openFab() {
+    if (!fabStage || !fabBackdrop) return;
+    if (isFabMovable()) {
+      var rect = fabStage.getBoundingClientRect();
+      savedPosBeforeOpen = { left: rect.left, top: rect.top };
+      fabStage.style.left = '';
+      fabStage.style.top = '';
+      fabStage.style.bottom = '';
+      fabStage.style.transform = '';
+    }
+    fabStage.classList.add('cc-fab-open');
+    fabBackdrop.classList.add('cc-fab-backdrop-show');
+  }
+
+  function closeFab() {
+    if (!fabStage || !fabBackdrop) return;
+    fabStage.classList.remove('cc-fab-open');
+    fabBackdrop.classList.remove('cc-fab-backdrop-show');
+    if (isFabMovable() && savedPosBeforeOpen) {
+      fabStage.style.left = savedPosBeforeOpen.left + 'px';
+      fabStage.style.top = savedPosBeforeOpen.top + 'px';
+      fabStage.style.bottom = 'auto';
+      fabStage.style.transform = 'none';
+      savedPosBeforeOpen = null;
+    }
+  }
+
+  function syncNavModeFromStorage() {
+    var mode = getNavMode();
+    if (mode === 'fab') {
+      if (bottomNavEl) bottomNavEl.style.display = 'none';
+      if (fabStage) fabStage.style.display = 'block';
+      if (fabBackdrop) fabBackdrop.style.display = 'block';
+      updateFabVisualState();
+      if (!isFabMovable()) resetFabPosition();
+      else applySavedFabPosition();
+    } else {
+      closeFab();
+      if (fabStage) fabStage.style.display = 'none';
+      if (fabBackdrop) fabBackdrop.style.display = 'none';
+      if (bottomNavEl) bottomNavEl.style.display = 'block';
+    }
+  }
+
+  if (fabBackdrop) {
+    fabBackdrop.addEventListener('click', closeFab);
+  }
+
+  document.querySelectorAll('.cc-fab-item').forEach(function (item) {
+    item.addEventListener('click', function () {
+      closeFab();
+    });
+  });
+
+  if (fabMain) {
+    fabMain.addEventListener('pointerdown', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+
+      dragState.active = true;
+      dragState.hasMoved = false;
+      dragState.pointerId = e.pointerId;
+      dragState.isMovable = isFabMovable() && !fabStage.classList.contains('cc-fab-open');
+
+      dragState.startX = e.clientX;
+      dragState.startY = e.clientY;
+
+      var rect = fabStage.getBoundingClientRect();
+      dragState.startLeft = rect.left;
+      dragState.startTop = rect.top;
+
+      try { fabMain.setPointerCapture(e.pointerId); } catch(err) {}
+    });
+
+    fabMain.addEventListener('pointermove', function(e) {
+      if (!dragState.active || !dragState.isMovable) return;
+
+      var dx = e.clientX - dragState.startX;
+      var dy = e.clientY - dragState.startY;
+
+      if (!dragState.hasMoved) {
+        if (Math.abs(dx) < DRAG_THRESHOLD && Math.abs(dy) < DRAG_THRESHOLD) return;
+        dragState.hasMoved = true;
+      }
+
+      var newLeft = dragState.startLeft + dx;
+      var newTop = dragState.startTop + dy;
+
+      var maxLeft = window.innerWidth - fabStage.offsetWidth;
+      var maxTop = window.innerHeight - fabStage.offsetHeight;
+      newLeft = Math.max(0, Math.min(maxLeft, newLeft));
+      newTop = Math.max(0, Math.min(maxTop, newTop));
+
+      fabStage.style.left = newLeft + 'px';
+      fabStage.style.top = newTop + 'px';
+      fabStage.style.bottom = 'auto';
+      fabStage.style.transform = 'none';
+    });
+
+    fabMain.addEventListener('pointerup', function(e) {
+      if (!dragState.active) return;
+      dragState.active = false;
+
+      try { fabMain.releasePointerCapture(e.pointerId); } catch(err) {}
+
+      if (dragState.hasMoved) {
+        var rect = fabStage.getBoundingClientRect();
+        localStorage.setItem('cc_fab_position', JSON.stringify({
+          left: rect.left, top: rect.top
+        }));
+      } else {
+        if (fabStage.classList.contains('cc-fab-open')) {
+          closeFab();
+        } else {
+          openFab();
+        }
+      }
+    });
+
+    fabMain.addEventListener('pointercancel', function() {
+      dragState.active = false;
+    });
+  }
+
+  syncNavModeFromStorage();
+
+  // ================= 3. DECODER KODE PRODUK, METODE BAYAR & ID TRANSAKSI =================
+  var SUBSCRIPTION_PRODUCTS = {
+    GMN:   { name: 'Gemini AI Plus',  category: 'AI' },
+    SPTF:  { name: 'Spotify Premium', category: 'Streaming' },
+    NTFL:  { name: 'Netflix Premium', category: 'Streaming' },
+    CGPT1: { name: 'ChatGPT Go',      category: 'AI' },
+    CGPT2: { name: 'ChatGPT Plus',    category: 'AI' }
+  };
+
+  var INTERNET_OPERATORS = {
+    ISAT:  'Indosat',
+    XL:    'XL',
+    TLKM:  'Telkomsel',
+    SMART: 'Smartfren',
+    AXIS:  'Axis',
+    THREE: 'Three'
+  };
+
+  var PAYMENT_METHODS = {
+    QRIS:  'QRIS',
+    BCA:   'Bank BCA',
+    BLU:   'blu by BCA',
+    JAGO:  'Bank Jago',
+    SEA:   'SeaBank',
+    KROM:  'Krom Bank',
+    SPAY:  'ShopeePay',
+    GOPAY: 'GoPay',
+    DANA:  'DANA'
+  };
+
+  function decodeProductFromCode(rawCode) {
+    var code = String(rawCode || '').trim().toUpperCase();
+    var match = code.match(/^DL(\d+(?:[.,]\d+)?)KS(BUY2324|PAY2325)(.*)$/);
+    if (!match) return null;
+
+    var baseTag = match[2];
+    var tail = (match[3] || '').trim();
+
+    if (baseTag === 'PAY2325') {
+      var payMethodName = tail && PAYMENT_METHODS[tail] ? PAYMENT_METHODS[tail] : '';
+      return {
+        mode: 'bayar',
+        productName: payMethodName ? ('Pembayaran ' + payMethodName) : 'Pelunasan Utang',
+        paymentMethod: payMethodName,
+        category: payMethodName ? payMethodName : 'Pembayaran'
+      };
+    }
+
+    if (!tail) {
+      return {
+        mode: 'beli',
+        productName: 'Pembelian Umum',
+        category: 'Umum'
+      };
+    }
+
+    if (SUBSCRIPTION_PRODUCTS[tail]) {
+      return {
+        mode: 'beli',
+        productName: SUBSCRIPTION_PRODUCTS[tail].name,
+        category: SUBSCRIPTION_PRODUCTS[tail].category
+      };
+    }
+
+    var netMatch = tail.match(/^(ISAT|XL|TLKM|SMART|AXIS|THREE)(\d+(?:[.,]\d+)?)(?:GB|G)(\d+)(?:D|H)$/);
+    if (netMatch) {
+      var opName = INTERNET_OPERATORS[netMatch[1]];
+      var quotaVal = netMatch[2].replace(',', '.');
+      var daysVal = parseInt(netMatch[3], 10);
+      return {
+        mode: 'beli',
+        productName: opName + ' ' + quotaVal + 'GB (' + daysVal + ' Hari)',
+        category: 'Kuota'
+      };
+    }
+
+    return {
+      mode: 'beli',
+      productName: 'Pembelian Produk',
+      category: 'Umum'
+    };
+  }
+
+  function generateTxId(seedStr, idx) {
+    var str = String(seedStr || '') + '-' + String(idx || 0);
+    var hash = 0;
+    for (var i = 0; i < str.length; i++) {
+      hash = ((hash << 5) - hash) + str.charCodeAt(i);
+      hash |= 0;
+    }
+    var numPart = String(Math.abs(hash)).padStart(6, '0').slice(0, 6);
+    return 'TRX-' + numPart;
+  }
+
+  function formatTxIdDisplay(rawId, fallbackSeed, idx) {
+    if (rawId && /^TRX-[A-Z0-9]+$/i.test(String(rawId).trim())) {
+      var clean = String(rawId).trim().toUpperCase();
+      var suffix = clean.replace(/^TRX-/, '');
+      if (suffix.length > 7) {
+        return 'TRX-' + suffix.slice(-6);
+      }
+      return clean;
+    }
+    return generateTxId(fallbackSeed, idx);
+  }
+
+  // ================= 4. RENDER LOG TRANSAKSI =================
+  var txContainer = document.getElementById('cc-tx-container');
+  var txTotalCount = document.getElementById('tx-total-count');
+  var txUnpaidDebt = document.getElementById('tx-unpaid-debt');
+
+  function escHtml(s) {
+    return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  }
+
+  function formatNominalDot(num) {
+    var val = Math.max(0, Math.round(Number(num) || 0));
+    return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  }
+
+  function formatScanDate(log) {
+    if (log.scannedAt) {
+      var d = new Date(log.scannedAt);
+      if (!isNaN(d.getTime())) {
+        var months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+        var day = String(d.getDate()).padStart(2, '0');
+        var mon = months[d.getMonth()];
+        var yr = d.getFullYear();
+        var hr = String(d.getHours()).padStart(2, '0');
+        var min = String(d.getMinutes()).padStart(2, '0');
+        return day + ' ' + mon + ' ' + yr + ', ' + hr + ':' + min;
+      }
+    }
+    return log.date || '-';
+  }
+
+  function statusToClass(status) {
+    return 'status-' + String(status || 'diproses').toLowerCase().replace(/\s+/g, '-');
+  }
+
+  function renderUnpaidSummary() {
+    if (!txUnpaidDebt) return;
+    var debt = Number(localStorage.getItem('cc_unpaid_debt'));
+    if (isNaN(debt) || debt < 0) debt = 0;
+    txUnpaidDebt.textContent = 'Rp ' + formatNominalDot(debt);
+    txUnpaidDebt.classList.toggle('is-clear', debt === 0);
+  }
+
+  window.loadTransactions = function loadTransactions() {
+    renderUnpaidSummary();
+
+    var debtLogs = [];
+    var needPersistLogs = false;
+    try {
+      debtLogs = JSON.parse(localStorage.getItem('cc_debt_logs') || '[]');
+      if (!Array.isArray(debtLogs)) debtLogs = [];
+    } catch (e) {
+      debtLogs = [];
+    }
+
+    var transactions = [];
+    try {
+      transactions = JSON.parse(localStorage.getItem('cc_transactions') || '[]');
+      if (!Array.isArray(transactions)) transactions = [];
+    } catch (e) {
+      transactions = [];
+    }
+
+    var totalAll = debtLogs.length + transactions.length;
+    if (txTotalCount) {
+      txTotalCount.textContent = totalAll + ' Transaksi';
+    }
+
+    if (!txContainer) return;
+
+    if (totalAll === 0) {
+      txContainer.innerHTML = '<div class="cc-empty-state">Belum ada log transaksi aktif.<br>Scan kode di menu utama atau lakukan pemesanan produk.</div>';
+      return;
+    }
+
+    var codeLogsHtml = debtLogs.map(function (log, index) {
+      var decoded = decodeProductFromCode(log.code);
+      var isBayar = (log.mode === 'bayar') || (decoded && decoded.mode === 'bayar');
+
+      var titleText = '';
+      var categoryBadge = '';
+
+      if (isBayar) {
+        var resolvedMethod = log.paymentMethod || (decoded ? decoded.paymentMethod : '');
+        if (resolvedMethod) {
+          titleText = 'Pembayaran ' + resolvedMethod;
+          categoryBadge = 'Bayar';
+        } else if (log.productName && log.productName !== 'Pelunasan Utang') {
+          titleText = log.productName;
+          categoryBadge = log.category || 'Bayar';
+        } else {
+          titleText = 'Pelunasan Utang';
+          categoryBadge = 'Bayar';
+        }
+      } else if (log.productName && log.productName !== 'Transaksi Umum') {
+        titleText = log.productName;
+        categoryBadge = log.category || (decoded ? decoded.category : '');
+      } else if (decoded && decoded.productName) {
+        titleText = decoded.productName;
+        categoryBadge = decoded.category || '';
+      } else {
+        titleText = 'Pembelian Umum';
+        categoryBadge = 'Umum';
+      }
+
+      var txId = formatTxIdDisplay(log.txId || log.id, (log.scannedAt || log.date || '') + '|' + (log.nominal || 0), index);
+      if (!log.txId) {
+        log.txId = txId;
+        needPersistLogs = true;
+      }
+
+      var statusLabel = isBayar ? 'Dibayar' : 'Utang';
+      var statusClass = isBayar ? 'status-bayar' : 'status-beli';
+      var iconClass = isBayar ? 'icon-bayar' : 'icon-beli';
+      var nominalText = (isBayar ? '-Rp ' : 'Rp ') + formatNominalDot(log.nominal);
+      var dateStr = formatScanDate(log);
+
+      var iconSvg = isBayar
+        ? '<svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>'
+        : '<svg viewBox="0 0 24 24"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49A1.003 1.003 0 0 0 20 4H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg>';
+
+      return '<div class="cc-tx-item">' +
+        '<div class="cc-tx-info">' +
+          '<div class="cc-tx-icon ' + iconClass + '">' + iconSvg + '</div>' +
+          '<div class="cc-tx-details">' +
+            '<div class="cc-tx-name">' + escHtml(titleText) + '</div>' +
+            '<div class="cc-tx-sub' + (isBayar ? ' is-bayar' : '') + '">' +
+              '<span>' + escHtml(nominalText) + '</span>' +
+              (categoryBadge ? '<span class="cc-tx-cat-pill">' + escHtml(categoryBadge) + '</span>' : '') +
+            '</div>' +
+            '<div class="cc-tx-date">' + escHtml(dateStr) + '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="cc-tx-action-wrap">' +
+          '<div class="cc-tx-status ' + statusClass + '">' + statusLabel + '</div>' +
+          '<div class="cc-tx-id-tag">ID: ' + escHtml(txId) + '</div>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+
+    if (needPersistLogs) {
+      try {
+        localStorage.setItem('cc_debt_logs', JSON.stringify(debtLogs));
+      } catch (e) {}
+    }
+
+    var regularTxHtml = transactions.map(function (tx, index) {
+      var statusLabel = tx.status || 'Diproses';
+      var statusClass = statusToClass(statusLabel);
+      var txId = formatTxIdDisplay(tx.txId || tx.id, (tx.productName || '') + '|' + (tx.date || ''), index + 1000);
+      var waCancelLink = "https://wa.me/6283180663737?text=" + encodeURIComponent(
+        "Halo Kak, saya ingin membatalkan pesanan:\n\nID Transaksi: " + txId + "\nProduk: " + tx.productName + "\nWaktu: " + tx.date
+      );
+
+      return '<div class="cc-tx-item">' +
+        '<div class="cc-tx-info">' +
+          '<div class="cc-tx-icon">' +
+            '<svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>' +
+          '</div>' +
+          '<div class="cc-tx-details">' +
+            '<div class="cc-tx-name">' + escHtml(tx.productName) + '</div>' +
+            '<div class="cc-tx-sub"><span class="cc-tx-cat-pill">ID: ' + escHtml(txId) + '</span></div>' +
+            '<div class="cc-tx-date">' + escHtml(tx.date) + '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="cc-tx-action-wrap">' +
+          '<div class="cc-tx-status ' + statusClass + '">' + escHtml(statusLabel) + '</div>' +
+          '<a class="cc-btn-cancel" href="' + waCancelLink + '" target="_blank" rel="noopener">Batalkan</a>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+
+    txContainer.innerHTML = codeLogsHtml + regularTxHtml;
+  };
+
+  window.addEventListener('storage', function(e) {
+    if (e.key === 'cc_bg_mode' || !e.key) syncBackground();
+    if (e.key === 'cc_nav_mode' || !e.key) syncNavModeFromStorage();
+    if (e.key === 'cc_user_avatar') updateHeaderAvatar();
+    if (e.key === 'cc_fab_movable') {
+      updateFabVisualState();
+      if (!isFabMovable()) resetFabPosition();
+      else applySavedFabPosition();
+    }
+    if (e.key === 'cc_fab_position') {
+      if (isFabMovable()) applySavedFabPosition();
+    }
+    if (e.key === 'cc_transactions' || e.key === 'cc_debt_logs' || e.key === 'cc_unpaid_debt') {
+      loadTransactions();
+    }
+  });
+
+  window.addEventListener('pageshow', function () {
+    syncBackground();
+    syncNavModeFromStorage();
+    updateHeaderAvatar();
+    loadTransactions();
+  });
+
+  window.addEventListener('focus', function () {
+    syncBackground();
+    syncNavModeFromStorage();
+    loadTransactions();
+  });
+
+  loadTransactions();
+
+});
+</script>
+
+</body>
+</html>

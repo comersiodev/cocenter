@@ -1,0 +1,1534 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Co Center - Pengaturan</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,700;0,800;1,400&display=swap" rel="stylesheet">
+
+<style>
+  #cc-container, #cc-container * {
+    font-family: 'JetBrains Mono', monospace !important;
+    box-sizing: border-box;
+  }
+
+  html, body {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    height: 100dvh !important;
+    overflow: hidden !important;
+    background: #05060a !important;
+    color: #fff;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  #cc-container {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    height: 100dvh;
+    z-index: 999999;
+    background: #05060a;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    padding-top: calc(64px + env(safe-area-inset-top, 0px));
+    padding-bottom: calc(92px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .cc-main-shell {
+    width: 100%;
+    max-width: 540px;
+    margin: 0 auto;
+  }
+
+  /* ================= BACKGROUND ================= */
+  .cc-bg.bg-simple {
+    position: fixed; inset: 0; z-index: -1;
+    background: linear-gradient(135deg, #090a0f 0%, #12151f 50%, #1a1614 100%) !important;
+    background-size: cover;
+  }
+  .cc-overlay.bg-simple {
+    position: fixed; inset: 0; z-index: -1;
+    background: rgba(12, 10, 8, 0.65) !important;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+
+  .cc-bg.bg-default {
+    position: fixed; inset: 0; z-index: -1;
+    background: #000 url('https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh9DocQHrQw9p05Lbkght7m-rpO8O2HS6s3VG28Nc7FW6LPePf_AYJ3E104I15aD8OUsQRINz7QGbgv7EeJXKZKXdecQ-RAHvowdbS5vPqDrfZ63ZC3w-FOPKWPcVBKY5IFdenDmRixqc-Jy8BvVpAp6ReI7Io5UdxjNnlzY_TZLuTW6xaepq9RkRMA92kV/s1600/11.gif') no-repeat center center;
+    background-size: cover;
+  }
+  .cc-overlay.bg-default {
+    position: fixed; inset: 0; z-index: -1;
+    background: rgba(3,4,8,0.78);
+  }
+
+  /* ================= HEADER FIXED ================= */
+  .cc-nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    width: 100%;
+    z-index: 200;
+    padding: calc(11px + env(safe-area-inset-top, 0px)) 16px 11px;
+    background: rgba(5, 6, 10, 0.9);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  }
+  .cc-nav-inner {
+    width: 100%;
+    max-width: 540px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .cc-brand { display:flex; align-items:center; gap:10px; font-weight:800; font-size:16px; color:#fff; letter-spacing:-0.5px; }
+  .cc-img { width:30px; height:30px; border-radius:8px; cursor:default; object-fit: cover; }
+  .cc-brand-wrap { display:flex; flex-direction:column; gap:1px; }
+  .cc-brand-row { display:flex; align-items:center; gap:10px; }
+  .cc-subtitle {
+    font-size: 8.5px; font-weight:700; color:#a9b2c3;
+    letter-spacing: 2px; text-transform: uppercase; margin-left: 40px;
+  }
+
+  .cc-section { padding: 14px 16px 20px; }
+
+  /* ================= PROFILE CARD DENGAN BANNER ================= */
+  .cc-profile-preview-card {
+    background: #0d0f16;
+    border: 1.5px solid rgba(255, 210, 63, 0.35);
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 22px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    display: flex;
+    flex-direction: column;
+  }
+  .cc-preview-banner {
+    position: relative;
+    width: 100%;
+    height: 100px;
+    background: linear-gradient(135deg, #171b29 0%, #241f14 55%, #121520 100%);
+    border-bottom: 1px solid rgba(255, 210, 63, 0.25);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .cc-preview-banner img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .cc-preview-body-row {
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: #0d0f16;
+  }
+  .cc-preview-avatar {
+    width: 52px; height: 52px; border-radius: 50%; overflow: hidden;
+    border: 2px solid #ffd23f; background: #151824;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    margin-top: -30px;
+    z-index: 3;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+  }
+  .cc-preview-avatar img { width: 100%; height: 100%; object-fit: cover; }
+  .cc-preview-avatar svg { width: 26px; height: 26px; fill: #ffd23f; }
+  
+  .cc-preview-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+  .cc-preview-name { font-weight: 800; font-size: 14px; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .cc-preview-status { font-size: 10.5px; color: #29e0c9; font-weight: 700; }
+
+  .cc-sec-title {
+    font-weight: 800; color: #29e0c9; margin-bottom: 10px; font-size: 11px;
+    text-transform: uppercase; letter-spacing: 1px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .cc-sec-title::after { content:''; flex:1; height:1px; background: rgba(41,224,201,0.25); }
+
+  .cc-settings-group {
+    background: #0d0f16;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 15px;
+    margin-bottom: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .cc-setting-divider {
+    height: 1px;
+    background: rgba(255, 255, 255, 0.07);
+    width: 100%;
+  }
+  .cc-setting-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    transition: opacity 0.25s ease;
+  }
+  .cc-setting-item.is-disabled {
+    opacity: 0.42;
+    pointer-events: none;
+  }
+  .cc-setting-col {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .cc-setting-label { font-size: 12.5px; font-weight: 700; color: #fff; }
+  .cc-setting-desc { font-size: 10.5px; color: #a9b2c3; line-height: 1.4; margin-top: 2px; }
+
+  /* ================= INFO FILE DINAMIS & STATUS GIST ================= */
+  .cc-file-preview-box {
+    background: #05060a;
+    border: 1px dashed rgba(41, 224, 201, 0.35);
+    border-radius: 10px;
+    padding: 9px 12px;
+    font-size: 10px;
+    color: #a9b2c3;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    word-break: break-all;
+  }
+  .cc-file-preview-box strong {
+    color: #ffd23f;
+    font-size: 10.5px;
+  }
+  .cc-gist-status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 9.5px;
+    font-weight: 800;
+    padding: 4px 9px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.06);
+    color: #a9b2c3;
+    width: fit-content;
+  }
+  .cc-gist-status-pill.is-connected {
+    background: rgba(41, 224, 201, 0.14);
+    color: #29e0c9;
+    border: 1px solid rgba(41, 224, 201, 0.3);
+  }
+
+  /* ================= OPSI PILIHAN NAVBAR ================= */
+  .cc-nav-mode-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 9px;
+    margin-top: 2px;
+  }
+  .cc-nav-mode-card {
+    background: #131724;
+    border: 1.5px solid rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
+    padding: 11px 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 6px;
+    cursor: pointer;
+    color: #a9b2c3;
+    transition: border-color 0.2s ease, background 0.2s ease, transform 0.15s ease, color 0.2s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .cc-nav-mode-card:active { transform: scale(0.97); }
+  .cc-nav-mode-card.is-active {
+    border-color: #29e0c9;
+    background: rgba(41, 224, 201, 0.11);
+    color: #fff;
+    box-shadow: 0 4px 14px rgba(41, 224, 201, 0.15);
+  }
+  .cc-nav-mode-icon {
+    width: 34px; height: 34px; border-radius: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    display: flex; align-items: center; justify-content: center;
+    color: #a9b2c3;
+  }
+  .cc-nav-mode-card.is-active .cc-nav-mode-icon {
+    background: rgba(41, 224, 201, 0.18);
+    color: #29e0c9;
+  }
+  .cc-nav-mode-icon svg {
+    width: 19px; height: 19px; stroke: currentColor; fill: none;
+    stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
+  }
+  .cc-nav-mode-title { font-size: 11px; font-weight: 800; line-height: 1.2; }
+  .cc-nav-mode-badge {
+    font-size: 8.5px; font-weight: 800; padding: 2px 7px; border-radius: 999px;
+    background: rgba(255, 255, 255, 0.07); color: #7d879c;
+    text-transform: uppercase; letter-spacing: 0.4px;
+  }
+  .cc-nav-mode-card.is-active .cc-nav-mode-badge {
+    background: rgba(255, 210, 63, 0.16); color: #ffd23f;
+  }
+
+  /* ================= SWITCH TOGGLE ================= */
+  .cc-switch { position: relative; display: inline-block; width: 44px; height: 24px; flex-shrink: 0; }
+  .cc-switch input { opacity: 0; width: 0; height: 0; }
+  .cc-slider {
+    position: absolute; cursor: pointer; inset: 0;
+    background-color: #1a1d2e; border: 1px solid rgba(255,255,255,0.2);
+    transition: .3s; border-radius: 24px;
+  }
+  .cc-slider:before {
+    position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px;
+    background-color: white; transition: .3s; border-radius: 50%;
+  }
+  input:checked + .cc-slider { background-color: #29e0c9; border-color: #29e0c9; }
+  input:checked + .cc-slider:before { transform: translateX(20px); background-color: #05060a; }
+
+  /* ================= BACKUP & GITHUB GIST BUTTONS ================= */
+  .cc-btn-action {
+    width: 100%; padding: 12px; border-radius: 12px;
+    font-weight: 800; font-size: 11.5px; cursor: pointer; border: none;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    text-decoration: none;
+    transition: transform 0.15s ease, opacity 0.2s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .cc-btn-action:disabled { opacity: 0.5; cursor: not-allowed; }
+  .cc-btn-action svg { width: 16px; height: 16px; fill: currentColor; flex-shrink: 0; }
+  .cc-btn-action:active:not(:disabled) { transform: scale(0.97); }
+  .cc-btn-google { background: rgba(124, 92, 255, 0.15); color: #7c5cff; border: 1px solid rgba(124, 92, 255, 0.4); }
+  .cc-btn-sd { background: rgba(255, 210, 63, 0.15); color: #ffd23f; border: 1px solid rgba(255, 210, 63, 0.4); }
+  .cc-btn-gist { background: rgba(41, 224, 201, 0.15); color: #29e0c9; border: 1px solid rgba(41, 224, 201, 0.4); }
+
+  /* ================= MODAL GITHUB GIST ================= */
+  .cc-modal-overlay {
+    position: fixed; inset: 0; z-index: 1000000;
+    background: rgba(3, 4, 8, 0.88); backdrop-filter: blur(8px);
+    display: flex; align-items: center; justify-content: center; padding: 20px;
+    opacity: 0; visibility: hidden; transition: all 0.3s ease;
+  }
+  .cc-modal-overlay.show { opacity: 1; visibility: visible; }
+  .cc-modal-box {
+    background: #0d0f16; border: 1.5px solid rgba(41, 224, 201, 0.35); border-radius: 20px;
+    padding: 20px; width: 100%; max-width: 410px;
+    display: flex; flex-direction: column; gap: 12px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.7);
+    max-height: 90dvh;
+    overflow-y: auto;
+  }
+  .cc-modal-title { font-weight: 800; font-size: 13px; color: #29e0c9; text-transform: uppercase; letter-spacing: 0.5px; }
+  .cc-modal-desc { font-size: 10.5px; color: #a9b2c3; line-height: 1.45; }
+  .cc-modal-label { font-size: 10px; font-weight: 700; color: #a9b2c3; margin-bottom: 4px; display: block; }
+  .cc-modal-url-display {
+    background: #05060a; border: 1px dashed rgba(41, 224, 201, 0.5); border-radius: 12px;
+    padding: 10px 11px; font-size: 10px; font-weight: 700; color: #ffd23f; text-align: left;
+    user-select: all; word-break: break-all; line-height: 1.45;
+  }
+  .cc-modal-input {
+    width: 100%; background: #05060a; border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px; padding: 11px 13px; color: #fff; font-size: 11px; font-weight: 700;
+    outline: none;
+  }
+  .cc-modal-input:focus { border-color: #29e0c9; }
+  .cc-modal-actions { display: flex; gap: 8px; width: 100%; margin-top: 2px; }
+
+  /* ================= DAFTAR FILE JSON DI GIST ================= */
+  .cc-gist-file-list {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    max-height: 180px;
+    overflow-y: auto;
+    padding-right: 2px;
+  }
+  .cc-gist-file-item {
+    background: #05060a;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 10px;
+    padding: 9px 11px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .cc-gist-file-name {
+    font-size: 10px;
+    font-weight: 800;
+    color: #fff;
+    word-break: break-all;
+  }
+  .cc-gist-file-meta {
+    font-size: 9px;
+    color: #7d879c;
+    margin-top: 2px;
+  }
+  .cc-gist-file-btn {
+    background: rgba(124, 92, 255, 0.2);
+    color: #a792ff;
+    border: 1px solid rgba(124, 92, 255, 0.45);
+    border-radius: 8px;
+    padding: 6px 10px;
+    font-size: 10px;
+    font-weight: 800;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .cc-gist-file-btn:active { transform: scale(0.95); }
+
+  /* ================= TOAST ================= */
+  .cc-toast {
+    position: fixed; bottom: calc(84px + env(safe-area-inset-bottom, 0px)); left: 50%; transform: translateX(-50%) translateY(20px);
+    background: rgba(13, 15, 22, 0.96); border: 1px solid #29e0c9; color: #29e0c9;
+    padding: 9px 18px; border-radius: 20px; font-size: 11px; font-weight: 800;
+    z-index: 1000001; opacity: 0; visibility: hidden; transition: all 0.3s ease;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.55); max-width: 90vw; text-align: center;
+  }
+  .cc-toast.show { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
+
+  /* ================= NAVBAR BAWAH & FAB ================= */
+  .cc-bottom-nav {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 999999;
+    background: rgba(11, 13, 20, 0.94); backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-top: 1px solid rgba(255, 210, 63, 0.25);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    box-shadow: 0 -6px 24px rgba(0, 0, 0, 0.55);
+  }
+  .cc-bottom-nav-inner {
+    width: 100%; max-width: 540px; margin: 0 auto; height: 60px;
+    display: grid; grid-template-columns: repeat(4, 1fr); align-items: center;
+  }
+  .cc-bnav-item {
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+    height: 100%; text-decoration: none; color: #a9b2c3;
+    transition: color 0.18s ease, transform 0.15s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .cc-bnav-item svg { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .cc-bnav-item span { font-size: 9.5px; font-weight: 700; letter-spacing: 0.2px; }
+  .cc-bnav-item:hover, .cc-bnav-item.is-active { color: #ffd23f; }
+  .cc-bnav-item:active { transform: scale(0.92); }
+
+  .cc-fab-stage {
+    position: fixed; left: 50%; bottom: env(safe-area-inset-bottom, 0px);
+    transform: translateX(-50%); width: 200px; height: 125px; z-index: 999999; pointer-events: none; transition: filter 0.2s ease;
+  }
+  .cc-fab-stage.cc-fab-grabbable { filter: drop-shadow(0 0 6px rgba(255, 210, 63, 0.4)); }
+
+  .cc-fab-dock {
+    position: absolute; left: 50%; bottom: -95px; width: 190px; height: 190px; margin-left: -95px;
+    border-radius: 50%; background: #0d0f16; border: 1.5px solid rgba(255, 210, 63, 0.65);
+    box-shadow: 0 -6px 20px rgba(0,0,0,0.5), 0 0 12px rgba(255,210,63,0.1);
+    opacity: 0; transform: scale(0.3) rotate(-180deg); transform-origin: 50% 100%;
+    transition: transform 0.55s cubic-bezier(0.34, 1.2, 0.64, 1), opacity 0.3s ease;
+    pointer-events: none; overflow: hidden;
+  }
+  .cc-fab-stage.cc-fab-open .cc-fab-dock { opacity: 1; transform: scale(1) rotate(0deg); }
+
+  .cc-fab-slice { position: absolute; left: 50%; top: 50%; width: 95px; height: 95px; transform-origin: 0% 0%; pointer-events: none; }
+  .cc-fab-slice[data-s="0"] { transform: rotate(-180deg) skewY(-45deg); background: rgba(255,210,63,0.06); }
+  .cc-fab-slice[data-s="1"] { transform: rotate(-135deg) skewY(-45deg); background: rgba(255,210,63,0.12); }
+  .cc-fab-slice[data-s="2"] { transform: rotate(-90deg)  skewY(-45deg); background: rgba(255,210,63,0.06); }
+  .cc-fab-slice[data-s="3"] { transform: rotate(-45deg)  skewY(-45deg); background: rgba(255,210,63,0.12); }
+
+  .cc-fab-slice-line { position: absolute; left: 50%; top: 50%; width: 1px; height: 95px; background: rgba(255,210,63,0.35); transform-origin: 50% 0%; }
+  .cc-fab-slice-line[data-l="0"] { transform: rotate(-180deg); }
+  .cc-fab-slice-line[data-l="1"] { transform: rotate(-135deg); }
+  .cc-fab-slice-line[data-l="2"] { transform: rotate(-90deg); }
+  .cc-fab-slice-line[data-l="3"] { transform: rotate(-45deg); }
+  .cc-fab-slice-line[data-l="4"] { transform: rotate(0deg); }
+
+  .cc-fab-main {
+    position: absolute; left: 50%; bottom: 10px; width: 54px; height: 54px; margin-left: -27px;
+    border-radius: 50%; background: #0d0f16; border: 1px solid rgba(255, 210, 63, 0.55);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5); display: flex; align-items: center; justify-content: center;
+    cursor: pointer; pointer-events: auto; overflow: hidden; z-index: 5; touch-action: none;
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), bottom 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.3s ease, background 0.3s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .cc-fab-stage.cc-fab-open .cc-fab-main { bottom: -6px; background: #161822; border-color: rgba(255, 210, 63, 0.4); transform: rotate(360deg); }
+  .cc-fab-main .cc-fab-logo { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; object-position: center; display: block; position: absolute; top: 0; left: 0; transition: opacity 0.2s ease, transform 0.35s ease; pointer-events: none; }
+  .cc-fab-main .cc-fab-icon-close { width: 20px; height: 20px; fill: none; stroke: #ffd23f; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; position: absolute; top: 50%; left: 50%; opacity: 0; transform: translate(-50%, -50%) scale(0.4) rotate(-90deg); transition: opacity 0.2s ease, transform 0.35s ease; }
+  .cc-fab-stage.cc-fab-open .cc-fab-main .cc-fab-logo { opacity: 0; transform: scale(0.4) rotate(90deg); }
+  .cc-fab-stage.cc-fab-open .cc-fab-main .cc-fab-icon-close { opacity: 1; transform: translate(-50%, -50%) scale(1) rotate(0deg); }
+
+  .cc-fab-item {
+    position: absolute; left: 50%; bottom: 12px; width: 38px; height: 38px; margin-left: -19px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+    text-decoration: none; opacity: 0; pointer-events: none; transform: translate(0px, 0px) scale(0.3) rotate(-90deg);
+    transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.25s ease; z-index: 4;
+  }
+  .cc-fab-item svg { width: 16px; height: 16px; fill: none; stroke: #ffd23f; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.6)); }
+  .cc-fab-item span { font-size: 7.5px; font-weight: 700; color: #ffd23f; white-space: nowrap; text-shadow: 0 2px 3px rgba(0,0,0,0.8); }
+  .cc-fab-stage.cc-fab-open .cc-fab-item { opacity: 1; pointer-events: auto; }
+  .cc-fab-item[data-i="0"] { transition-delay: 0.10s; }
+  .cc-fab-item[data-i="1"] { transition-delay: 0.22s; }
+  .cc-fab-item[data-i="2"] { transition-delay: 0.34s; }
+  .cc-fab-item[data-i="3"] { transition-delay: 0.46s; }
+  .cc-fab-stage.cc-fab-open .cc-fab-item[data-i="0"] { transform: translate(-54px, 20px) scale(1) rotate(0deg); }
+  .cc-fab-stage.cc-fab-open .cc-fab-item[data-i="1"] { transform: translate(-26px, -34px) scale(1) rotate(0deg); }
+  .cc-fab-stage.cc-fab-open .cc-fab-item[data-i="2"] { transform: translate(26px, -34px) scale(1) rotate(0deg); }
+  .cc-fab-stage.cc-fab-open .cc-fab-item[data-i="3"] { transform: translate(54px, 20px) scale(1) rotate(0deg); }
+
+  .cc-fab-backdrop {
+    position: fixed; inset: 0; z-index: 999998; background: rgba(3,4,8,0.4);
+    opacity: 0; visibility: hidden; pointer-events: none; transition: opacity 0.3s ease, visibility 0.3s ease;
+  }
+  .cc-fab-backdrop.cc-fab-backdrop-show { opacity: 1; visibility: visible; pointer-events: auto; }
+
+  @media (min-width: 480px) {
+    .cc-nav { padding-left: 24px; padding-right: 24px; }
+    .cc-section { padding-left: 24px; padding-right: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="cc-container">
+  <div class="cc-bg bg-simple" id="cc-bg-element"></div>
+  <div class="cc-overlay bg-simple" id="cc-overlay-element"></div>
+
+  <!-- HEADER -->
+  <div class="cc-nav">
+    <div class="cc-nav-inner">
+      <div class="cc-brand-wrap">
+        <div class="cc-brand-row cc-brand">
+          <img class="cc-img" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjgKAkQ6fTJOBPoOVz21klx2Vw6CXegaFe7QnvWoaDZTt1raufO5Ikvqu0JrP93QUf_iAcqVp8IkcTZjTx_e1mMqJENEYIpEjv-br9ApdDAeMiPcm8xoO-dFAmPJa-9y22yJdNme0Eb-EFxm-dS0Pd2UwUNu2cfB5pxS7KA7RP1JPKB-79xmqs5Vl9pSYHn/s1600/IMG_20260808_230713.png">
+          CO CENTER
+        </div>
+        <div class="cc-subtitle">Pengaturan</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cc-main-shell">
+    <div class="cc-section">
+      
+      <!-- PREVIEW PROFILE DENGAN BANNER & AVATAR -->
+      <div class="cc-profile-preview-card">
+        <div class="cc-preview-banner" id="preview-banner-box">
+          <div style="font-size:9.5px; font-weight:700; color:rgba(255,210,63,0.5); text-transform:uppercase; letter-spacing:1px;">Banner Profil</div>
+        </div>
+        <div class="cc-preview-body-row">
+          <div class="cc-preview-avatar" id="preview-avatar-box">
+            <svg viewBox="0 0 24 24">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
+            </svg>
+          </div>
+          <div class="cc-preview-info">
+            <div class="cc-preview-name" id="preview-name">Tamu Co Center</div>
+            <div class="cc-preview-status" id="preview-status">Belum Masuk / Offline</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAMPILAN & NAVIGASI -->
+      <div class="cc-sec-title">Tampilan &amp; Navigasi</div>
+      <div class="cc-settings-group">
+
+        <!-- OPSI GAYA NAVBAR -->
+        <div class="cc-setting-col">
+          <div>
+            <div class="cc-setting-label">Gaya Navigasi Bawah</div>
+            <div class="cc-setting-desc">Pilih tampilan menu navigasi antara Navbar bawah standar atau tombol bulat FAB.</div>
+          </div>
+
+          <div class="cc-nav-mode-grid">
+            <button type="button" class="cc-nav-mode-card is-active" id="opt-nav-navbar" data-nav-mode="navbar">
+              <div class="cc-nav-mode-icon">
+                <svg viewBox="0 0 24 24">
+                  <rect x="2" y="14" width="20" height="7" rx="2"/>
+                  <line x1="6" y1="17.5" x2="6.01" y2="17.5"/>
+                  <line x1="10" y1="17.5" x2="10.01" y2="17.5"/>
+                  <line x1="14" y1="17.5" x2="14.01" y2="17.5"/>
+                  <line x1="18" y1="17.5" x2="18.01" y2="17.5"/>
+                </svg>
+              </div>
+              <div class="cc-nav-mode-title">Navbar Biasa</div>
+              <span class="cc-nav-mode-badge">Default</span>
+            </button>
+
+            <button type="button" class="cc-nav-mode-card" id="opt-nav-fab" data-nav-mode="fab">
+              <div class="cc-nav-mode-icon">
+                <svg viewBox="0 0 24 24">
+                  <circle cx="12" cy="15" r="5"/>
+                  <line x1="12" y1="13" x2="12" y2="17"/>
+                  <line x1="10" y1="15" x2="14" y2="15"/>
+                </svg>
+              </div>
+              <div class="cc-nav-mode-title">FAB Menu</div>
+              <span class="cc-nav-mode-badge">Opsi 2</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="cc-setting-divider"></div>
+
+        <!-- TOGGLE FAB BISA DIGESER -->
+        <div class="cc-setting-item is-disabled" id="fab-movable-row">
+          <div>
+            <div class="cc-setting-label">FAB Bisa Digeser</div>
+            <div class="cc-setting-desc">Aktifkan untuk memindahkan posisi tombol FAB sesuai keinginan. Posisi otomatis tersimpan.</div>
+          </div>
+          <label class="cc-switch">
+            <input type="checkbox" id="fab-movable-toggle">
+            <span class="cc-slider"></span>
+          </label>
+        </div>
+
+        <div class="cc-setting-divider"></div>
+
+        <!-- TOGGLE BACKGROUND BERGERAK -->
+        <div class="cc-setting-item">
+          <div>
+            <div class="cc-setting-label">Background Bergerak</div>
+            <div class="cc-setting-desc">Aktifkan animasi GIF bergerak pada latar belakang (default menggunakan tema sederhana statis).</div>
+          </div>
+          <label class="cc-switch">
+            <input type="checkbox" id="theme-toggle">
+            <span class="cc-slider"></span>
+          </label>
+        </div>
+
+      </div>
+
+      <!-- GITHUB GIST SAVE DATA -->
+      <div class="cc-sec-title">GitHub Gist Save Data</div>
+      <div class="cc-settings-group">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px; flex-wrap:wrap;">
+          <div>
+            <div class="cc-setting-label" style="margin-bottom: 4px;">Save Data JSON Dinamis</div>
+            <div class="cc-setting-desc">Format otomatis: <b>NamaPengguna + WaktuFirstInstall.json</b> dan langsung di-push ke GitHub Gist.</div>
+          </div>
+          <span class="cc-gist-status-pill" id="gist-connection-badge">Gist: Belum Terhubung</span>
+        </div>
+
+        <!-- PREVIEW NAMA FILE DINAMIS -->
+        <div class="cc-file-preview-box">
+          <span>Nama File JSON Dinamis Saat Ini:</span>
+          <strong id="dynamic-filename-preview">Tamu_2026-01-01_00-00-00.json</strong>
+        </div>
+        
+        <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 2px;">
+          <button type="button" class="cc-btn-action cc-btn-gist" id="btn-open-gist-save">
+            <svg viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+            Simpan &amp; Upload ke GitHub Gist
+          </button>
+
+          <button type="button" class="cc-btn-action cc-btn-google" id="btn-open-gist-load">
+            <svg viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"/></svg>
+            Ambil Data dari GitHub Gist
+          </button>
+
+          <button type="button" class="cc-btn-action cc-btn-sd" id="btn-backup-sd">
+            <svg viewBox="0 0 24 24"><path d="M18 2h-8L4 8v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 14h-2v4h-4v-4H8v-2h8v2zm0-6H8V6h8v4z"/></svg>
+            Download File Cadangan (.json)
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div class="cc-toast" id="cc-toast">Berhasil menyinkronkan data!</div>
+
+</div>
+
+<!-- ===== MODAL GITHUB GIST UPLOAD & RESTORE ===== -->
+<div class="cc-modal-overlay" id="cc-gist-modal">
+  <div class="cc-modal-box">
+    <div class="cc-modal-title" id="cc-modal-heading">GitHub Gist Save Data</div>
+    <div class="cc-modal-desc" id="cc-modal-desc">Upload file JSON dinamis ke GitHub Gist.</div>
+    
+    <!-- VIEW 1: UPLOAD KE GITHUB GIST -->
+    <div id="cc-modal-view-save" style="display:flex; flex-direction:column; gap:10px;">
+      <div>
+        <label class="cc-modal-label">1. GitHub Personal Access Token (Scope: gist) *</label>
+        <input type="password" class="cc-modal-input" id="cc-gh-token-input" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" autocomplete="off" spellcheck="false">
+      </div>
+
+      <div>
+        <label class="cc-modal-label">2. Master Gist ID / Link Gist (Opsional)</label>
+        <input type="text" class="cc-modal-input" id="cc-gh-gistid-input" placeholder="Kosongkan untuk otomatis buat Gist baru..." autocomplete="off" spellcheck="false">
+      </div>
+
+      <div class="cc-file-preview-box">
+        <span>File JSON yang akan di-upload:</span>
+        <strong id="modal-target-filename">-</strong>
+      </div>
+
+      <button type="button" class="cc-btn-action cc-btn-gist" id="btn-push-gist-now" style="padding:11px;">
+        Upload / Update ke GitHub Gist
+      </button>
+
+      <!-- HASIL LINK GIST & RAW JSON -->
+      <div id="cc-gist-result-wrap" style="display:none; flex-direction:column; gap:8px; margin-top:2px;">
+        <div>
+          <label class="cc-modal-label" style="color:#29e0c9;">Link Raw JSON (Format Dinamis):</label>
+          <div class="cc-modal-url-display" id="cc-display-raw-url">https://gist.githubusercontent.com/...</div>
+        </div>
+        <div class="cc-modal-actions">
+          <button type="button" class="cc-btn-action cc-btn-gist" id="btn-copy-raw-url" style="padding:9px;">Salin Raw JSON</button>
+          <button type="button" class="cc-btn-action cc-btn-sd" id="btn-copy-gist-url" style="padding:9px;">Salin Link Gist</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- VIEW 2: AMBIL DATA DARI GITHUB GIST -->
+    <div id="cc-modal-view-load" style="display:none; flex-direction:column; gap:10px;">
+      <div>
+        <label class="cc-modal-label">Link Raw JSON / Link Gist / Gist ID</label>
+        <input type="text" class="cc-modal-input" id="cc-input-gist-url" placeholder="https://gist.githubusercontent.com/.../*.json" autocomplete="off" spellcheck="false">
+      </div>
+
+      <button type="button" class="cc-btn-action cc-btn-google" id="btn-fetch-gist-now" style="padding:11px;">
+        Ambil &amp; Pulihkan Data
+      </button>
+
+      <!-- DAFTAR FILE JSON OTOMATIS JIKA ADA DI GIST -->
+      <div id="cc-gist-filelist-wrap" style="display:none; flex-direction:column; gap:6px; margin-top:2px;">
+        <label class="cc-modal-label" style="color:#ffd23f;">File Save JSON Ditemukan di Gist:</label>
+        <div class="cc-gist-file-list" id="cc-gist-filelist"></div>
+      </div>
+    </div>
+
+    <button type="button" class="cc-btn-action" id="btn-close-modal" style="background:rgba(255,255,255,0.1); color:#fff; padding:10px; margin-top:2px;">Tutup</button>
+  </div>
+</div>
+
+<!-- ===== NAVBAR BAWAH BIASA (DEFAULT) ===== -->
+<nav class="cc-bottom-nav" id="cc-bottom-nav">
+  <div class="cc-bottom-nav-inner">
+    <a class="cc-bnav-item" href="index.html">
+      <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      <span>Menu</span>
+    </a>
+
+    <a class="cc-bnav-item" href="https://lynk.id/cocenter" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+      <span>Lynk.id</span>
+    </a>
+
+    <a class="cc-bnav-item" href="transaksi.html">
+      <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/></svg>
+      <span>Transaksi</span>
+    </a>
+
+    <a class="cc-bnav-item" href="profile.html">
+      <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      <span>Profile</span>
+    </a>
+  </div>
+</nav>
+
+<!-- ===== BACKDROP FAB ===== -->
+<div class="cc-fab-backdrop" id="cc-fab-backdrop" style="display:none;"></div>
+
+<!-- ===== FAB FAN MENU GOLD (OPSI 2) ===== -->
+<div class="cc-fab-stage" id="cc-fab-stage" style="display:none;">
+
+  <div class="cc-fab-dock">
+    <div class="cc-fab-slice" data-s="0"></div>
+    <div class="cc-fab-slice" data-s="1"></div>
+    <div class="cc-fab-slice" data-s="2"></div>
+    <div class="cc-fab-slice" data-s="3"></div>
+    <div class="cc-fab-slice-line" data-l="0"></div>
+    <div class="cc-fab-slice-line" data-l="1"></div>
+    <div class="cc-fab-slice-line" data-l="2"></div>
+    <div class="cc-fab-slice-line" data-l="3"></div>
+    <div class="cc-fab-slice-line" data-l="4"></div>
+  </div>
+
+  <a class="cc-fab-item" data-i="0" href="index.html">
+    <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    <span>Menu</span>
+  </a>
+
+  <a class="cc-fab-item" data-i="1" href="https://lynk.id/cocenter" target="_blank" rel="noopener">
+    <svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+    <span>Lynk.id</span>
+  </a>
+
+  <a class="cc-fab-item" data-i="2" href="transaksi.html">
+    <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/></svg>
+    <span>Transaksi</span>
+  </a>
+
+  <a class="cc-fab-item" data-i="3" href="profile.html">
+    <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    <span>Profile</span>
+  </a>
+
+  <div class="cc-fab-main" id="cc-fab-main">
+    <img class="cc-fab-logo" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjgKAkQ6fTJOBPoOVz21klx2Vw6CXegaFe7QnvWoaDZTt1raufO5Ikvqu0JrP93QUf_iAcqVp8IkcTZjTx_e1mMqJENEYIpEjv-br9ApdDAeMiPcm8xoO-dFAmPJa-9y22yJdNme0Eb-EFxm-dS0Pd2UwUNu2cfB5pxS7KA7RP1JPKB-79xmqs5Vl9pSYHn/s1600/IMG_20260808_230713.png" alt="Co Center">
+
+    <svg class="cc-fab-icon-close" viewBox="0 0 24 24">
+      <line x1="6" y1="6" x2="18" y2="18"/>
+      <line x1="18" y1="6" x2="6" y2="18"/>
+    </svg>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+  // =========================================================================
+  // KONFIGURASI DEFAULT GITHUB GIST (OPSIONAL - BISA DIISI LANGSUNG DI SINI)
+  // =========================================================================
+  var GITHUB_GIST_CONFIG = {
+    defaultToken: '',        // Opsional: isi 'ghp_...' jika ingin tertanam otomatis
+    defaultMasterGistId: ''  // Opsional: isi ID Gist pusat jika semua user masuk 1 Gist
+  };
+
+  var toastTimer = null;
+  function showToast(msg) {
+    var toast = document.getElementById('cc-toast');
+    if (!toast) return;
+    toast.textContent = msg;
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function() {
+      toast.classList.remove('show');
+    }, 2800);
+  }
+
+  // ================= 0. FIRST INSTALL TIMESTAMP & DYNAMIC FILENAME =================
+  function getOrInitFirstInstall() {
+    var ts = localStorage.getItem('cc_first_install');
+    if (!ts) {
+      var now = new Date();
+      var pad = function(n) { return String(n).padStart(2, '0'); };
+      // Format: YYYY-MM-DD_HH-mm-ss (aman untuk nama file & URL GitHub Gist)
+      ts = now.getFullYear() + '-' + pad(now.getMonth() + 1) + '-' + pad(now.getDate()) + '_' +
+           pad(now.getHours()) + '-' + pad(now.getMinutes()) + '-' + pad(now.getSeconds());
+      localStorage.setItem('cc_first_install', ts);
+    }
+    return ts;
+  }
+
+  function getDynamicSaveFilename() {
+    var rawName = localStorage.getItem('cc_user_name') || 'Tamu';
+    var cleanName = rawName.trim().replace(/[^a-zA-Z0-9_-]/g, '_') || 'Tamu';
+    var installTs = getOrInitFirstInstall();
+    return cleanName + '_' + installTs + '.json';
+  }
+
+  function extractGistId(inputStr) {
+    if (!inputStr) return '';
+    var match = inputStr.trim().match(/([a-f0-9]{20,32})/i);
+    return match ? match[1] : '';
+  }
+
+  function refreshGistStatusUI() {
+    var fname = getDynamicSaveFilename();
+    var prevEl = document.getElementById('dynamic-filename-preview');
+    var modalPrevEl = document.getElementById('modal-target-filename');
+    var badgeEl = document.getElementById('gist-connection-badge');
+
+    if (prevEl) prevEl.textContent = fname;
+    if (modalPrevEl) modalPrevEl.textContent = fname;
+
+    var activeGistId = localStorage.getItem('cc_gist_id') || extractGistId(GITHUB_GIST_CONFIG.defaultMasterGistId);
+    if (badgeEl) {
+      if (activeGistId) {
+        badgeEl.textContent = 'Gist: ' + activeGistId.substring(0, 8) + '...';
+        badgeEl.classList.add('is-connected');
+      } else {
+        badgeEl.textContent = 'Gist: Belum Terhubung';
+        badgeEl.classList.remove('is-connected');
+      }
+    }
+  }
+
+  getOrInitFirstInstall();
+  refreshGistStatusUI();
+
+  // ================= 1. BACKGROUND & THEME LOGIC =================
+  var bgEl = document.getElementById('cc-bg-element');
+  var overlayEl = document.getElementById('cc-overlay-element');
+  var themeToggle = document.getElementById('theme-toggle');
+
+  function updateBackground(isAnimated) {
+    if (bgEl && overlayEl) {
+      if (isAnimated) {
+        bgEl.className = 'cc-bg bg-default';
+        overlayEl.className = 'cc-overlay bg-default';
+      } else {
+        bgEl.className = 'cc-bg bg-simple';
+        overlayEl.className = 'cc-overlay bg-simple';
+      }
+    }
+  }
+
+  var storedBg = localStorage.getItem('cc_bg_mode') || 'sederhana';
+  var isAnimatedBg = (storedBg === 'default' || storedBg === 'animated');
+
+  if (themeToggle) themeToggle.checked = isAnimatedBg;
+  updateBackground(isAnimatedBg);
+
+  if (themeToggle) {
+    themeToggle.addEventListener('change', function() {
+      var animated = this.checked;
+      localStorage.setItem('cc_bg_mode', animated ? 'default' : 'sederhana');
+      updateBackground(animated);
+      showToast(animated ? 'Background Bergerak Diaktifkan' : 'Tema Sederhana (Default) Aktif');
+    });
+  }
+
+  // ================= 2. NAVBAR MODE LOGIC =================
+  var optNavbarBtn = document.getElementById('opt-nav-navbar');
+  var optFabBtn = document.getElementById('opt-nav-fab');
+  var bottomNavEl = document.getElementById('cc-bottom-nav');
+  var fabStage = document.getElementById('cc-fab-stage');
+  var fabMain = document.getElementById('cc-fab-main');
+  var fabBackdrop = document.getElementById('cc-fab-backdrop');
+  var fabMovableRow = document.getElementById('fab-movable-row');
+
+  function getNavMode() {
+    return localStorage.getItem('cc_nav_mode') === 'fab' ? 'fab' : 'navbar';
+  }
+
+  function applyNavMode(mode, notify) {
+    var isFab = (mode === 'fab');
+    localStorage.setItem('cc_nav_mode', isFab ? 'fab' : 'navbar');
+
+    if (optNavbarBtn) optNavbarBtn.classList.toggle('is-active', !isFab);
+    if (optFabBtn) optFabBtn.classList.toggle('is-active', isFab);
+    if (fabMovableRow) fabMovableRow.classList.toggle('is-disabled', !isFab);
+
+    if (isFab) {
+      if (bottomNavEl) bottomNavEl.style.display = 'none';
+      if (fabStage) fabStage.style.display = 'block';
+      if (fabBackdrop) fabBackdrop.style.display = 'block';
+      updateFabVisualState();
+      applySavedFabPosition();
+    } else {
+      closeFab();
+      if (fabStage) fabStage.style.display = 'none';
+      if (fabBackdrop) fabBackdrop.style.display = 'none';
+      if (bottomNavEl) bottomNavEl.style.display = 'block';
+    }
+
+    if (notify) {
+      showToast(isFab ? 'Navigasi FAB Diaktifkan' : 'Navbar Biasa (Default) Diaktifkan');
+    }
+  }
+
+  if (optNavbarBtn) optNavbarBtn.addEventListener('click', function () { if (getNavMode() !== 'navbar') applyNavMode('navbar', true); });
+  if (optFabBtn) optFabBtn.addEventListener('click', function () { if (getNavMode() !== 'fab') applyNavMode('fab', true); });
+
+  // ================= 3. PROFILE PREVIEW (AVATAR & BANNER TERBARU) =================
+  var previewAvatarBox = document.getElementById('preview-avatar-box');
+  var previewBannerBox = document.getElementById('preview-banner-box');
+  var profileName = document.getElementById('preview-name');
+  var profileStatus = document.getElementById('preview-status');
+
+  function updateProfilePreview() {
+    var savedProfileImg = localStorage.getItem('cc_user_avatar');
+    var savedBannerImg = localStorage.getItem('cc_user_banner');
+    var savedProfileName = localStorage.getItem('cc_user_name');
+    var isLogged = localStorage.getItem('cc_is_logged') === 'true';
+
+    if (isLogged && savedProfileName) {
+      profileName.textContent = savedProfileName;
+      profileStatus.textContent = 'Aktif / Terverifikasi';
+      profileStatus.style.color = '#29e0c9';
+    } else if (savedProfileName) {
+      profileName.textContent = savedProfileName;
+      profileStatus.textContent = 'Tamu Tersimpan';
+      profileStatus.style.color = '#ffd23f';
+    }
+
+    if (savedProfileImg && previewAvatarBox) {
+      previewAvatarBox.innerHTML = '<img src="' + savedProfileImg + '" alt="Avatar">';
+    }
+
+    if (savedBannerImg && previewBannerBox) {
+      previewBannerBox.innerHTML = '<img src="' + savedBannerImg + '" alt="Banner">';
+    }
+    refreshGistStatusUI();
+  }
+  updateProfilePreview();
+
+  // ================= 4. COLLECT & RESTORE ALL APP DATA =================
+  var ALL_STORAGE_KEYS = [
+    'cc_first_install', 'cc_user_name', 'cc_user_avatar', 'cc_user_banner', 'cc_is_logged',
+    'cc_google_linked', 'cc_google_email', 'cc_comersio_linked', 'cc_comersio_email',
+    'cc_unpaid_debt', 'cc_debt_logs', 'cc_transactions',
+    'cc_bg_mode', 'cc_nav_mode', 'cc_fab_movable', 'cc_fab_position',
+    'cc_gist_id', 'cc_gist_filename', 'cc_gist_raw_url', 'cc_gist_html_url'
+  ];
+
+  function collectAllAppData() {
+    var payload = {
+      _meta: {
+        app: 'Co Center',
+        filename: getDynamicSaveFilename(),
+        user_name: localStorage.getItem('cc_user_name') || 'Tamu',
+        first_install: getOrInitFirstInstall(),
+        updated_at: new Date().toISOString()
+      }
+    };
+    ALL_STORAGE_KEYS.forEach(function(key) {
+      var val = localStorage.getItem(key);
+      if (val !== null) payload[key] = val;
+    });
+    return payload;
+  }
+
+  function restoreAllAppData(dataObj) {
+    if (!dataObj || typeof dataObj !== 'object') return false;
+    try {
+      Object.keys(dataObj).forEach(function(key) {
+        if (key === '_meta') return;
+        if (typeof dataObj[key] === 'string') {
+          localStorage.setItem(key, dataObj[key]);
+        }
+      });
+      return true;
+    } catch(e) {
+      return false;
+    }
+  }
+
+  // ================= 5. GITHUB GIST PUSH & FETCH ENGINE =================
+  var latestGistHtmlUrl = localStorage.getItem('cc_gist_html_url') || '';
+  var latestGistRawUrl = localStorage.getItem('cc_gist_raw_url') || '';
+
+  async function pushDataToGitHubGist(token, customGistIdInput) {
+    var dynamicFilename = getDynamicSaveFilename();
+    var allData = collectAllAppData();
+    var jsonContent = JSON.stringify(allData, null, 2);
+
+    var targetGistId = extractGistId(customGistIdInput) ||
+                       localStorage.getItem('cc_gist_id') ||
+                       extractGistId(GITHUB_GIST_CONFIG.defaultMasterGistId);
+    var oldFilename = localStorage.getItem('cc_gist_filename');
+
+    var filesPayload = {};
+    // Jika user ganti nama di perangkat ini, rename file lama miliknya saja di Gist
+    if (targetGistId && oldFilename && oldFilename !== dynamicFilename) {
+      filesPayload[oldFilename] = null;
+    }
+    filesPayload[dynamicFilename] = { content: jsonContent };
+
+    var bodyPayload = {
+      description: 'Co Center Save Data (' + dynamicFilename + ')',
+      files: filesPayload
+    };
+
+    var endpoint = targetGistId
+      ? 'https://api.github.com/gists/' + targetGistId
+      : 'https://api.github.com/gists';
+    var method = targetGistId ? 'PATCH' : 'POST';
+
+    if (!targetGistId) {
+      bodyPayload.public = false;
+    }
+
+    var response = await fetch(endpoint, {
+      method: method,
+      headers: {
+        'Authorization': 'Bearer ' + token,
+        'Accept': 'application/vnd.github+json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(bodyPayload)
+    });
+
+    if (!response.ok) {
+      var errData = await response.json().catch(function() { return {}; });
+      throw new Error(errData.message || ('GitHub API Error ' + response.status));
+    }
+
+    var result = await response.json();
+    var ownerLogin = result.owner && result.owner.login ? result.owner.login : '';
+    var fileObj = result.files[dynamicFilename] || Object.values(result.files)[0];
+
+    // Buat URL Raw JSON permanen tanpa hash commit agar selalu ambil versi terbaru
+    var evergreenRawUrl = ownerLogin
+      ? ('https://gist.githubusercontent.com/' + ownerLogin + '/' + result.id + '/raw/' + encodeURIComponent(dynamicFilename))
+      : (fileObj ? fileObj.raw_url.replace(/\/raw\/[a-f0-9]{40}\//i, '/raw/') : result.html_url);
+
+    localStorage.setItem('cc_gist_id', result.id);
+    localStorage.setItem('cc_gist_filename', dynamicFilename);
+    localStorage.setItem('cc_gist_html_url', result.html_url);
+    localStorage.setItem('cc_gist_raw_url', evergreenRawUrl);
+
+    return {
+      gistId: result.id,
+      htmlUrl: result.html_url,
+      rawUrl: evergreenRawUrl
+    };
+  }
+
+  async function inspectOrLoadGist(inputStr, specificFilename) {
+    var cleanInput = inputStr.trim();
+
+    // Case 1: User tempel Raw JSON URL langsung (gist.githubusercontent.com/.../*.json)
+    if (cleanInput.indexOf('gist.githubusercontent.com') !== -1 && !specificFilename) {
+      var rawRes = await fetch(cleanInput, { cache: 'no-store' });
+      if (!rawRes.ok) throw new Error('Gagal mengambil JSON dari Raw URL (HTTP ' + rawRes.status + ').');
+      var rawJson = await rawRes.json();
+      return { mode: 'direct', data: rawJson };
+    }
+
+    // Case 2: Link Gist (gist.github.com/user/id) atau Gist ID
+    var gistId = extractGistId(cleanInput);
+    if (!gistId) {
+      throw new Error('Link Gist atau Gist ID tidak valid.');
+    }
+
+    var headers = { 'Accept': 'application/vnd.github+json' };
+    var savedToken = localStorage.getItem('cc_gh_token') || GITHUB_GIST_CONFIG.defaultToken;
+    if (savedToken) {
+      headers['Authorization'] = 'Bearer ' + savedToken;
+    }
+
+    var apiRes = await fetch('https://api.github.com/gists/' + gistId, {
+      headers: headers,
+      cache: 'no-store'
+    });
+    if (!apiRes.ok) {
+      throw new Error('Gist tidak ditemukan / butuh token (HTTP ' + apiRes.status + ').');
+    }
+
+    var gistData = await apiRes.json();
+    var allFiles = gistData.files || {};
+    var jsonFilenames = Object.keys(allFiles).filter(function(k) {
+      return k.toLowerCase().endsWith('.json');
+    });
+
+    if (jsonFilenames.length === 0) {
+      throw new Error('Tidak ada file .json di dalam Gist ini.');
+    }
+
+    // Cek apakah ada nama file spesifik yang dipilih / cocok dengan URL anchor (#file-...)
+    var chosenFile = specificFilename || null;
+    if (!chosenFile && cleanInput.indexOf('#file-') !== -1) {
+      var anchorPart = cleanInput.split('#file-')[1].toLowerCase();
+      chosenFile = jsonFilenames.find(function(fn) {
+        return fn.toLowerCase().replace(/[^a-z0-9]/g, '-') === anchorPart;
+      }) || null;
+    }
+
+    // Jika cuma ada 1 file JSON di Gist, atau sudah dipilih spesifik, langsung muat!
+    if (jsonFilenames.length === 1 || chosenFile) {
+      var targetKey = chosenFile || jsonFilenames[0];
+      var fileEntry = allFiles[targetKey];
+      var contentStr = fileEntry.content;
+
+      if (fileEntry.truncated && fileEntry.raw_url) {
+        var fullRes = await fetch(fileEntry.raw_url, { cache: 'no-store' });
+        contentStr = await fullRes.text();
+      }
+      return { mode: 'direct', data: JSON.parse(contentStr), filename: targetKey };
+    }
+
+    // Jika ada banyak file JSON (Master Gist), kembalikan daftarnya agar user tinggal klik
+    return {
+      mode: 'list',
+      gistId: gistId,
+      files: jsonFilenames.map(function(fn) {
+        return {
+          filename: fn,
+          size: allFiles[fn].size,
+          rawUrl: allFiles[fn].raw_url
+        };
+      })
+    };
+  }
+
+  // ================= 6. MODAL INTERACTION =================
+  var gistModal = document.getElementById('cc-gist-modal');
+  var modalHeading = document.getElementById('cc-modal-heading');
+  var modalDesc = document.getElementById('cc-modal-desc');
+  var viewSave = document.getElementById('cc-modal-view-save');
+  var viewLoad = document.getElementById('cc-modal-view-load');
+
+  var ghTokenInput = document.getElementById('cc-gh-token-input');
+  var ghGistIdInput = document.getElementById('cc-gh-gistid-input');
+  var gistResultWrap = document.getElementById('cc-gist-result-wrap');
+  var displayRawUrl = document.getElementById('cc-display-raw-url');
+
+  var inputGistUrl = document.getElementById('cc-input-gist-url');
+  var fileListWrap = document.getElementById('cc-gist-filelist-wrap');
+  var fileListBox = document.getElementById('cc-gist-filelist');
+
+  var btnOpenSave = document.getElementById('btn-open-gist-save');
+  var btnOpenLoad = document.getElementById('btn-open-gist-load');
+  var btnPushGistNow = document.getElementById('btn-push-gist-now');
+  var btnCopyRawUrl = document.getElementById('btn-copy-raw-url');
+  var btnCopyGistUrl = document.getElementById('btn-copy-gist-url');
+  var btnFetchGistNow = document.getElementById('btn-fetch-gist-now');
+  var btnCloseModal = document.getElementById('btn-close-modal');
+
+  function renderGistFileChoices(gistId, filesArr) {
+    if (!fileListBox || !fileListWrap) return;
+    fileListBox.innerHTML = '';
+    filesArr.forEach(function(item) {
+      var row = document.createElement('div');
+      row.className = 'cc-gist-file-item';
+
+      var infoDiv = document.createElement('div');
+      infoDiv.style.minWidth = '0';
+      infoDiv.innerHTML =
+        '<div class="cc-gist-file-name">' + item.filename + '</div>' +
+        '<div class="cc-gist-file-meta">' + Math.max(1, Math.round(item.size / 1024)) + ' KB</div>';
+
+      var loadBtn = document.createElement('button');
+      loadBtn.type = 'button';
+      loadBtn.className = 'cc-gist-file-btn';
+      loadBtn.textContent = 'Muat';
+      loadBtn.addEventListener('click', async function() {
+        loadBtn.disabled = true;
+        loadBtn.textContent = '...';
+        try {
+          var res = await inspectOrLoadGist(gistId, item.filename);
+          if (res.mode === 'direct' && restoreAllAppData(res.data)) {
+            gistModal.classList.remove('show');
+            showToast('Data ' + item.filename + ' dipulihkan!');
+            setTimeout(function() { location.reload(); }, 1100);
+          }
+        } catch (err) {
+          showToast('Gagal: ' + err.message);
+          loadBtn.disabled = false;
+          loadBtn.textContent = 'Muat';
+        }
+      });
+
+      row.appendChild(infoDiv);
+      row.appendChild(loadBtn);
+      fileListBox.appendChild(row);
+    });
+    fileListWrap.style.display = 'flex';
+  }
+
+  if (btnOpenSave) {
+    btnOpenSave.addEventListener('click', function() {
+      refreshGistStatusUI();
+      if (ghTokenInput) {
+        ghTokenInput.value = localStorage.getItem('cc_gh_token') || GITHUB_GIST_CONFIG.defaultToken || '';
+      }
+      if (ghGistIdInput) {
+        ghGistIdInput.value = localStorage.getItem('cc_gist_id') || GITHUB_GIST_CONFIG.defaultMasterGistId || '';
+      }
+
+      modalHeading.textContent = 'Upload ke GitHub Gist';
+      modalDesc.textContent = 'Data dikemas ke file JSON dinamis (Nama + Waktu Install) dan langsung di-push ke GitHub Gist.';
+      viewSave.style.display = 'flex';
+      viewLoad.style.display = 'none';
+
+      if (latestGistRawUrl) {
+        displayRawUrl.textContent = latestGistRawUrl;
+        gistResultWrap.style.display = 'flex';
+      } else {
+        gistResultWrap.style.display = 'none';
+      }
+
+      gistModal.classList.add('show');
+    });
+  }
+
+  if (btnPushGistNow) {
+    btnPushGistNow.addEventListener('click', async function() {
+      var token = ghTokenInput ? ghTokenInput.value.trim() : '';
+      var customGistId = ghGistIdInput ? ghGistIdInput.value.trim() : '';
+
+      if (!token) {
+        showToast('Masukkan GitHub Token (ghp_...) dulu!');
+        return;
+      }
+      localStorage.setItem('cc_gh_token', token);
+
+      var origText = btnPushGistNow.textContent;
+      btnPushGistNow.disabled = true;
+      btnPushGistNow.textContent = 'Mengunggah ke GitHub Gist...';
+
+      try {
+        var res = await pushDataToGitHubGist(token, customGistId);
+        latestGistHtmlUrl = res.htmlUrl;
+        latestGistRawUrl = res.rawUrl;
+
+        if (ghGistIdInput) ghGistIdInput.value = res.gistId;
+        displayRawUrl.textContent = res.rawUrl;
+        gistResultWrap.style.display = 'flex';
+        refreshGistStatusUI();
+        showToast('Berhasil! Save data masuk ke GitHub Gist');
+      } catch (err) {
+        showToast('Gagal: ' + err.message);
+      } finally {
+        btnPushGistNow.disabled = false;
+        btnPushGistNow.textContent = origText;
+      }
+    });
+  }
+
+  if (btnOpenLoad) {
+    btnOpenLoad.addEventListener('click', function() {
+      modalHeading.textContent = 'Ambil Data dari GitHub Gist';
+      modalDesc.textContent = 'Tempel Link Raw JSON atau Link Gist untuk memulihkan save data.';
+      viewSave.style.display = 'none';
+      viewLoad.style.display = 'flex';
+      fileListWrap.style.display = 'none';
+
+      var knownGistId = localStorage.getItem('cc_gist_id') || extractGistId(GITHUB_GIST_CONFIG.defaultMasterGistId);
+      inputGistUrl.value = latestGistRawUrl || (knownGistId ? 'https://gist.github.com/' + knownGistId : '');
+
+      gistModal.classList.add('show');
+
+      // Jika sudah ada Gist ID tersimpan, otomatis tampilkan daftar file JSON di dalamnya
+      if (knownGistId) {
+        inspectOrLoadGist(knownGistId).then(function(res) {
+          if (res.mode === 'list') {
+            renderGistFileChoices(res.gistId, res.files);
+          }
+        }).catch(function() {});
+      }
+    });
+  }
+
+  if (btnFetchGistNow) {
+    btnFetchGistNow.addEventListener('click', async function() {
+      var urlVal = inputGistUrl ? inputGistUrl.value.trim() : '';
+      if (!urlVal) {
+        showToast('Masukkan Link Raw JSON atau Link Gist!');
+        return;
+      }
+
+      var origText = btnFetchGistNow.textContent;
+      btnFetchGistNow.disabled = true;
+      btnFetchGistNow.textContent = 'Mengambil dari GitHub...';
+
+      try {
+        var res = await inspectOrLoadGist(urlVal);
+        if (res.mode === 'list') {
+          renderGistFileChoices(res.gistId, res.files);
+          showToast('Pilih file JSON save data di bawah!');
+        } else if (res.mode === 'direct') {
+          if (restoreAllAppData(res.data)) {
+            gistModal.classList.remove('show');
+            showToast('Data berhasil dipulihkan! Memuat ulang...');
+            setTimeout(function() { location.reload(); }, 1100);
+          } else {
+            throw new Error('Isi file JSON tidak valid.');
+          }
+        }
+      } catch (err) {
+        showToast('Gagal: ' + err.message);
+      } finally {
+        btnFetchGistNow.disabled = false;
+        btnFetchGistNow.textContent = origText;
+      }
+    });
+  }
+
+  if (btnCopyRawUrl) {
+    btnCopyRawUrl.addEventListener('click', function() {
+      var target = latestGistRawUrl || displayRawUrl.textContent;
+      navigator.clipboard.writeText(target).then(function() {
+        showToast('Link Raw JSON berhasil disalin!');
+      }).catch(function() {
+        showToast('Gagal menyalin link');
+      });
+    });
+  }
+
+  if (btnCopyGistUrl) {
+    btnCopyGistUrl.addEventListener('click', function() {
+      var target = latestGistHtmlUrl || displayRawUrl.textContent;
+      navigator.clipboard.writeText(target).then(function() {
+        showToast('Link Gist berhasil disalin!');
+      }).catch(function() {
+        showToast('Gagal menyalin link');
+      });
+    });
+  }
+
+  if (btnCloseModal) {
+    btnCloseModal.addEventListener('click', function() {
+      gistModal.classList.remove('show');
+    });
+  }
+
+  // Backup File .json Lokal (Nama file dinamis yang sama)
+  var btnSD = document.getElementById('btn-backup-sd');
+  if (btnSD) {
+    btnSD.addEventListener('click', function() {
+      var allData = collectAllAppData();
+      var dynamicFilename = getDynamicSaveFilename();
+
+      var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(allData, null, 2));
+      var downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", dynamicFilename);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+
+      showToast('Unduhan dimulai: ' + dynamicFilename);
+    });
+  }
+
+  // ================= 7. FAB FAN MENU + DRAG LOGIC =================
+  var savedPosBeforeOpen = null;
+
+  function isFabMovable() {
+    return localStorage.getItem('cc_fab_movable') === 'true';
+  }
+
+  function updateFabVisualState() {
+    if (!fabStage) return;
+    if (isFabMovable()) fabStage.classList.add('cc-fab-grabbable');
+    else fabStage.classList.remove('cc-fab-grabbable');
+  }
+
+  function applySavedFabPosition() {
+    if (!fabStage || !isFabMovable()) return;
+    var savedPos = localStorage.getItem('cc_fab_position');
+    if (!savedPos) return;
+    try {
+      var pos = JSON.parse(savedPos);
+      if (typeof pos.left === 'number' && typeof pos.top === 'number') {
+        var maxLeft = Math.max(0, window.innerWidth - fabStage.offsetWidth);
+        var maxTop = Math.max(0, window.innerHeight - fabStage.offsetHeight);
+        fabStage.style.left = Math.max(0, Math.min(maxLeft, pos.left)) + 'px';
+        fabStage.style.top = Math.max(0, Math.min(maxTop, pos.top)) + 'px';
+        fabStage.style.bottom = 'auto';
+        fabStage.style.transform = 'none';
+      }
+    } catch(e) {}
+  }
+
+  function resetFabPosition() {
+    if (!fabStage) return;
+    fabStage.style.left = '';
+    fabStage.style.top = '';
+    fabStage.style.bottom = '';
+    fabStage.style.transform = '';
+    localStorage.removeItem('cc_fab_position');
+  }
+
+  function openFab() {
+    if (!fabStage || !fabBackdrop) return;
+    if (isFabMovable()) {
+      var rect = fabStage.getBoundingClientRect();
+      savedPosBeforeOpen = { left: rect.left, top: rect.top };
+      fabStage.style.left = '';
+      fabStage.style.top = '';
+      fabStage.style.bottom = '';
+      fabStage.style.transform = '';
+    }
+    fabStage.classList.add('cc-fab-open');
+    fabBackdrop.classList.add('cc-fab-backdrop-show');
+  }
+
+  function closeFab() {
+    if (!fabStage || !fabBackdrop) return;
+    fabStage.classList.remove('cc-fab-open');
+    fabBackdrop.classList.remove('cc-fab-backdrop-show');
+    if (isFabMovable() && savedPosBeforeOpen) {
+      fabStage.style.left = savedPosBeforeOpen.left + 'px';
+      fabStage.style.top = savedPosBeforeOpen.top + 'px';
+      fabStage.style.bottom = 'auto';
+      fabStage.style.transform = 'none';
+      savedPosBeforeOpen = null;
+    }
+  }
+
+  if (fabBackdrop) fabBackdrop.addEventListener('click', closeFab);
+
+  document.querySelectorAll('.cc-fab-item').forEach(function (item) {
+    item.addEventListener('click', function () { closeFab(); });
+  });
+
+  var DRAG_THRESHOLD = 8;
+  var dragState = { active: false, hasMoved: false, isMovable: false, startX: 0, startY: 0, startLeft: 0, startTop: 0, pointerId: null };
+
+  if (fabMain) {
+    fabMain.addEventListener('pointerdown', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      dragState.active = true;
+      dragState.hasMoved = false;
+      dragState.pointerId = e.pointerId;
+      dragState.isMovable = isFabMovable() && !fabStage.classList.contains('cc-fab-open');
+      dragState.startX = e.clientX;
+      dragState.startY = e.clientY;
+      var rect = fabStage.getBoundingClientRect();
+      dragState.startLeft = rect.left;
+      dragState.startTop = rect.top;
+      try { fabMain.setPointerCapture(e.pointerId); } catch(err) {}
+    });
+
+    fabMain.addEventListener('pointermove', function(e) {
+      if (!dragState.active || !dragState.isMovable) return;
+      var dx = e.clientX - dragState.startX;
+      var dy = e.clientY - dragState.startY;
+      if (!dragState.hasMoved) {
+        if (Math.abs(dx) < DRAG_THRESHOLD && Math.abs(dy) < DRAG_THRESHOLD) return;
+        dragState.hasMoved = true;
+      }
+      var newLeft = dragState.startLeft + dx;
+      var newTop = dragState.startTop + dy;
+      var maxLeft = window.innerWidth - fabStage.offsetWidth;
+      var maxTop = window.innerHeight - fabStage.offsetHeight;
+      fabStage.style.left = Math.max(0, Math.min(maxLeft, newLeft)) + 'px';
+      fabStage.style.top = Math.max(0, Math.min(maxTop, newTop)) + 'px';
+      fabStage.style.bottom = 'auto';
+      fabStage.style.transform = 'none';
+    });
+
+    fabMain.addEventListener('pointerup', function(e) {
+      if (!dragState.active) return;
+      dragState.active = false;
+      try { fabMain.releasePointerCapture(e.pointerId); } catch(err) {}
+      if (dragState.hasMoved) {
+        var rect = fabStage.getBoundingClientRect();
+        localStorage.setItem('cc_fab_position', JSON.stringify({ left: rect.left, top: rect.top }));
+      } else {
+        if (fabStage.classList.contains('cc-fab-open')) closeFab();
+        else openFab();
+      }
+    });
+
+    fabMain.addEventListener('pointercancel', function() { dragState.active = false; });
+  }
+
+  var fabMovableToggle = document.getElementById('fab-movable-toggle');
+  if (fabMovableToggle) {
+    fabMovableToggle.checked = isFabMovable();
+    fabMovableToggle.addEventListener('change', function() {
+      if (this.checked) {
+        localStorage.setItem('cc_fab_movable', 'true');
+        updateFabVisualState();
+        showToast('FAB sekarang bisa digeser!');
+      } else {
+        localStorage.setItem('cc_fab_movable', 'false');
+        resetFabPosition();
+        updateFabVisualState();
+        showToast('FAB kembali ke posisi normal');
+      }
+    });
+  }
+
+  applyNavMode(getNavMode(), false);
+
+});
+</script>
+
+</body>
+</html>

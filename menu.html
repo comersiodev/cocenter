@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Co Center - Menu Layanan</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,700;0,800;1,400&display=swap" rel="stylesheet">
+
+<style>
+  #cc-container, #cc-container * {
+    font-family: 'JetBrains Mono', monospace !important;
+    box-sizing: border-box;
+  }
+
+  html, body {
+    margin: 0 !important; padding: 0 !important; height: 100% !important;
+    overflow: hidden !important; background: #05060a !important; color: #fff;
+  }
+
+  #cc-container {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    z-index: 999999; background: #05060a; overflow-y: auto; -webkit-overflow-scrolling: touch;
+    padding-top: 62px;
+    padding-bottom: 85px;
+  }
+
+  .cc-bg { position: fixed; inset: 0; z-index: -1; background: #000 url('https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh9DocQHrQw9p05Lbkght7m-rpO8O2HS6s3VG28Nc7FW6LPePf_AYJ3E104I15aD8OUsQRINz7QGbgv7EeJXKZKXdecQ-RAHvowdbS5vPqDrfZ63ZC3w-FOPKWPcVBKY5IFdenDmRixqc-Jy8BvVpAp6ReI7Io5UdxjNnlzY_TZLuTW6xaepq9RkRMA92kV/s1600/11.gif') no-repeat center center; background-size: cover; }
+  .cc-overlay { position: fixed; inset: 0; z-index: -1; background: rgba(3,4,8,0.78); }
+
+  /* ================= NAV ATAS — SEKARANG FIXED / STATIS ================= */
+  .cc-nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 24px;
+    gap: 10px;
+    background: rgba(5, 6, 10, 0.88);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .cc-brand-wrap { display: flex; flex-direction: column; gap: 2px; flex-shrink: 0; }
+  .cc-brand-row { display: flex; align-items: center; gap: 10px; }
+  .cc-brand { font-weight: 800; font-size: 16px; color: #fff; letter-spacing: -0.5px; }
+  .cc-subtitle {
+    font-size: 9px; font-weight: 700; color: #a9b2c3;
+    letter-spacing: 2px; text-transform: uppercase; margin-left: 42px;
+  }
+
+  .cc-img { width: 32px; height: 32px; border-radius: 8px; cursor: default; }
+
+  .cc-nav-right { display: flex; align-items: center; gap: 6px; position: relative; }
+
+  .cc-patch-badge {
+    display: flex; align-items: center; gap: 4px;
+    background: rgba(41, 224, 201, 0.1);
+    border: 1px solid rgba(41, 224, 201, 0.35);
+    color: #29e0c9; font-weight: 800; font-size: 9.5px;
+    padding: 5px 9px; border-radius: 16px;
+    cursor: pointer; text-decoration: none; letter-spacing: 0.3px;
+    transition: background 0.2s ease, transform 0.15s ease;
+    -webkit-tap-highlight-color: transparent; white-space: nowrap;
+  }
+  .cc-patch-badge svg { width: 11px; height: 11px; fill: currentColor; }
+  .cc-patch-badge:active { transform: scale(0.95); background: rgba(41, 224, 201, 0.25); }
+
+  .cc-receipt-badge {
+    display: flex; align-items: center; gap: 4px;
+    background: rgba(255, 210, 63, 0.1);
+    border: 1px solid rgba(255, 210, 63, 0.35);
+    color: #ffd23f; font-weight: 800; font-size: 9.5px;
+    padding: 5px 9px; border-radius: 16px;
+    cursor: pointer; text-decoration: none; letter-spacing: 0.3px;
+    transition: background 0.2s ease, transform 0.15s ease;
+    -webkit-tap-highlight-color: transparent; white-space: nowrap;
+  }
+  .cc-receipt-badge svg { width: 11px; height: 11px; fill: currentColor; }
+  .cc-receipt-badge:active { transform: scale(0.95); background: rgba(255, 210, 63, 0.25); }
+
+  .cc-profile-wrap { position: relative; }
+  .cc-profile-btn {
+    width: 32px; height: 32px; border-radius: 50%; overflow: hidden;
+    border: 1.5px solid rgba(255, 210, 63, 0.5);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    background: #151824;
+    transition: transform 0.15s ease, border-color 0.2s ease, background 0.2s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .cc-profile-btn img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .cc-profile-btn svg { width: 18px; height: 18px; fill: #ffd23f; }
+  .cc-profile-btn:active { transform: scale(0.92); }
+  .cc-profile-btn:hover { border-color: #ffd23f; background: rgba(255, 210, 63, 0.1); }
+
+  .cc-profile-dropdown {
+    position: absolute; top: calc(100% + 10px); right: 0;
+    width: 180px; background: #0d0f16;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+    padding: 6px; z-index: 100000;
+    opacity: 0; visibility: hidden; transform: translateY(-8px);
+    transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
+  }
+  .cc-profile-dropdown.show { opacity: 1; visibility: visible; transform: translateY(0); }
+  .cc-profile-dropdown a {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px;
+    color: #d5dae3; font-size: 12px; font-weight: 700;
+    text-decoration: none; border-radius: 8px;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+  .cc-profile-dropdown a svg { width: 16px; height: 16px; fill: currentColor; flex-shrink: 0; }
+  .cc-profile-dropdown a:hover { background: rgba(41, 224, 201, 0.1); color: #29e0c9; }
+  .cc-profile-dropdown .cc-dropdown-divider { height: 1px; background: rgba(255, 255, 255, 0.08); margin: 4px 0; }
+  .cc-profile-dropdown a.cc-logout { color: #ff2d6a; }
+  .cc-profile-dropdown a.cc-logout:hover { background: rgba(255, 45, 106, 0.1); color: #ff2d6a; }
+
+  @keyframes rgbStroke {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 200% 50%; }
+  }
+
+  /* ================= BANNER ================= */
+  .cc-banner-wrapper {
+    display: flex; overflow-x: auto; scroll-snap-type: x mandatory;
+    gap: 12px; margin: 12px 24px 20px; padding-bottom: 4px;
+    -webkit-overflow-scrolling: touch; scrollbar-width: none;
+  }
+  .cc-banner-wrapper::-webkit-scrollbar { display: none; }
+
+  .cc-banner {
+    flex: 0 0 100%; scroll-snap-align: start;
+    border-radius: 14px; overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.1); display: block; text-decoration: none;
+    transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+    -webkit-tap-highlight-color: transparent;
+  }
+  .cc-banner img { width: 100%; display: block; cursor: pointer; }
+  .cc-banner:active { transform: scale(0.97); }
+
+  /* ================= SECTION ================= */
+  .cc-section { padding: 0 24px 24px; }
+  .cc-section-title {
+    font-weight:800; color:#29e0c9; margin-bottom:12px; font-size:11px;
+    text-transform:uppercase; letter-spacing:1px;
+    display:flex; align-items:center; gap:8px;
+  }
+  .cc-section-title::after {
+    content:''; flex:1; height:1px; background: rgba(41,224,201,0.25);
+  }
+  .cc-section-title.cc-title-popular { color:#ffd23f; }
+  .cc-section-title.cc-title-popular::after { background: rgba(255,210,63,0.25); }
+
+  .cc-spill-wrap { display: flex; flex-direction: column; gap: 12px; }
+  .cc-spill-icon {
+    width: 48px; height: 48px; border-radius: 12px; overflow: hidden;
+    flex-shrink: 0; background: #0b1226;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .cc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+  .cc-card {
+    text-decoration: none; display: block !important;
+    border-radius: 14px; overflow: hidden; position: relative;
+    padding: 0 !important; margin: 0 !important;
+    border: 2px solid transparent !important;
+    background: linear-gradient(#0d0f16, #0d0f16) padding-box,
+                linear-gradient(90deg, #ff2d6a, #ffd23f, #29e0c9, #7c5cff, #ff2d6a) border-box !important;
+    background-size: 200% 200% !important;
+    animation: rgbStroke 4s linear infinite;
+    transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+    -webkit-tap-highlight-color: transparent;
+  }
+  .cc-card:active { transform: scale(1.04); }
+
+  .cc-card-img-wrap {
+    width: 100%; padding-top: 70%; overflow: hidden;
+    border-radius: 12px 12px 0 0; position: relative;
+    display: block !important; margin: 0 !important;
+    background: #0d0f16;
+  }
+
+  .cc-card-img-wrap img {
+    position: absolute !important;
+    top: 0 !important; left: 0 !important;
+    width: 100% !important; height: 100% !important;
+    object-fit: cover !important; object-position: center !important;
+    display: block !important; border: none !important;
+    margin: 0 !important; padding: 0 !important;
+  }
+
+  .cc-card-body { padding: 10px; }
+  .cc-card-name { font-weight: 800; font-size: 12px; margin-bottom: 4px; color:#fff; line-height: 1.2; }
+  .cc-card-desc { font-size: 10px; color: #a9b2c3; line-height:1.3; }
+
+  .cc-card-soon-img { opacity: 0.65; }
+  .cc-card-soon-overlay {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(5, 6, 10, 0.4);
+  }
+  .cc-card-soon-badge {
+    background: rgba(15, 15, 20, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #ffd23f; font-weight: 800; font-size: 10px;
+    padding: 5px 10px; border-radius: 16px;
+    letter-spacing: 0.5px; text-transform: uppercase;
+  }
+
+  /* ================= CATEGORY PILLS ================= */
+  .cc-cat-wrapper {
+    display: flex; overflow-x: auto; gap: 10px;
+    margin: 0 24px 16px; padding-bottom: 4px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; scroll-behavior: smooth;
+  }
+  .cc-cat-wrapper::-webkit-scrollbar { display: none; }
+
+  .cc-cat-pill {
+    flex: 0 0 auto; padding: 8px 16px;
+    border-radius: 999px; font-weight: 800; font-size: 11px;
+    letter-spacing: 0.3px; color: #ffd23f; background: #0b1226;
+    border: 1.5px solid #ffd23f; cursor: pointer;
+    text-decoration: none; white-space: nowrap;
+    transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), background 0.2s ease, color 0.2s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .cc-cat-pill:active { transform: scale(0.95); }
+  .cc-cat-pill.cc-cat-active { background: #ffd23f; color: #0b1226; }
+
+  /* ================= SWIPEABLE PAGES ================= */
+  .cc-pages-viewport { overflow: hidden; width: 100%; }
+  .cc-pages-wrapper {
+    display: flex; width: 500%;
+    transform: translateX(0%);
+    transition: transform 0.3s ease;
+  }
+  .cc-page { width: 20%; flex: 0 0 20%; }
+
+  /* ================= POPUP PATCH ================= */
+  .cc-popup-overlay {
+    position: fixed; inset: 0; z-index: 1000000;
+    background: rgba(3,4,8,0.85); backdrop-filter: blur(6px);
+    display: flex; align-items: center; justify-content: center;
+    padding: 24px;
+    opacity: 0; visibility: hidden; pointer-events: none;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+  }
+  .cc-popup-overlay.cc-popup-show { opacity: 1; visibility: visible; pointer-events: auto; }
+
+  .cc-popup-box {
+    max-width: 340px; width: 100%;
+    border-radius: 16px; padding: 2px;
+    background: linear-gradient(90deg, #ff2d6a, #ffd23f, #29e0c9, #7c5cff, #ff2d6a);
+    background-size: 200% 200%;
+    animation: rgbStroke 4s linear infinite;
+  }
+  .cc-popup-inner {
+    background: #0d0f16; border-radius: 14px; padding: 22px 18px;
+    text-align: left; position: relative;
+  }
+  .cc-popup-title {
+    font-weight: 800; font-size: 14px; color: #29e0c9; margin-bottom: 12px;
+    text-transform: uppercase; letter-spacing: 1px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .cc-popup-list { margin: 0 0 14px 16px; padding: 0; font-size: 11px; color: #d5dae3; line-height: 1.5; }
+  .cc-popup-list li { margin-bottom: 5px; }
+  .cc-popup-x {
+    position: absolute; top: 10px; right: 10px;
+    width: 26px; height: 26px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+    color: #fff; font-size: 14px; font-weight: 700; line-height: 1;
+    cursor: pointer; -webkit-tap-highlight-color: transparent;
+  }
+  .cc-popup-x:active { background: rgba(255,255,255,0.2); }
+
+  /* ============================================================
+     ===== FAB FAN MENU GOLD — REVOLVER RELOAD + DRAG SUPPORT =====
+     ============================================================ */
+
+  .cc-fab-stage {
+    position: fixed;
+    left: 50%;
+    bottom: 0px;
+    transform: translateX(-50%);
+    width: 200px;
+    height: 125px;
+    z-index: 999999;
+    pointer-events: none;
+    transition: filter 0.2s ease;
+  }
+
+  /* Mode geser FAB aktif — glow tipis gold */
+  .cc-fab-stage.cc-fab-grabbable {
+    filter: drop-shadow(0 0 6px rgba(255, 210, 63, 0.45));
+  }
+
+  .cc-fab-dock {
+    position: absolute;
+    left: 50%;
+    bottom: -95px;
+    width: 190px;
+    height: 190px;
+    margin-left: -95px;
+    border-radius: 50%;
+    background: #0d0f16;
+    border: 1.5px solid rgba(255, 210, 63, 0.65);
+    box-shadow: 0 -6px 20px rgba(0,0,0,0.5), 0 0 12px rgba(255,210,63,0.1);
+    opacity: 0;
+    transform: scale(0.3) rotate(-180deg);
+    transform-origin: 50% 100%;
+    transition: transform 0.55s cubic-bezier(0.34, 1.2, 0.64, 1), opacity 0.3s ease;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .cc-fab-stage.cc-fab-open .cc-fab-dock {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+
+  .cc-fab-slice {
+    position: absolute; left: 50%; top: 50%; width: 95px; height: 95px;
+    transform-origin: 0% 0%; pointer-events: none;
+  }
+  .cc-fab-slice[data-s="0"] { transform: rotate(-180deg) skewY(-45deg); background: rgba(255,210,63,0.06); }
+  .cc-fab-slice[data-s="1"] { transform: rotate(-135deg) skewY(-45deg); background: rgba(255,210,63,0.12); }
+  .cc-fab-slice[data-s="2"] { transform: rotate(-90deg)  skewY(-45deg); background: rgba(255,210,63,0.06); }
+  .cc-fab-slice[data-s="3"] { transform: rotate(-45deg)  skewY(-45deg); background: rgba(255,210,63,0.12); }
+
+  .cc-fab-slice-line {
+    position: absolute; left: 50%; top: 50%; width: 1px; height: 95px;
+    background: rgba(255,210,63,0.35); transform-origin: 50% 0%;
+  }
+  .cc-fab-slice-line[data-l="0"] { transform: rotate(-180deg); }
+  .cc-fab-slice-line[data-l="1"] { transform: rotate(-135deg); }
+  .cc-fab-slice-line[data-l="2"] { transform: rotate(-90deg); }
+  .cc-fab-slice-line[data-l="3"] { transform: rotate(-45deg); }
+  .cc-fab-slice-line[data-l="4"] { transform: rotate(0deg); }
+
+  .cc-fab-main {
+    position: absolute;
+    left: 50%;
+    bottom: 10px;
+    width: 54px;
+    height: 54px;
+    margin-left: -27px;
+    border-radius: 50%;
+    background: #0d0f16;
+    border: 1px solid rgba(255, 210, 63, 0.55);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    pointer-events: auto;
+    overflow: hidden;
+    z-index: 5;
+    touch-action: none;
+    transition:
+      transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+      bottom 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+      border-color 0.3s ease,
+      background 0.3s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .cc-fab-stage.cc-fab-open .cc-fab-main {
+    bottom: -6px;
+    background: #161822;
+    border-color: rgba(255, 210, 63, 0.4);
+    transform: rotate(360deg);
+  }
+
+  .cc-fab-main:active { transform: scale(0.94) rotate(0deg); }
+  .cc-fab-stage.cc-fab-open .cc-fab-main:active { transform: scale(0.94) rotate(360deg); }
+
+  .cc-fab-main .cc-fab-logo {
+    width: 100%; height: 100%; border-radius: 50%;
+    object-fit: cover; object-position: center;
+    display: block; position: absolute; top: 0; left: 0;
+    transform: scale(1) rotate(0deg);
+    transition: opacity 0.2s ease, transform 0.35s ease;
+    pointer-events: none;
+  }
+
+  .cc-fab-main .cc-fab-icon-close {
+    width: 20px; height: 20px;
+    fill: none; stroke: #ffd23f; stroke-width: 1.4;
+    stroke-linecap: round; stroke-linejoin: round;
+    position: absolute; top: 50%; left: 50%;
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.4) rotate(-90deg);
+    transition: opacity 0.2s ease, transform 0.35s ease;
+  }
+
+  .cc-fab-stage.cc-fab-open .cc-fab-main .cc-fab-logo {
+    opacity: 0; transform: scale(0.4) rotate(90deg);
+  }
+  .cc-fab-stage.cc-fab-open .cc-fab-main .cc-fab-icon-close {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1) rotate(0deg);
+  }
+
+  .cc-fab-item {
+    position: absolute;
+    left: 50%; bottom: 12px; width: 38px; height: 38px;
+    margin-left: -19px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+    text-decoration: none;
+    opacity: 0; pointer-events: none;
+    transform: translate(0px, 0px) scale(0.3) rotate(-90deg);
+    transition:
+      transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
+      opacity 0.25s ease;
+    z-index: 4;
+  }
+  .cc-fab-item svg {
+    width: 16px; height: 16px;
+    fill: none; stroke: #ffd23f; stroke-width: 1.4;
+    stroke-linecap: round; stroke-linejoin: round;
+    filter: drop-shadow(0 2px 3px rgba(0,0,0,0.6));
+  }
+  .cc-fab-item span {
+    font-size: 7.5px; font-weight: 700; color: #ffd23f;
+    white-space: nowrap; text-shadow: 0 2px 3px rgba(0,0,0,0.8);
+  }
+  .cc-fab-item.cc-fab-item-disabled svg,
+  .cc-fab-item.cc-fab-item-disabled span { stroke: #ffd23f; color: #ffd23f; }
+
+  .cc-fab-stage.cc-fab-open .cc-fab-item {
+    opacity: 1; pointer-events: auto;
+  }
+
+  .cc-fab-item[data-i="0"] { transition-delay: 0.10s; }
+  .cc-fab-item[data-i="1"] { transition-delay: 0.22s; }
+  .cc-fab-item[data-i="2"] { transition-delay: 0.34s; }
+  .cc-fab-item[data-i="3"] { transition-delay: 0.46s; }
+
+  .cc-fab-stage.cc-fab-open .cc-fab-item[data-i="0"] { transform: translate(-54px, 20px) scale(1) rotate(0deg); }
+  .cc-fab-stage.cc-fab-open .cc-fab-item[data-i="1"] { transform: translate(-26px, -34px) scale(1) rotate(0deg); }
+  .cc-fab-stage.cc-fab-open .cc-fab-item[data-i="2"] { transform: translate(26px, -34px) scale(1) rotate(0deg); }
+  .cc-fab-stage.cc-fab-open .cc-fab-item[data-i="3"] { transform: translate(54px, 20px) scale(1) rotate(0deg); }
+
+  .cc-fab-backdrop {
+    position: fixed; inset: 0;
+    z-index: 999998;
+    background: rgba(3,4,8,0.4);
+    opacity: 0; visibility: hidden; pointer-events: none;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+  }
+  .cc-fab-backdrop.cc-fab-backdrop-show {
+    opacity: 1; visibility: visible; pointer-events: auto;
+  }
+</style>
+</head>
+<body>
+
+<div id="cc-container">
+  <div class="cc-bg"></div>
+  <div class="cc-overlay"></div>
+
+  <!-- ==================== NAV ATAS (FIXED / STATIS) ==================== -->
+  <div class="cc-nav">
+    <div class="cc-brand-wrap">
+      <div class="cc-brand-row cc-brand">
+        <img class="cc-img" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjgKAkQ6fTJOBPoOVz21klx2Vw6CXegaFe7QnvWoaDZTt1raufO5Ikvqu0JrP93QUf_iAcqVp8IkcTZjTx_e1mMqJENEYIpEjv-br9ApdDAeMiPcm8xoO-dFAmPJa-9y22yJdNme0Eb-EFxm-dS0Pd2UwUNu2cfB5pxS7KA7RP1JPKB-79xmqs5Vl9pSYHn/s1600/IMG_20260808_230713.png">
+        CO CENTER
+      </div>
+      <div class="cc-subtitle">Listing</div>
+    </div>
+
+    <div class="cc-nav-right">
+      <div class="cc-patch-badge" id="open-patch-popup">
+        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+        Patch v2.6
+      </div>
+
+      <a class="cc-receipt-badge" href="transaksi.html" title="Bukti Transaksi">
+        <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+        Bukti
+      </a>
+
+      <div class="cc-profile-wrap">
+        <div class="cc-profile-btn" id="cc-profile-toggle" title="Menu Akun">
+          <div id="header-avatar-container" style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
+            <svg viewBox="0 0 24 24">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
+            </svg>
+          </div>
+        </div>
+        <div class="cc-profile-dropdown" id="cc-profile-dropdown">
+          <a href="profile.html">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+            Profile
+          </a>
+          <a href="pengaturan.html">
+            <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.47l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c-.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c-.24 0 .44-.17.47-.47l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+            Pengaturan
+          </a>
+          <div class="cc-dropdown-divider"></div>
+          <a href="login.html" class="cc-logout">
+            <svg viewBox="0 0 24 24"><path d="M10.09 15.59L11.5 17l5-5-5-5-1.41 1.41L12.67 11H3v2h9.67l-2.58 2.59zM19 3H5c-1.11 0-2 .9-2 2v4h2V5h14v14H5v-4H3v4c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg>
+            Akun / Login
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== POPUP PATCH ==================== -->
+  <div class="cc-popup-overlay" id="cc-popup">
+    <div class="cc-popup-box">
+      <div class="cc-popup-inner">
+        <span class="cc-popup-x" id="cc-popup-close">&times;</span>
+        <div class="cc-popup-title">
+          <svg style="width:16px;height:16px;fill:currentColor;" viewBox="0 0 24 24"><path d="M21 10.12h-6.78l2.74-2.82c-2.73-2.7-7.15-2.7-9.88 0C5.74 8.78 5 10.57 5 12.5s.74 3.72 2.08 5.08c1.36 1.36 3.14 2.08 5.08 2.08s3.72-.74 5.08-2.08c.38-.38.68-.82.91-1.28l1.92.81c-.39.87-.91 1.68-1.58 2.35-1.8 1.8-4.18 2.79-6.72 2.79s-4.92-.99-6.72-2.79C1.99 17.42 1 15.04 1 12.5s.99-4.92 2.79-6.72c3.62-3.62 9.5-3.62 13.12 0l2.74-2.82v7.16z"/></svg>
+          Patch Update v2.6
+        </div>
+        <ul class="cc-popup-list">
+          <li><b>Header Statis:</b> Navbar atas kini fixed, nggak ikut tergeser saat swipe kategori.</li>
+          <li><b>FAB Sync:</b> Setting geser FAB dari halaman Pengaturan otomatis diterapkan di semua halaman.</li>
+          <li><b>Voucher Internet:</b> Menu baru di bawah Compare Kuota, khusus voucher data all operator.</li>
+          <li><b>Integrasi Profile:</b> Icon avatar di navbar atas tersinkron dengan foto di <b>profile.html</b>.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== BANNER ==================== -->
+  <div class="cc-banner-wrapper">
+    <a class="cc-banner" href="banner1.html">
+      <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgfeNn2QqwIKEbN9HA1ag56ms_SEpC6bskkv_FyhMtkfVPbFr6gydb5Ym41EwUTvOHNjw4OuAvpCDTGjytm6es2N1sPxzgrhtyo-CPIa7mCwifOoGix9MYaLbiZnirMe-agg2Yg6DKut2F0e4w4fKIafwvbxju3k1N9ffLwIC-jm-Qs3Y3Lj0U4p81Trmmg/s1600/IMG_20260821_015014.png" alt="Banner Promo 1">
+    </a>
+    <a class="cc-banner" href="googlebundle.html">
+      <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjHa854DuFYVVZ8V-m-XnvzQSXq3fJnf2sHAHXbIw4nJtiNGCB28jJo_dsBASaXsFGELDRhLxCqhq5h_oFNe2U2qCCZuySAxPSGvVsPjvyf1Oz8s6cefIrEx4XU2WNZ16TnMlKuECnMrUstfOk2cwKq-MqhxiF4LeHkalVCK80lWHYMiAUUTbIBeocGvMM5/s1600/20260821_014757.png" alt="Banner Promo 2">
+    </a>
+  </div>
+
+  <!-- ==================== SPILL BLOCK ==================== -->
+  <div class="cc-section cc-spill-wrap" style="padding-bottom: 12px;">
+    <a class="cc-card" href="comparquo.html" style="background: linear-gradient(135deg, #2c163a 0%, #150c22 100%) !important;">
+      <div style="display: flex; align-items: center; padding: 14px; gap: 12px;">
+        <div class="cc-spill-icon" style="border: 1.5px solid #ffd23f;">
+          <svg viewBox="0 0 48 48" width="30" height="30">
+            <defs>
+              <linearGradient id="quotaGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#ffd23f"/>
+                <stop offset="100%" stop-color="#7c5cff"/>
+              </linearGradient>
+            </defs>
+            <path d="M6 30 L18 30 L14 44 L34 20 L22 20 L26 6 Z" fill="url(#quotaGrad)"/>
+            <circle cx="36" cy="12" r="3" fill="#29e0c9"/>
+            <circle cx="41" cy="18" r="2" fill="#ff2d6a"/>
+          </svg>
+        </div>
+        <div style="flex: 1; display: flex; flex-direction: column; gap: 3px;">
+          <div style="font-weight: 800; font-size: 13px; color: #ffd23f;">Rekomendasi &amp; Compare Kuota ⚡</div>
+          <div style="font-size: 10px; color: #a9b2c3;">Cari kuota hemat, untung banyak, &amp; akhir bulan terbaik di sini!</div>
+        </div>
+      </div>
+    </a>
+
+    <a class="cc-card" href="voucher.html" style="background: linear-gradient(135deg, #0c2b2a 0%, #081a1f 100%) !important;">
+      <div style="display: flex; align-items: center; padding: 14px; gap: 12px;">
+        <div class="cc-spill-icon" style="border: 1.5px solid #29e0c9;">
+          <svg viewBox="0 0 48 48" width="30" height="30">
+            <defs>
+              <linearGradient id="voucherGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#29e0c9"/>
+                <stop offset="100%" stop-color="#7c5cff"/>
+              </linearGradient>
+            </defs>
+            <path d="M6 16 a4 4 0 0 1 4-4 h28 a4 4 0 0 1 4 4 v4 a3 3 0 0 0 0 6 v4 a4 4 0 0 1-4 4 h-28 a4 4 0 0 1-4-4 v-4 a3 3 0 0 0 0-6 z" fill="url(#voucherGrad)"/>
+            <line x1="24" y1="12" x2="24" y2="36" stroke="#0b1226" stroke-width="2" stroke-dasharray="3,3"/>
+          </svg>
+        </div>
+        <div style="flex: 1; display: flex; flex-direction: column; gap: 3px;">
+          <div style="font-weight: 800; font-size: 13px; color: #29e0c9;">Voucher Internet 🎟️</div>
+          <div style="font-size: 10px; color: #a9b2c3;">Voucher data all operator, cepat &amp; langsung aktif!</div>
+        </div>
+      </div>
+    </a>
+  </div>
+
+  <!-- ==================== POPULER ==================== -->
+  <div class="cc-section">
+    <div class="cc-section-title cc-title-popular">Populer Sejauh Ini</div>
+    <div class="cc-grid">
+      <a class="cc-card" href="youtubesimple.html">
+        <div class="cc-card-img-wrap">
+          <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg9jFccjLfiUi3Ew3JbmXH3p7bI343I3uu1QQxM-dGXthz1iwdtglwPP5C6bJpZM_oRiOpDW1VyCmQbT0vtsaqa7X0D8aIaSKiaCn0-mQXzEn7nsnxaPJbTugaZaHMxVUAnQLUsyT79n3MmtxrwsnvSGjfM0oyXmwWJC02w_YEvq5ePkWK0MIlGEhuh4D4U/s651/a1f5838deaa37d81fa9002c9e0ec99cf.jpg" alt="YouTube Premium Ketengan">
+        </div>
+        <div class="cc-card-body">
+          <div class="cc-card-name">YT Premium Ketengan</div>
+          <div class="cc-card-desc">Mulai dari 1 harian, fleksibel &amp; murah.</div>
+        </div>
+      </a>
+
+      <a class="cc-card" href="youtube.html">
+        <div class="cc-card-img-wrap">
+          <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg9jFccjLfiUi3Ew3JbmXH3p7bI343I3uu1QQxM-dGXthz1iwdtglwPP5C6bJpZM_oRiOpDW1VyCmQbT0vtsaqa7X0D8aIaSKiaCn0-mQXzEn7nsnxaPJbTugaZaHMxVUAnQLUsyT79n3MmtxrwsnvSGjfM0oyXmwWJC02w_YEvq5ePkWK0MIlGEhuh4D4U/s651/a1f5838deaa37d81fa9002c9e0ec99cf.jpg" alt="YouTube Premium">
+        </div>
+        <div class="cc-card-body">
+          <div class="cc-card-name">YouTube Premium</div>
+          <div class="cc-card-desc">Bebas iklan, background play, akses YT Music.</div>
+        </div>
+      </a>
+
+      <a class="cc-card" href="spotifypremi.html">
+        <div class="cc-card-img-wrap">
+          <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgNnFiytNVsOsM-yD4XtGe3llqz6AaN6oeWnlLVmXnRHCazFJMvqWmhePVYsuYK69NyWKD5SfnXQDnw79ajRfBDYzmsJFE_jyIojBtkKG_gPHZBXAmvgGaMFK-G6RUuk0xVaOIJI2Lq2Qo8o1Q5SIPa7oddiZqdp4yqOJXt-ZIZyATZHoRQt-_k_kcq5Wpg/s736/9b1857defd4e25ce19cfb390b9c9fdba.jpg" alt="Spotify Premium">
+        </div>
+        <div class="cc-card-body">
+          <div class="cc-card-name">Spotify Premium</div>
+          <div class="cc-card-desc">Bebas iklan, offline mode, kualitas audio tinggi.</div>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <!-- ==================== CATEGORY PILLS ==================== -->
+  <div class="cc-cat-wrapper" id="cc-cat-wrapper">
+    <div class="cc-cat-pill cc-cat-active" data-cat="all">Semua</div>
+    <div class="cc-cat-pill" data-cat="ai">AI Subscription</div>
+    <div class="cc-cat-pill" data-cat="streaming">Streaming</div>
+    <div class="cc-cat-pill" data-cat="bundling">Bundling</div>
+    <div class="cc-cat-pill" data-cat="kuota">Kuota Internet</div>
+  </div>
+
+  <!-- ==================== PAGES ==================== -->
+  <div class="cc-pages-viewport">
+    <div class="cc-pages-wrapper" id="cc-pages-wrapper">
+      <div class="cc-page" data-page="all">
+        <div class="cc-section"><div class="cc-grid" id="cc-grid-all"></div></div>
+      </div>
+      <div class="cc-page" data-page="ai">
+        <div class="cc-section"><div class="cc-grid" id="cc-grid-ai"></div></div>
+      </div>
+      <div class="cc-page" data-page="streaming">
+        <div class="cc-section"><div class="cc-grid" id="cc-grid-streaming"></div></div>
+      </div>
+      <div class="cc-page" data-page="bundling">
+        <div class="cc-section"><div class="cc-grid" id="cc-grid-bundling"></div></div>
+      </div>
+      <div class="cc-page" data-page="kuota">
+        <div class="cc-section"><div class="cc-grid" id="cc-grid-kuota"></div></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ===== BACKDROP FAB ===== -->
+<div class="cc-fab-backdrop" id="cc-fab-backdrop"></div>
+
+<!-- ===== FAB FAN MENU GOLD ===== -->
+<div class="cc-fab-stage" id="cc-fab-stage">
+
+  <div class="cc-fab-dock">
+    <div class="cc-fab-slice" data-s="0"></div>
+    <div class="cc-fab-slice" data-s="1"></div>
+    <div class="cc-fab-slice" data-s="2"></div>
+    <div class="cc-fab-slice" data-s="3"></div>
+    <div class="cc-fab-slice-line" data-l="0"></div>
+    <div class="cc-fab-slice-line" data-l="1"></div>
+    <div class="cc-fab-slice-line" data-l="2"></div>
+    <div class="cc-fab-slice-line" data-l="3"></div>
+    <div class="cc-fab-slice-line" data-l="4"></div>
+  </div>
+
+  <div class="cc-fab-item cc-fab-item-disabled" data-i="0" title="Kamu sedang di halaman ini">
+    <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    <span>Menu</span>
+  </div>
+
+  <a class="cc-fab-item" data-i="1" href="https://lynk.id/cocenter" target="_blank" rel="noopener">
+    <svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+    <span>Lynk.id</span>
+  </a>
+
+  <a class="cc-fab-item" data-i="2" href="transaksi.html">
+    <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/></svg>
+    <span>Transaksi</span>
+  </a>
+
+  <a class="cc-fab-item" data-i="3" href="profile.html">
+    <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    <span>Profile</span>
+  </a>
+
+  <div class="cc-fab-main" id="cc-fab-main">
+    <img class="cc-fab-logo" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjgKAkQ6fTJOBPoOVz21klx2Vw6CXegaFe7QnvWoaDZTt1raufO5Ikvqu0JrP93QUf_iAcqVp8IkcTZjTx_e1mMqJENEYIpEjv-br9ApdDAeMiPcm8xoO-dFAmPJa-9y22yJdNme0Eb-EFxm-dS0Pd2UwUNu2cfB5pxS7KA7RP1JPKB-79xmqs5Vl9pSYHn/s1600/IMG_20260808_230713.png" alt="Co Center">
+
+    <svg class="cc-fab-icon-close" viewBox="0 0 24 24">
+      <line x1="6" y1="6" x2="18" y2="18"/>
+      <line x1="18" y1="6" x2="6" y2="18"/>
+    </svg>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+  // ================= SINKRONISASI ICON / FOTO PROFIL HEADER =================
+  function updateHeaderAvatar() {
+    var container = document.getElementById('header-avatar-container');
+    var savedAvatar = localStorage.getItem('cc_user_avatar');
+    if (container) {
+      if (savedAvatar && savedAvatar.trim() !== "") {
+        container.innerHTML = '<img src="' + savedAvatar + '" alt="Profile" style="width:100%; height:100%; object-fit:cover; display:block;">';
+      } else {
+        container.innerHTML = '<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>';
+      }
+    }
+  }
+  updateHeaderAvatar();
+
+  // ================= PROFILE DROPDOWN =================
+  var profileToggle = document.getElementById('cc-profile-toggle');
+  var profileDropdown = document.getElementById('cc-profile-dropdown');
+  if (profileToggle && profileDropdown) {
+    profileToggle.addEventListener('click', function(e) {
+      e.stopPropagation();
+      profileDropdown.classList.toggle('show');
+    });
+    document.addEventListener('click', function(e) {
+      if (!profileToggle.contains(e.target) && !profileDropdown.contains(e.target)) {
+        profileDropdown.classList.remove('show');
+      }
+    });
+  }
+
+  // ================= POPUP PATCH =================
+  var patchBadge = document.getElementById('open-patch-popup');
+  var popupOverlay = document.getElementById('cc-popup');
+  var popupClose = document.getElementById('cc-popup-close');
+  if (patchBadge && popupOverlay) {
+    patchBadge.addEventListener('click', function(e) {
+      e.stopPropagation();
+      popupOverlay.classList.add('cc-popup-show');
+    });
+  }
+  if (popupClose && popupOverlay) {
+    popupClose.addEventListener('click', function(e) {
+      e.stopPropagation();
+      popupOverlay.classList.remove('cc-popup-show');
+    });
+  }
+  if (popupOverlay) {
+    popupOverlay.addEventListener('click', function(e) {
+      if (e.target === popupOverlay) popupOverlay.classList.remove('cc-popup-show');
+    });
+  }
+
+  // ================= FAB — DRAG + SYNC SETTINGS =================
+  var fabStage = document.getElementById('cc-fab-stage');
+  var fabMain = document.getElementById('cc-fab-main');
+  var fabBackdrop = document.getElementById('cc-fab-backdrop');
+
+  var savedPosBeforeOpen = null;
+  var DRAG_THRESHOLD = 8;
+  var dragState = {
+    active: false, hasMoved: false, isMovable: false,
+    startX: 0, startY: 0, startLeft: 0, startTop: 0, pointerId: null
+  };
+
+  function isFabMovable() {
+    return localStorage.getItem('cc_fab_movable') === 'true';
+  }
+
+  function updateFabVisualState() {
+    if (isFabMovable()) {
+      fabStage.classList.add('cc-fab-grabbable');
+    } else {
+      fabStage.classList.remove('cc-fab-grabbable');
+    }
+  }
+
+  function applySavedFabPosition() {
+    if (!isFabMovable()) return;
+    var savedPos = localStorage.getItem('cc_fab_position');
+    if (!savedPos) return;
+    try {
+      var pos = JSON.parse(savedPos);
+      if (typeof pos.left === 'number' && typeof pos.top === 'number') {
+        var maxLeft = Math.max(0, window.innerWidth - fabStage.offsetWidth);
+        var maxTop = Math.max(0, window.innerHeight - fabStage.offsetHeight);
+        var clampedLeft = Math.max(0, Math.min(maxLeft, pos.left));
+        var clampedTop = Math.max(0, Math.min(maxTop, pos.top));
+        fabStage.style.left = clampedLeft + 'px';
+        fabStage.style.top = clampedTop + 'px';
+        fabStage.style.bottom = 'auto';
+        fabStage.style.transform = 'none';
+      }
+    } catch(e) {}
+  }
+
+  function resetFabPosition() {
+    fabStage.style.left = '';
+    fabStage.style.top = '';
+    fabStage.style.bottom = '';
+    fabStage.style.transform = '';
+  }
+
+  function openFab() {
+    // Kalau mode geser aktif → simpan posisi, balikin ke default, baru buka
+    if (isFabMovable()) {
+      var rect = fabStage.getBoundingClientRect();
+      savedPosBeforeOpen = { left: rect.left, top: rect.top };
+      fabStage.style.left = '';
+      fabStage.style.top = '';
+      fabStage.style.bottom = '';
+      fabStage.style.transform = '';
+    }
+    fabStage.classList.add('cc-fab-open');
+    fabBackdrop.classList.add('cc-fab-backdrop-show');
+  }
+
+  function closeFab() {
+    fabStage.classList.remove('cc-fab-open');
+    fabBackdrop.classList.remove('cc-fab-backdrop-show');
+    // Kalau mode geser aktif & ada posisi tersimpan → balikin ke posisi hasil drag
+    if (isFabMovable() && savedPosBeforeOpen) {
+      fabStage.style.left = savedPosBeforeOpen.left + 'px';
+      fabStage.style.top = savedPosBeforeOpen.top + 'px';
+      fabStage.style.bottom = 'auto';
+      fabStage.style.transform = 'none';
+      savedPosBeforeOpen = null;
+    }
+  }
+
+  fabBackdrop.addEventListener('click', closeFab);
+
+  document.querySelectorAll('.cc-fab-item').forEach(function (item) {
+    item.addEventListener('click', function () {
+      closeFab();
+    });
+  });
+
+  // Pointer handlers untuk drag + tap FAB
+  fabMain.addEventListener('pointerdown', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    dragState.active = true;
+    dragState.hasMoved = false;
+    dragState.pointerId = e.pointerId;
+    dragState.isMovable = isFabMovable() && !fabStage.classList.contains('cc-fab-open');
+
+    dragState.startX = e.clientX;
+    dragState.startY = e.clientY;
+
+    var rect = fabStage.getBoundingClientRect();
+    dragState.startLeft = rect.left;
+    dragState.startTop = rect.top;
+
+    try { fabMain.setPointerCapture(e.pointerId); } catch(err) {}
+  });
+
+  fabMain.addEventListener('pointermove', function(e) {
+    if (!dragState.active || !dragState.isMovable) return;
+
+    var dx = e.clientX - dragState.startX;
+    var dy = e.clientY - dragState.startY;
+
+    if (!dragState.hasMoved) {
+      if (Math.abs(dx) < DRAG_THRESHOLD && Math.abs(dy) < DRAG_THRESHOLD) return;
+      dragState.hasMoved = true;
+    }
+
+    var newLeft = dragState.startLeft + dx;
+    var newTop = dragState.startTop + dy;
+
+    var maxLeft = window.innerWidth - fabStage.offsetWidth;
+    var maxTop = window.innerHeight - fabStage.offsetHeight;
+    newLeft = Math.max(0, Math.min(maxLeft, newLeft));
+    newTop = Math.max(0, Math.min(maxTop, newTop));
+
+    fabStage.style.left = newLeft + 'px';
+    fabStage.style.top = newTop + 'px';
+    fabStage.style.bottom = 'auto';
+    fabStage.style.transform = 'none';
+  });
+
+  fabMain.addEventListener('pointerup', function(e) {
+    if (!dragState.active) return;
+    dragState.active = false;
+
+    try { fabMain.releasePointerCapture(dragState.pointerId); } catch(err) {}
+
+    if (dragState.hasMoved) {
+      var rect = fabStage.getBoundingClientRect();
+      localStorage.setItem('cc_fab_position', JSON.stringify({
+        left: rect.left, top: rect.top
+      }));
+    } else {
+      if (fabStage.classList.contains('cc-fab-open')) {
+        closeFab();
+      } else {
+        openFab();
+      }
+    }
+  });
+
+  fabMain.addEventListener('pointercancel', function() {
+    dragState.active = false;
+  });
+
+  // React kalau setting FAB diubah dari halaman lain (pengaturan.html)
+  window.addEventListener('storage', function(e) {
+    if (e.key === 'cc_bg_mode') { /* no-op di sini, bg default */ }
+    if (e.key === 'cc_user_avatar') updateHeaderAvatar();
+    if (e.key === 'cc_fab_movable') {
+      updateFabVisualState();
+      if (!isFabMovable()) resetFabPosition();
+      else applySavedFabPosition();
+    }
+    if (e.key === 'cc_fab_position') {
+      if (isFabMovable()) applySavedFabPosition();
+    }
+  });
+
+  // Init
+  updateFabVisualState();
+  applySavedFabPosition();
+
+  // ================= DATA PRODUK =================
+  var PRODUCTS = [
+    { name: "Gemini AI Plus", desc: "Gemini Advanced Plus, storage 2TB.", img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjI89VpN4aoKayYKlOjz4Wycs-MnLVc0HFsTP_NK6mM1nRHm7Ws-m6T-1-eI83X-qlTaUrFILEOgbIpA0I5q3xwH0wMMyFTOvdcU9qrItqHMT0HO_JLLAB-f3sPyL_eyf0qCQXQ_EtEl81xFlJKhAJBn6Pv6q_-qHwPUyE3i4Fgy-j17gxkLox4BStlZ5di/s376/fdb88f0e8e7536e0a65640cae3494007.jpg", link: "geminiplus.html", cat: "ai", soon: false },
+    { name: "Gemini AI Pro", desc: "Tier di atas Plus.", img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjI89VpN4aoKayYKlOjz4Wycs-MnLVc0HFsTP_NK6mM1nRHm7Ws-m6T-1-eI83X-qlTaUrFILEOgbIpA0I5q3xwH0wMMyFTOvdcU9qrItqHMT0HO_JLLAB-f3sPyL_eyf0qCQXQ_EtEl81xFlJKhAJBn6Pv6q_-qHwPUyE3i4Fgy-j17gxkLox4BStlZ5di/s376/fdb88f0e8e7536e0a65640cae3494007.jpg", link: "geminiprobyjio.html", cat: "ai", soon: false },
+    { name: "Chat GPT Go", desc: "Paket hemat akses ChatGPT.", img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiAIbRzQ57XpyZGoEdBGVgp4B4kiGLd6KZM7e08HI3my2OvyCBt-mZWqad1yDEUWG_nMUxEwyrAxdpv8fooFzZDXI0_yME9FPMCzQdS-Rsppwaem5ejGdVXHo9VQhKqfkp4RpIksVHwr8wf5nPRiWZ0hAfGIv2OCP5TIKuygXhFYeRaVlm_YVaGeeHhdUqX/s736/7ddfdc707caa84d53bfbb3bbe31342ee.jpg", link: "chatgptgo.html", cat: "ai", soon: false },
+    { name: "Chat GPT Plus", desc: "Akses penuh fitur premium ChatGPT.", img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiAIbRzQ57XpyZGoEdBGVgp4B4kiGLd6KZM7e08HI3my2OvyCBt-mZWqad1yDEUWG_nMUxEwyrAxdpv8fooFzZDXI0_yME9FPMCzQdS-Rsppwaem5ejGdVXHo9VQhKqfkp4RpIksVHwr8wf5nPRiWZ0hAfGIv2OCP5TIKuygXhFYeRaVlm_YVaGeeHhdUqX/s736/7ddfdc707caa84d53bfbb3bbe31342ee.jpg", link: "chatgptplus.html", cat: "ai", soon: false },
+    { name: "Canva Pro", desc: "Segera hadir, tools desain premium.", img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiMoXVmcYe_DJYRsqkj8euu5mtRVUUjvXB2p4cT1IU5Qxkedl0g4yCacfM5M2MA8SyzVK1iGWvRSlTvti_FzTJ-ipo0F1rukUGDnv_YoPB3six1beXwXCx5zeLlwsF9bKIfIasYnvHx9JfCKC1RpxtJ5zmZyL9ai1yQ9ITCNkaBAVWAnNfCo8NDG1-wPnYV/s736/b224bcfb58a1861dee8afc847a5d657d.jpg", link: null, cat: "ai", soon: true },
+
+    { name: "YouTube Premium", desc: "Bebas iklan, background play, akses YT Music.", img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg9jFccjLfiUi3Ew3JbmXH3p7bI343I3uu1QQxM-dGXthz1iwdtglwPP5C6bJpZM_oRiOpDW1VyCmQbT0vtsaqa7X0D8aIaSKiaCn0-mQXzEn7nsnxaPJbTugaZaHMxVUAnQLUsyT79n3MmtxrwsnvSGjfM0oyXmwWJC02w_YEvq5ePkWK0MIlGEhuh4D4U/s651/a1f5838deaa37d81fa9002c9e0ec99cf.jpg", link: "youtube.html", cat: "streaming", soon: false },
+    { name: "YT Premium Ketengan", desc: "Mulai dari 1 harian, fleksibel & murah.", img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg9jFccjLfiUi3Ew3JbmXH3p7bI343I3uu1QQxM-dGXthz1iwdtglwPP5C6bJpZM_oRiOpDW1VyCmQbT0vtsaqa7X0D8aIaSKiaCn0-mQXzEn7nsnxaPJbTugaZaHMxVUAnQLUsyT79n3MmtxrwsnvSGjfM0oyXmwWJC02w_YEvq5ePkWK0MIlGEhuh4D4U/s651/a1f5838deaa37d81fa9002c9e0ec99cf.jpg", link: "youtubesimple.html", cat: "streaming", soon: false },
+    { name: "Spotify", desc: "Bebas iklan, offline mode, kualitas audio tinggi.", img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgNnFiytNVsOsM-yD4XtGe3llqz6AaN6oeWnlLVmXnRHCazFJMvqWmhePVYsuYK69NyWKD5SfnXQDnw79ajRfBDYzmsJFE_jyIojBtkKG_gPHZBXAmvgGaMFK-G6RUuk0xVaOIJI2Lq2Qo8o1Q5SIPa7oddiZqdp4yqOJXt-ZIZyATZHoRQt-_k_kcq5Wpg/s736/9b1857defd4e25ce19cfb390b9c9fdba.jpg", link: "spotifypremi.html", cat: "streaming", soon: false },
+    { name: "Deezer Pro", desc: "Streaming musik kualitas tinggi.", img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhCpTy4WjC3r3Ni0dRe_g8f4idc-4jRWPEFsfQase6Jyt_kAnOKRXxQ2Bz3kAUE7_fbu_AdS2-zWkbfDUfLLXZeFGvnFOi6LCQvBb5afmG68cQfcob1Ft_kc08fbBtb7UuddpVtevb-fTZZUJAEFX0mnlrt8Ee9e4sFVsajVmasHeEjdBo6vkVF56-3rWfs/s400/8107aa3e2c494957379e6d3196a5737a.jpg", link: "deezerpremi.html", cat: "streaming", soon: false },
+    { name: "Bilibili / Bstation", desc: "Segera hadir, streaming anime & konten.", img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEizW0tM9yr5Xp55QBFA6TM64KkXdEmCBNkKbytntUiCdD_h6B5LBQ7QK50ydhf84478ZQU8R7is2dr1BMwzk30CosseS211jYa4FGLN2-vcHSB1f_igd5N3ILr2x0csirzaEWe60oXtXQVYvBnJkgbVrH84s01yu7kUp_y_iY0QbOtyJmULDWKme35exhV-/s512/ca3fab4383ecf85d85acc34aead357a9.jpg", link: null, cat: "streaming", soon: true },
+    { name: "Netflix", desc: "Streaming film & series.", img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjSTJoVzxte7BOYHqPJVqwtBPZu8ByQmlb-dJXrrhtFX0HSubwblrZmTdlLbF_13qpyKn6BnZEThBFNgBsML3n1JUgMFSRDXkiKJR4TzrzJg5vHxdjh2wWZh6ZATlu0ajc09VWYy4GRFiF3YAFWp3TEBqpP7NcGGzRkU6yl8ffK2vz3ebm23gHJWEyZv1Fp/s736/d4b7a862e7b91333e4657460fedd737c.jpg", link: "netflixprem.html", cat: "streaming", soon: false },
+
+    { name: "Gemini x YouTube Premium", desc: "Gemini Adv Plus (2TB) & YT Premium 30 Hari.", img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhawwkpabUo8YY4fU50CH5vAqjWyDIJGp6uFdx0G3zJiipKC2AGRlZYuHMaf8Lv2RlGnKsOaj7h2DDQUDQT0u2yzWbQeorc1b8TPUHLRK3bcptNTk-A2gx177G8zzaoYHdf5QUNgYqzaVpvmaT2fk1vlhQXZuGQEYIDnL5lHRwAHlWzRzzT-xe-OJFAvRf9/s893/64bc46f9bd44b3d44f498746fb8ee058.jpg", link: "googlebundle.html", cat: "bundling", soon: false },
+
+    { name: "Indosat", desc: "Freedom Internet All Net, harian s.d bulanan.", img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhti7epnkCnwzSD4CbwL3q02IDp_5KptBstXYabK8Y0FRFk8MI-Vr16T22xcQhYEQ9IS0yXQVS5KYJey1LqBsII-YObzrZqO8Fp73g7fX7Rn3y6rm5-NDbygkyrTkCKNowTnBmXjdsC9nNYhUy5SRDh9JaXFvCvTk1LuNQbMYZ0wVawTVzITY7ZPB4eajjM/s736/f4bd2c5f08da049417313b10c6b89332.jpg", link: "indosat.html", cat: "kuota", soon: false },
+    { name: "Axis", desc: "Paket kuota internet Axis murah & hemat.", img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgdHplLSgP-sBUP5K93-sDWeoCtlDiCEnPmpfQdCoaiGjqQhvGnwgzo2Gb6VHjnZiO8gIXTBZ6JmHgxnxQrbz7RC5X4PHcf_FNLhqQ_oC5nOqj6VtYhrK5AornAqbJk0lsKA7haR7nk9t6Cm3WUAyV9ZCqAMx3wqVD3T3BjmalT7XjBIxtNIt0vnZFJ-6z7/s640/7e2c38576ebeee1b5a5ca5874a11ea58.jpg", link: "axis.html", cat: "kuota", soon: false },
+    { name: "Smartfren", desc: "Kuota internet Smartfren cepat & stabil.", img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiKb_GZI1gUMCOm8EzCo_hnwBDpOqrO4XAIJ00z8j2E8iGANAXcoljHdwOOvePxuvc4_hY2tcQmaddEIXheNw9ScQjfom2EQWsGSpcATtri0Cw_AcRkjMGljToaO8dcA1azYysciiXrEc0xpRpS0cq-Nod2GIIAlNJwIkQvldNWFISqaEgtW6A6T6PZLd-k/s735/8b51dbcadcbe904892c95af6515620dd.jpg", link: "smartfren.html", cat: "kuota", soon: false },
+    { name: "XL", desc: "Paket data internet XL pilihan terbaik.", img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiEkseO8v9xbUunA54g17nGY6ThyQgezxHOXW6CVPszORbPXnjjyC7AL8MtPxG-Hx2eoF-E2Zp_6k3RazssODlEgtVicJXv8NpIoCdGLBTy9g1QLF51ZcRy1CtNaZtgx-aNVGHzh1BF5gfzcBcJZYSHBgjfE4m38LLO7fC8lqBmWeqNq-HwDiv-8Bi1H8Rk/s340/4dd0bd046fb7de7daa409b6530459481.jpg", link: "xl.html", cat: "kuota", soon: false },
+    { name: "Telkomsel", desc: "Internet Telkomsel jaringan terluas.", img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgTDs_yg3loOrpQAn35HgjHhznXU275Y5M6V-8LgBmVDFGDvtwC26o9BWsoIfvPTgKLqUnTBSfpbTjwYFLbS1yqzs71Xc5RArzirCQ-_Cj3KQQvOzoz4EVd82qbSTAogrNsF3ERyiA8RkgkYz8LY9af65IyUC39Y29ZXEq8u2XBKeYdqw9PUcJe-cTx_91l/s600/e8b6516223465d6adfee34777c0e8de0.jpg", link: "telkomsel.html", cat: "kuota", soon: false },
+    { name: "Three", desc: "Kuota data Three hemat & melimpah.", img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgAI31ptwdvPNRtv5d0ryxhAHUr01sGbmvu8BhfEPzj7KavNrTpjCimRU888mEz9x86rwrmcraFlWlZgk7CWp0KyzS1VmzO_i3QsrRAtF6ZP11ca613tb4iFZHYHdDxs80xb5kcL2ePLidoTpLV0jTr7Wg8huEmqq56CwS8IPYA2t-r_dYjCnR3pQwm1yq6/s735/b79db84fc52062822cc255c53b09d336.jpg", link: "three.html", cat: "kuota", soon: false }
+  ];
+
+  function escHtml(s) {
+    return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  }
+
+  function cardHtml(p) {
+    var imgClass = p.soon ? ' class="cc-card-soon-img"' : '';
+    var overlay = p.soon ? '<div class="cc-card-soon-overlay"><span class="cc-card-soon-badge">Coming Soon</span></div>' : '';
+    var inner =
+      '<div class="cc-card-img-wrap">' +
+        '<img' + imgClass + ' src="' + p.img + '" alt="' + escHtml(p.name) + '">' +
+        overlay +
+      '</div>' +
+      '<div class="cc-card-body">' +
+        '<div class="cc-card-name">' + escHtml(p.name) + '</div>' +
+        '<div class="cc-card-desc">' + p.desc + '</div>' +
+      '</div>';
+
+    if (p.link) {
+      return '<a class="cc-card" href="' + p.link + '">' + inner + '</a>';
+    }
+    return '<div class="cc-card">' + inner + '</div>';
+  }
+
+  ['ai', 'streaming', 'bundling', 'kuota'].forEach(function (cat) {
+    var grid = document.getElementById('cc-grid-' + cat);
+    if (!grid) return;
+    var items = PRODUCTS.filter(function (p) { return p.cat === cat; });
+    grid.innerHTML = items.map(cardHtml).join('');
+  });
+
+  var gridAll = document.getElementById('cc-grid-all');
+  var allSorted = PRODUCTS.slice().sort(function (a, b) {
+    return a.name.localeCompare(b.name, 'id', { sensitivity: 'base' });
+  });
+  gridAll.innerHTML = allSorted.map(cardHtml).join('');
+
+  // ================= KATEGORI: PILL + SWIPE =================
+  var catPills = document.querySelectorAll('.cc-cat-pill');
+  var pagesWrapper = document.getElementById('cc-pages-wrapper');
+  var pagesViewport = document.querySelector('.cc-pages-viewport');
+  var catOrder = ['all', 'ai', 'streaming', 'bundling', 'kuota'];
+  var pagePercent = 100 / catOrder.length;
+  var currentIndex = 0;
+
+  var catWrapper = document.getElementById('cc-cat-wrapper');
+  var lastActiveCat = null;
+
+  function setActivePill(cat) {
+    if (cat === lastActiveCat) return;
+    lastActiveCat = cat;
+    var activeEl = null;
+    catPills.forEach(function (p) {
+      var isActive = p.dataset.cat === cat;
+      p.classList.toggle('cc-cat-active', isActive);
+      if (isActive) activeEl = p;
+    });
+    if (activeEl && catWrapper) {
+      var wrapRect = catWrapper.getBoundingClientRect();
+      var pillRect = activeEl.getBoundingClientRect();
+      var offset = (pillRect.left + pillRect.width / 2) - (wrapRect.left + wrapRect.width / 2);
+      catWrapper.scrollLeft += offset;
+    }
+  }
+
+  function goToIndex(idx, animate) {
+    if (idx < 0) idx = 0;
+    if (idx > catOrder.length - 1) idx = catOrder.length - 1;
+    currentIndex = idx;
+    pagesWrapper.style.transition = animate ? 'transform 0.3s ease' : 'none';
+    pagesWrapper.style.transform = 'translateX(-' + (idx * pagePercent) + '%)';
+    setActivePill(catOrder[idx]);
+  }
+
+  catPills.forEach(function (pill) {
+    pill.addEventListener('click', function (e) {
+      e.stopPropagation();
+      var idx = catOrder.indexOf(pill.dataset.cat);
+      goToIndex(idx, true);
+    });
+  });
+
+  var startX = 0, startY = 0, deltaX = 0, isDragging = false, isHorizontal = null;
+
+  document.addEventListener('touchstart', function (e) {
+    if (!pagesViewport.contains(e.target)) return;
+    startX = e.touches[0].clientX;
+    startY = e.touches[0].clientY;
+    deltaX = 0;
+    isDragging = true;
+    isHorizontal = null;
+    pagesWrapper.style.transition = 'none';
+  }, { passive: true });
+
+  document.addEventListener('touchmove', function (e) {
+    if (!isDragging) return;
+    var curX = e.touches[0].clientX;
+    var curY = e.touches[0].clientY;
+    deltaX = curX - startX;
+    var deltaY = curY - startY;
+
+    if (isHorizontal === null && (Math.abs(deltaX) > 6 || Math.abs(deltaY) > 6)) {
+      isHorizontal = Math.abs(deltaX) > Math.abs(deltaY);
+    }
+    if (isHorizontal === false) return;
+    if (isHorizontal === null) return;
+
+    if (e.cancelable) e.preventDefault();
+    var basePercent = -(currentIndex * pagePercent);
+    var dragPercent = (deltaX / pagesViewport.clientWidth) * pagePercent;
+    pagesWrapper.style.transform = 'translateX(' + (basePercent + dragPercent) + '%)';
+
+    var progress = -((basePercent + dragPercent) / pagePercent);
+    var previewIndex = Math.round(progress);
+    if (previewIndex < 0) previewIndex = 0;
+    if (previewIndex > catOrder.length - 1) previewIndex = catOrder.length - 1;
+    setActivePill(catOrder[previewIndex]);
+  }, { passive: false });
+
+  document.addEventListener('touchend', function () {
+    if (!isDragging) return;
+    isDragging = false;
+    if (!isHorizontal) {
+      goToIndex(currentIndex, true);
+      return;
+    }
+    var threshold = pagesViewport.clientWidth * 0.15;
+    if (deltaX < -threshold && currentIndex < catOrder.length - 1) {
+      goToIndex(currentIndex + 1, true);
+    } else if (deltaX > threshold && currentIndex > 0) {
+      goToIndex(currentIndex - 1, true);
+    } else {
+      goToIndex(currentIndex, true);
+    }
+  });
+
+  goToIndex(0, false);
+
+});
+</script>
+
+</body>
+</html>
