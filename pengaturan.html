@@ -513,7 +513,7 @@
     <div class="cc-nav-inner">
       <div class="cc-brand-wrap">
         <div class="cc-brand-row cc-brand">
-          <img class="cc-img" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjgKAkQ6fTJOBPoOVz21klx2Vw6CXegaFe7QnvWoaDZTt1raufO5Ikvqu0JrP93QUf_iAcqVp8IkcTZjTx_e1mMqJENEYIpEjv-br9ApdDAeMiPcm8xoO-dFAmPJa-9y22yJdNme0Eb-EFxm-dS0Pd2UwUNu2cfB5pxS7KA7RP1JPKB-79xmqs5Vl9pSYHn/s1600/IMG_20260808_230713.png">
+          <img class="cc-img" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjgKAkQ6fTJOBPoOVz21klx2Vw6CXegaFe7QnvWoaDZTt1raufO5Ikvqu0JrP93QUf_iAcqVp8IkcTZjTx_e1mMqJENEYIpEjv-br9ApdDAeMiPcm8xoO-dFAmPJa-9y22yJdNme0Eb-EFxm-dS0Pd2UwUNu2cfB5pxS7KA7RP1JPKB-79xmqs5Vl9pSYHn/s1600/IMG_20260808_230713.png" alt="Co Center">
           CO CENTER
         </div>
         <div class="cc-subtitle">Pengaturan</div>
@@ -689,7 +689,7 @@
       <div>
         <label class="cc-modal-label">Tautan Simpanan Cloud (Auto-Terisi di Perangkat Ini)</label>
         <div class="cc-input-masked-wrap">
-          <input type="password" class="cc-modal-input" id="cc-input-gist-url" placeholder="Tautan akan otomatis terisi..." autocomplete="off" spellcheck="false">
+          <input type="password" class="cc-modal-input" id="cc-input-gist-url" placeholder="Tempel tautan atau otomatis terisi..." autocomplete="off" spellcheck="false">
           <button type="button" class="cc-toggle-eye" id="btn-toggle-mask-load" title="Tampilkan/Sembunyikan Input">
             <svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
           </button>
@@ -775,21 +775,18 @@
 document.addEventListener('DOMContentLoaded', function () {
 
   // ============================================================
-  // ⚠️ FIX #1: PREFIX TOKEN WAJIB LOWERCASE "ghp_" — bukan "Ghp_"
+  // KONFIGURASI TOKEN GITHUB GIST
   // ============================================================
   var GITHUB_GIST_CONFIG = {
-    defaultToken: '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',
+    defaultToken: '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',
     defaultMasterGistId: ''
   };
 
-  // ============================================================
-  // FIX #2: Validasi format token otomatis di awal (bantu diagnosa)
-  // ============================================================
+  // Validasi format token otomatis di awal
   (function validateToken() {
     var raw = GITHUB_GIST_CONFIG.defaultToken || '';
     var token = raw.trim();
     if (raw !== token) {
-      console.warn('[CoCenter] Token ada spasi/newline → di-trim otomatis');
       GITHUB_GIST_CONFIG.defaultToken = token;
     }
     if (!token) {
@@ -797,18 +794,14 @@ document.addEventListener('DOMContentLoaded', function () {
       return;
     }
     if (!/^ghp_[A-Za-z0-9]{36}$/.test(token) && !/^github_pat_/.test(token)) {
-      console.error('[CoCenter] ⚠️ FORMAT TOKEN SALAH!', {
-        prefix4: token.substring(0, 4),
-        length: token.length,
-        hint: 'Classic PAT harus "ghp_" (lowercase g) + 36 karakter = total 40 karakter.'
-      });
+      console.error('[CoCenter] Format token tidak sesuai:', token.substring(0, 4));
     } else {
-      console.log('[CoCenter] ✅ Format token OK:', token.substring(0, 4) + '...(' + token.length + ' chars)');
+      console.log('[CoCenter] Token aktif:', token.substring(0, 4) + '...(' + token.length + ' chars)');
     }
   })();
 
   var toastTimer = null;
-  function showToast(msg) {
+  function showToast(msg, durationMs) {
     var toast = document.getElementById('cc-toast');
     if (!toast) return;
     toast.textContent = msg;
@@ -816,7 +809,39 @@ document.addEventListener('DOMContentLoaded', function () {
     clearTimeout(toastTimer);
     toastTimer = setTimeout(function() {
       toast.classList.remove('show');
-    }, 2800);
+    }, durationMs || 3000);
+  }
+
+  function copyTextSafely(text) {
+    if (!text) return Promise.reject(new Error('Teks kosong'));
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text).catch(function() {
+        return fallbackCopyText(text);
+      });
+    }
+    return fallbackCopyText(text);
+  }
+
+  function fallbackCopyText(text) {
+    return new Promise(function(resolve, reject) {
+      try {
+        var ta = document.createElement('textarea');
+        ta.value = text;
+        ta.setAttribute('readonly', '');
+        ta.style.position = 'fixed';
+        ta.style.top = '-9999px';
+        ta.style.left = '-9999px';
+        document.body.appendChild(ta);
+        ta.select();
+        ta.setSelectionRange(0, text.length);
+        var ok = document.execCommand('copy');
+        document.body.removeChild(ta);
+        if (ok) resolve();
+        else reject(new Error('execCommand copy gagal'));
+      } catch (e) {
+        reject(e);
+      }
+    });
   }
 
   function getOrInitFirstInstall() {
@@ -979,7 +1004,7 @@ document.addEventListener('DOMContentLoaded', function () {
     'cc_google_linked', 'cc_google_email', 'cc_comersio_linked', 'cc_comersio_email',
     'cc_unpaid_debt', 'cc_debt_logs', 'cc_transactions',
     'cc_bg_mode', 'cc_nav_mode', 'cc_fab_movable', 'cc_fab_position',
-    'cc_gist_id', 'cc_gist_filename', 'cc_gist_raw_url', 'cc_gist_html_url'
+    'cc_gist_id', 'cc_gist_filename', 'cc_gist_raw_url', 'cc_gist_html_url', 'cc_auto_saved_link'
   ];
 
   function collectAllAppData() {
@@ -996,19 +1021,35 @@ document.addEventListener('DOMContentLoaded', function () {
       var val = localStorage.getItem(key);
       if (val !== null) payload[key] = val;
     });
+    for (var i = 0; i < localStorage.length; i++) {
+      var k = localStorage.key(i);
+      if (k && k.indexOf('cc_') === 0 && !(k in payload)) {
+        payload[k] = localStorage.getItem(k);
+      }
+    }
     return payload;
   }
 
   function restoreAllAppData(dataObj) {
     if (!dataObj || typeof dataObj !== 'object') return false;
     try {
+      var count = 0;
       Object.keys(dataObj).forEach(function(key) {
         if (key === '_meta') return;
-        if (typeof dataObj[key] === 'string') {
-          localStorage.setItem(key, dataObj[key]);
+        var val = dataObj[key];
+        if (val === null || val === undefined) return;
+        if (typeof val === 'string') {
+          localStorage.setItem(key, val);
+          count++;
+        } else if (typeof val === 'number' || typeof val === 'boolean') {
+          localStorage.setItem(key, String(val));
+          count++;
+        } else if (typeof val === 'object') {
+          localStorage.setItem(key, JSON.stringify(val));
+          count++;
         }
       });
-      return true;
+      return count > 0 || ('_meta' in dataObj);
     } catch(e) {
       return false;
     }
@@ -1017,36 +1058,21 @@ document.addEventListener('DOMContentLoaded', function () {
   var latestGistHtmlUrl = localStorage.getItem('cc_gist_html_url') || '';
   var latestGistRawUrl = localStorage.getItem('cc_gist_raw_url') || '';
 
-  // ============================================================
-  // FIX #3: Error handler dengan pesan jelas per status code
-  // ============================================================
   function buildGitHubError(response, errData) {
     var errMsg = (errData && errData.message) || ('HTTP ' + response.status);
     switch (response.status) {
       case 401:
-        return '❌ BAD CREDENTIALS (401): Token tidak valid / expired / format salah.\n' +
-               'Cek: prefix "ghp_" harus lowercase, belum expired, tanpa spasi.\n' +
-               'Respons GitHub: ' + errMsg;
+        return 'Token tidak valid / expired (401): ' + errMsg;
       case 403:
-        return '⛔ FORBIDDEN (403): Token valid tapi tidak punya izin scope "gist".\n' +
-               'Buat ulang token & centang scope gist.\nRespons: ' + errMsg;
+        return 'Token tidak punya izin scope "gist" (403): ' + errMsg;
       case 404:
-        return '🔍 NOT FOUND (404): Gist/resource tidak ditemukan atau bukan milik akun token ini.';
+        return 'Data Gist tidak ditemukan (404).';
       default:
-        return '⚠️ HTTP ' + response.status + ': ' + errMsg;
+        return 'HTTP ' + response.status + ': ' + errMsg;
     }
   }
 
-  async function pushDataToCloud() {
-    var token = GITHUB_GIST_CONFIG.defaultToken;
-    var dynamicFilename = getDynamicSaveFilename();
-    var allData = collectAllAppData();
-    var jsonContent = JSON.stringify(allData, null, 2);
-
-    var targetGistId = localStorage.getItem('cc_gist_id') ||
-                       extractGistId(GITHUB_GIST_CONFIG.defaultMasterGistId);
-    var oldFilename = localStorage.getItem('cc_gist_filename');
-
+  async function sendGistRequest(token, targetGistId, dynamicFilename, jsonContent, oldFilename) {
     var filesPayload = {};
     if (targetGistId && oldFilename && oldFilename !== dynamicFilename) {
       filesPayload[oldFilename] = null;
@@ -1067,7 +1093,7 @@ document.addEventListener('DOMContentLoaded', function () {
       bodyPayload.public = false;
     }
 
-    var response = await fetch(endpoint, {
+    return fetch(endpoint, {
       method: method,
       headers: {
         'Authorization': 'Bearer ' + token,
@@ -1076,6 +1102,30 @@ document.addEventListener('DOMContentLoaded', function () {
       },
       body: JSON.stringify(bodyPayload)
     });
+  }
+
+  async function pushDataToCloud() {
+    var token = (GITHUB_GIST_CONFIG.defaultToken || '').trim();
+    if (!token) {
+      throw new Error('Token GitHub belum diatur.');
+    }
+
+    var dynamicFilename = getDynamicSaveFilename();
+    var allData = collectAllAppData();
+    var jsonContent = JSON.stringify(allData, null, 2);
+
+    var targetGistId = localStorage.getItem('cc_gist_id') ||
+                       extractGistId(GITHUB_GIST_CONFIG.defaultMasterGistId);
+    var oldFilename = localStorage.getItem('cc_gist_filename');
+
+    var response = await sendGistRequest(token, targetGistId, dynamicFilename, jsonContent, oldFilename);
+
+    // Jika Gist lama milik akun lain atau sudah dihapus (404), otomatis buat Gist baru
+    if (response.status === 404 && targetGistId) {
+      localStorage.removeItem('cc_gist_id');
+      localStorage.removeItem('cc_gist_filename');
+      response = await sendGistRequest(token, '', dynamicFilename, jsonContent, null);
+    }
 
     if (!response.ok) {
       var errData = await response.json().catch(function() { return {}; });
@@ -1105,85 +1155,101 @@ document.addEventListener('DOMContentLoaded', function () {
 
   async function inspectOrLoadCloud(inputStr, specificFilename) {
     var cleanInput = inputStr.trim();
+    var gistId = extractGistId(cleanInput);
+    var savedToken = (GITHUB_GIST_CONFIG.defaultToken || '').trim();
 
-    if (cleanInput.indexOf('gist.githubusercontent.com') !== -1 && !specificFilename) {
+    // Ekstrak nama file dari raw URL jika ada (contoh: .../raw/NamaFile.json)
+    var urlSpecificFile = specificFilename || null;
+    if (!urlSpecificFile && cleanInput.indexOf('gist.githubusercontent.com') !== -1) {
+      var rawMatch = cleanInput.match(/\/raw\/(?:[a-f0-9]{40}\/)?([^?#]+\.json)/i);
+      if (rawMatch && rawMatch[1]) {
+        try {
+          urlSpecificFile = decodeURIComponent(rawMatch[1]);
+        } catch (e) {
+          urlSpecificFile = rawMatch[1];
+        }
+      }
+    }
+
+    // Prioritaskan GitHub API agar data selalu real-time (bebas cache CDN 5 menit)
+    if (gistId) {
+      var headers = { 'Accept': 'application/vnd.github+json' };
+      if (savedToken) {
+        headers['Authorization'] = 'Bearer ' + savedToken;
+      }
+
+      var apiRes = await fetch('https://api.github.com/gists/' + gistId, {
+        headers: headers,
+        cache: 'no-store'
+      });
+
+      if (apiRes.ok) {
+        var gistData = await apiRes.json();
+        var allFiles = gistData.files || {};
+        var jsonFilenames = Object.keys(allFiles).filter(function(k) {
+          return k.toLowerCase().endsWith('.json');
+        });
+
+        if (jsonFilenames.length === 0) {
+          throw new Error('Tidak ada file cadangan JSON di dalam penyimpanan ini.');
+        }
+
+        var chosenFile = urlSpecificFile;
+        if (!chosenFile && cleanInput.indexOf('#file-') !== -1) {
+          var anchorPart = cleanInput.split('#file-')[1].toLowerCase();
+          chosenFile = jsonFilenames.find(function(fn) {
+            return fn.toLowerCase().replace(/[^a-z0-9]/g, '-') === anchorPart;
+          }) || null;
+        }
+
+        if (chosenFile && !allFiles[chosenFile]) {
+          chosenFile = null;
+        }
+
+        if (jsonFilenames.length === 1 || chosenFile) {
+          var targetKey = chosenFile || jsonFilenames[0];
+          var fileEntry = allFiles[targetKey];
+          var contentStr = fileEntry.content;
+
+          if (fileEntry.truncated && fileEntry.raw_url) {
+            var fullRes = await fetch(fileEntry.raw_url, { cache: 'no-store' });
+            contentStr = await fullRes.text();
+          }
+          return { mode: 'direct', data: JSON.parse(contentStr), filename: targetKey, gistId: gistId };
+        }
+
+        return {
+          mode: 'list',
+          gistId: gistId,
+          files: jsonFilenames.map(function(fn) {
+            return {
+              filename: fn,
+              size: allFiles[fn].size,
+              rawUrl: allFiles[fn].raw_url
+            };
+          })
+        };
+      } else if (cleanInput.indexOf('gist.githubusercontent.com') === -1) {
+        var errData = await apiRes.json().catch(function() { return {}; });
+        throw new Error(buildGitHubError(apiRes, errData));
+      }
+    }
+
+    // Fallback jika URL langsung ke raw file publik pihak ketiga
+    if (cleanInput.indexOf('gist.githubusercontent.com') !== -1) {
       var rawRes = await fetch(cleanInput, { cache: 'no-store' });
       if (!rawRes.ok) throw new Error('Gagal mengambil data dari tautan.');
       var rawJson = await rawRes.json();
-      return { mode: 'direct', data: rawJson };
+      return { mode: 'direct', data: rawJson, gistId: gistId };
     }
 
-    var gistId = extractGistId(cleanInput);
-    if (!gistId) {
-      throw new Error('Tautan atau ID penyimpanan tidak valid.');
-    }
-
-    var headers = { 'Accept': 'application/vnd.github+json' };
-    var savedToken = GITHUB_GIST_CONFIG.defaultToken;
-    if (savedToken) {
-      headers['Authorization'] = 'Bearer ' + savedToken;
-    }
-
-    var apiRes = await fetch('https://api.github.com/gists/' + gistId, {
-      headers: headers,
-      cache: 'no-store'
-    });
-    if (!apiRes.ok) {
-      var errData = await apiRes.json().catch(function() { return {}; });
-      throw new Error(buildGitHubError(apiRes, errData));
-    }
-
-    var gistData = await apiRes.json();
-    var allFiles = gistData.files || {};
-    var jsonFilenames = Object.keys(allFiles).filter(function(k) {
-      return k.toLowerCase().endsWith('.json');
-    });
-
-    if (jsonFilenames.length === 0) {
-      throw new Error('Tidak ada file cadangan di dalam penyimpanan ini.');
-    }
-
-    var chosenFile = specificFilename || null;
-    if (!chosenFile && cleanInput.indexOf('#file-') !== -1) {
-      var anchorPart = cleanInput.split('#file-')[1].toLowerCase();
-      chosenFile = jsonFilenames.find(function(fn) {
-        return fn.toLowerCase().replace(/[^a-z0-9]/g, '-') === anchorPart;
-      }) || null;
-    }
-
-    if (jsonFilenames.length === 1 || chosenFile) {
-      var targetKey = chosenFile || jsonFilenames[0];
-      var fileEntry = allFiles[targetKey];
-      var contentStr = fileEntry.content;
-
-      if (fileEntry.truncated && fileEntry.raw_url) {
-        var fullRes = await fetch(fileEntry.raw_url, { cache: 'no-store' });
-        contentStr = await fullRes.text();
-      }
-      return { mode: 'direct', data: JSON.parse(contentStr), filename: targetKey };
-    }
-
-    return {
-      mode: 'list',
-      gistId: gistId,
-      files: jsonFilenames.map(function(fn) {
-        return {
-          filename: fn,
-          size: allFiles[fn].size,
-          rawUrl: allFiles[fn].raw_url
-        };
-      })
-    };
+    throw new Error('Tautan atau ID penyimpanan tidak valid.');
   }
 
-  // ============================================================
-  // FIX #4: Test token manual dari console DevTools
-  // Pemakaian: testGitHubToken()
-  // ============================================================
+  // Test token manual dari console DevTools: testGitHubToken()
   window.testGitHubToken = async function() {
     var token = (GITHUB_GIST_CONFIG.defaultToken || '').trim();
     console.log('%c[CoCenter Token Test]', 'color:#29e0c9;font-weight:bold');
-    console.log('Length:', token.length, '| Prefix:', token.substring(0, 4));
     try {
       var r = await fetch('https://api.github.com/user', {
         headers: { 'Authorization': 'Bearer ' + token }
@@ -1260,13 +1326,15 @@ document.addEventListener('DOMContentLoaded', function () {
         try {
           var res = await inspectOrLoadCloud(gistId, item.filename);
           if (res.mode === 'direct' && restoreAllAppData(res.data)) {
+            if (res.gistId) localStorage.setItem('cc_gist_id', res.gistId);
+            localStorage.setItem('cc_gist_filename', item.filename);
             localStorage.setItem('cc_auto_saved_link', item.rawUrl);
             gistModal.classList.remove('show');
             showToast('Data ' + item.filename + ' berhasil dipulihkan!');
             setTimeout(function() { location.reload(); }, 1100);
           }
         } catch (err) {
-          showToast('Gagal: ' + err.message);
+          showToast('Gagal: ' + err.message, 4000);
           loadBtn.disabled = false;
           loadBtn.textContent = 'Muat';
         }
@@ -1313,7 +1381,7 @@ document.addEventListener('DOMContentLoaded', function () {
         refreshGistStatusUI();
         showToast('Berhasil! Data tersimpan di Cloud & tertaut otomatis');
       } catch (err) {
-        showToast('Gagal: ' + err.message);
+        showToast('Gagal: ' + err.message, 4200);
       } finally {
         btnPushGistNow.disabled = false;
         btnPushGistNow.textContent = origText;
@@ -1368,6 +1436,8 @@ document.addEventListener('DOMContentLoaded', function () {
           showToast('Pilih file cadangan di bawah!');
         } else if (res.mode === 'direct') {
           if (restoreAllAppData(res.data)) {
+            if (res.gistId) localStorage.setItem('cc_gist_id', res.gistId);
+            if (res.filename) localStorage.setItem('cc_gist_filename', res.filename);
             localStorage.setItem('cc_auto_saved_link', urlVal);
             gistModal.classList.remove('show');
             showToast('Data berhasil dipulihkan! Memuat ulang...');
@@ -1377,7 +1447,7 @@ document.addEventListener('DOMContentLoaded', function () {
           }
         }
       } catch (err) {
-        showToast('Gagal: ' + err.message);
+        showToast('Gagal: ' + err.message, 4200);
       } finally {
         btnFetchGistNow.disabled = false;
         btnFetchGistNow.textContent = origText;
@@ -1392,7 +1462,7 @@ document.addEventListener('DOMContentLoaded', function () {
         showToast('Belum ada tautan untuk disalin!');
         return;
       }
-      navigator.clipboard.writeText(target).then(function() {
+      copyTextSafely(target).then(function() {
         showToast('Tautan berhasil disalin!');
       }).catch(function() {
         showToast('Gagal menyalin tautan');
