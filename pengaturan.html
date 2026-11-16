@@ -102,7 +102,7 @@
 
   .cc-section { padding: 14px 16px 20px; }
 
-  /* ================= PROFILE CARD DENGAN BANNER ================= */
+  /* ================= PROFILE CARD ================= */
   .cc-profile-preview-card {
     background: #0d0f16;
     border: 1.5px solid rgba(255, 210, 63, 0.35);
@@ -193,7 +193,7 @@
   .cc-setting-label { font-size: 12.5px; font-weight: 700; color: #fff; }
   .cc-setting-desc { font-size: 10.5px; color: #a9b2c3; line-height: 1.4; margin-top: 2px; }
 
-  /* ================= INFO FILE DINAMIS & STATUS GIST ================= */
+  /* ================= INFO FILE & STATUS CLOUD ================= */
   .cc-file-preview-box {
     background: #05060a;
     border: 1px dashed rgba(41, 224, 201, 0.35);
@@ -296,7 +296,7 @@
   input:checked + .cc-slider { background-color: #29e0c9; border-color: #29e0c9; }
   input:checked + .cc-slider:before { transform: translateX(20px); background-color: #05060a; }
 
-  /* ================= BACKUP & GITHUB GIST BUTTONS ================= */
+  /* ================= TOMBOL AKSI ================= */
   .cc-btn-action {
     width: 100%; padding: 12px; border-radius: 12px;
     font-weight: 800; font-size: 11.5px; cursor: pointer; border: none;
@@ -312,7 +312,7 @@
   .cc-btn-sd { background: rgba(255, 210, 63, 0.15); color: #ffd23f; border: 1px solid rgba(255, 210, 63, 0.4); }
   .cc-btn-gist { background: rgba(41, 224, 201, 0.15); color: #29e0c9; border: 1px solid rgba(41, 224, 201, 0.4); }
 
-  /* ================= MODAL GITHUB GIST ================= */
+  /* ================= MODAL SAVE / LOAD ================= */
   .cc-modal-overlay {
     position: fixed; inset: 0; z-index: 1000000;
     background: rgba(3, 4, 8, 0.88); backdrop-filter: blur(8px);
@@ -331,20 +331,28 @@
   .cc-modal-title { font-weight: 800; font-size: 13px; color: #29e0c9; text-transform: uppercase; letter-spacing: 0.5px; }
   .cc-modal-desc { font-size: 10.5px; color: #a9b2c3; line-height: 1.45; }
   .cc-modal-label { font-size: 10px; font-weight: 700; color: #a9b2c3; margin-bottom: 4px; display: block; }
-  .cc-modal-url-display {
-    background: #05060a; border: 1px dashed rgba(41, 224, 201, 0.5); border-radius: 12px;
-    padding: 10px 11px; font-size: 10px; font-weight: 700; color: #ffd23f; text-align: left;
-    user-select: all; word-break: break-all; line-height: 1.45;
+  
+  /* Kotak Input Masked / Hidden Link */
+  .cc-input-masked-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
   }
   .cc-modal-input {
     width: 100%; background: #05060a; border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 12px; padding: 11px 13px; color: #fff; font-size: 11px; font-weight: 700;
+    border-radius: 12px; padding: 11px 42px 11px 13px; color: #fff; font-size: 11px; font-weight: 700;
     outline: none;
   }
   .cc-modal-input:focus { border-color: #29e0c9; }
+  .cc-toggle-eye {
+    position: absolute; right: 12px; background: none; border: none; cursor: pointer;
+    color: #a9b2c3; display: flex; align-items: center; justify-content: center; padding: 4px;
+  }
+  .cc-toggle-eye svg { width: 18px; height: 18px; fill: currentColor; }
+
   .cc-modal-actions { display: flex; gap: 8px; width: 100%; margin-top: 2px; }
 
-  /* ================= DAFTAR FILE JSON DI GIST ================= */
+  /* ================= DAFTAR FILE JSON ================= */
   .cc-gist-file-list {
     display: flex;
     flex-direction: column;
@@ -516,7 +524,7 @@
   <div class="cc-main-shell">
     <div class="cc-section">
       
-      <!-- PREVIEW PROFILE DENGAN BANNER & AVATAR -->
+      <!-- PREVIEW PROFILE -->
       <div class="cc-profile-preview-card">
         <div class="cc-preview-banner" id="preview-banner-box">
           <div style="font-size:9.5px; font-weight:700; color:rgba(255,210,63,0.5); text-transform:uppercase; letter-spacing:1px;">Banner Profil</div>
@@ -538,7 +546,6 @@
       <div class="cc-sec-title">Tampilan &amp; Navigasi</div>
       <div class="cc-settings-group">
 
-        <!-- OPSI GAYA NAVBAR -->
         <div class="cc-setting-col">
           <div>
             <div class="cc-setting-label">Gaya Navigasi Bawah</div>
@@ -576,7 +583,6 @@
 
         <div class="cc-setting-divider"></div>
 
-        <!-- TOGGLE FAB BISA DIGESER -->
         <div class="cc-setting-item is-disabled" id="fab-movable-row">
           <div>
             <div class="cc-setting-label">FAB Bisa Digeser</div>
@@ -590,7 +596,6 @@
 
         <div class="cc-setting-divider"></div>
 
-        <!-- TOGGLE BACKGROUND BERGERAK -->
         <div class="cc-setting-item">
           <div>
             <div class="cc-setting-label">Background Bergerak</div>
@@ -604,18 +609,17 @@
 
       </div>
 
-      <!-- GITHUB GIST SAVE DATA -->
-      <div class="cc-sec-title">GitHub Gist Save Data</div>
+      <!-- SAVE & LOAD CLOUD DATA -->
+      <div class="cc-sec-title">Cloud Save &amp; Load Data</div>
       <div class="cc-settings-group">
         <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px; flex-wrap:wrap;">
           <div>
             <div class="cc-setting-label" style="margin-bottom: 4px;">Save Data JSON Dinamis</div>
-            <div class="cc-setting-desc">Format otomatis: <b>NamaPengguna + WaktuFirstInstall.json</b> dan langsung di-push ke GitHub Gist.</div>
+            <div class="cc-setting-desc">Simpan data lokal ke cloud secara privat menggunakan token tertanam otomatis.</div>
           </div>
-          <span class="cc-gist-status-pill" id="gist-connection-badge">Gist: Belum Terhubung</span>
+          <span class="cc-gist-status-pill" id="gist-connection-badge">Status: Belum Disimpan</span>
         </div>
 
-        <!-- PREVIEW NAMA FILE DINAMIS -->
         <div class="cc-file-preview-box">
           <span>Nama File JSON Dinamis Saat Ini:</span>
           <strong id="dynamic-filename-preview">Tamu_2026-01-01_00-00-00.json</strong>
@@ -623,13 +627,13 @@
         
         <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 2px;">
           <button type="button" class="cc-btn-action cc-btn-gist" id="btn-open-gist-save">
-            <svg viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
-            Simpan &amp; Upload ke GitHub Gist
+            <svg viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+            Simpan &amp; Upload Data Cloud
           </button>
 
           <button type="button" class="cc-btn-action cc-btn-google" id="btn-open-gist-load">
-            <svg viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"/></svg>
-            Ambil Data dari GitHub Gist
+            <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            Muat / Ambil Data Cloud
           </button>
 
           <button type="button" class="cc-btn-action cc-btn-sd" id="btn-backup-sd">
@@ -642,22 +646,21 @@
     </div>
   </div>
 
-  <!-- TOAST NOTIFICATION -->
   <div class="cc-toast" id="cc-toast">Berhasil menyinkronkan data!</div>
 
 </div>
 
-<!-- ===== MODAL GITHUB GIST UPLOAD & RESTORE ===== -->
+<!-- ===== MODAL CLOUD SAVE & LOAD ===== -->
 <div class="cc-modal-overlay" id="cc-gist-modal">
   <div class="cc-modal-box">
-    <div class="cc-modal-title" id="cc-modal-heading">GitHub Gist Save Data</div>
-    <div class="cc-modal-desc" id="cc-modal-desc">Upload file JSON dinamis ke GitHub Gist.</div>
+    <div class="cc-modal-title" id="cc-modal-heading">Cloud Save Data</div>
+    <div class="cc-modal-desc" id="cc-modal-desc">Simpan data Anda secara aman ke penyimpanan awan.</div>
     
-    <!-- VIEW 1: UPLOAD KE GITHUB GIST -->
+    <!-- VIEW 1: SAVE DATA -->
     <div id="cc-modal-view-save" style="display:flex; flex-direction:column; gap:10px;">
       <div>
-        <label class="cc-modal-label">Master Gist ID / Link Gist (Opsional)</label>
-        <input type="text" class="cc-modal-input" id="cc-gh-gistid-input" placeholder="Kosongkan untuk otomatis buat Gist baru..." autocomplete="off" spellcheck="false">
+        <label class="cc-modal-label">ID / Referensi Cloud (Opsional)</label>
+        <input type="text" class="cc-modal-input" id="cc-gh-gistid-input" placeholder="Dikosongkan untuk membuat penyimpanan baru..." autocomplete="off" spellcheck="false" style="padding-right:13px;">
       </div>
 
       <div class="cc-file-preview-box">
@@ -666,36 +669,45 @@
       </div>
 
       <button type="button" class="cc-btn-action cc-btn-gist" id="btn-push-gist-now" style="padding:11px;">
-        Upload / Update ke GitHub Gist
+        Proses &amp; Simpan Data
       </button>
 
-      <!-- HASIL LINK GIST & RAW JSON -->
+      <!-- HASIL LINK TERSENDIRI DENGAN FUNGSI MASK/HIDE -->
       <div id="cc-gist-result-wrap" style="display:none; flex-direction:column; gap:8px; margin-top:2px;">
         <div>
-          <label class="cc-modal-label" style="color:#29e0c9;">Link Raw JSON (Format Dinamis):</label>
-          <div class="cc-modal-url-display" id="cc-display-raw-url">https://gist.githubusercontent.com/...</div>
+          <label class="cc-modal-label" style="color:#29e0c9;">Tautan Akses Data (Disembunyikan):</label>
+          <div class="cc-input-masked-wrap">
+            <input type="password" class="cc-modal-input" id="cc-display-raw-url" value="" readonly style="color:#ffd23f;">
+            <button type="button" class="cc-toggle-eye" id="btn-toggle-mask-url" title="Tampilkan/Sembunyikan Tautan">
+              <svg viewBox="0 0 24 24" id="eye-icon"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+            </button>
+          </div>
         </div>
         <div class="cc-modal-actions">
-          <button type="button" class="cc-btn-action cc-btn-gist" id="btn-copy-raw-url" style="padding:9px;">Salin Raw JSON</button>
-          <button type="button" class="cc-btn-action cc-btn-sd" id="btn-copy-gist-url" style="padding:9px;">Salin Link Gist</button>
+          <button type="button" class="cc-btn-action cc-btn-gist" id="btn-copy-raw-url" style="padding:9px;">Salin Tautan</button>
+          <button type="button" class="cc-btn-action cc-btn-sd" id="btn-copy-gist-url" style="padding:9px;">Salin ID Saja</button>
         </div>
       </div>
     </div>
 
-    <!-- VIEW 2: AMBIL DATA DARI GITHUB GIST -->
+    <!-- VIEW 2: LOAD DATA -->
     <div id="cc-modal-view-load" style="display:none; flex-direction:column; gap:10px;">
       <div>
-        <label class="cc-modal-label">Link Raw JSON / Link Gist / Gist ID</label>
-        <input type="text" class="cc-modal-input" id="cc-input-gist-url" placeholder="https://gist.githubusercontent.com/.../*.json" autocomplete="off" spellcheck="false">
+        <label class="cc-modal-label">Tautan Simpanan / ID Cloud (Auto-Terisi di Perangkat Ini)</label>
+        <div class="cc-input-masked-wrap">
+          <input type="password" class="cc-modal-input" id="cc-input-gist-url" placeholder="Tempel tautan atau ID penyimpanan di sini..." autocomplete="off" spellcheck="false">
+          <button type="button" class="cc-toggle-eye" id="btn-toggle-mask-load" title="Tampilkan/Sembunyikan Input">
+            <svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+          </button>
+        </div>
       </div>
 
       <button type="button" class="cc-btn-action cc-btn-google" id="btn-fetch-gist-now" style="padding:11px;">
-        Ambil &amp; Pulihkan Data
+        Muat &amp; Pulihkan Data
       </button>
 
-      <!-- DAFTAR FILE JSON OTOMATIS JIKA ADA DI GIST -->
       <div id="cc-gist-filelist-wrap" style="display:none; flex-direction:column; gap:6px; margin-top:2px;">
-        <label class="cc-modal-label" style="color:#ffd23f;">File Save JSON Ditemukan di Gist:</label>
+        <label class="cc-modal-label" style="color:#ffd23f;">File Save JSON Ditemukan:</label>
         <div class="cc-gist-file-list" id="cc-gist-filelist"></div>
       </div>
     </div>
@@ -704,24 +716,21 @@
   </div>
 </div>
 
-<!-- ===== NAVBAR BAWAH BIASA (DEFAULT) ===== -->
+<!-- NAVBAR BAWAH -->
 <nav class="cc-bottom-nav" id="cc-bottom-nav">
   <div class="cc-bottom-nav-inner">
     <a class="cc-bnav-item" href="index.html">
       <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
       <span>Menu</span>
     </a>
-
     <a class="cc-bnav-item" href="https://lynk.id/cocenter" target="_blank" rel="noopener">
       <svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
       <span>Lynk.id</span>
     </a>
-
     <a class="cc-bnav-item" href="transaksi.html">
       <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/></svg>
       <span>Transaksi</span>
     </a>
-
     <a class="cc-bnav-item" href="profile.html">
       <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
       <span>Profile</span>
@@ -729,12 +738,9 @@
   </div>
 </nav>
 
-<!-- ===== BACKDROP FAB ===== -->
 <div class="cc-fab-backdrop" id="cc-fab-backdrop" style="display:none;"></div>
 
-<!-- ===== FAB FAN MENU GOLD (OPSI 2) ===== -->
 <div class="cc-fab-stage" id="cc-fab-stage" style="display:none;">
-
   <div class="cc-fab-dock">
     <div class="cc-fab-slice" data-s="0"></div>
     <div class="cc-fab-slice" data-s="1"></div>
@@ -746,30 +752,24 @@
     <div class="cc-fab-slice-line" data-l="3"></div>
     <div class="cc-fab-slice-line" data-l="4"></div>
   </div>
-
   <a class="cc-fab-item" data-i="0" href="index.html">
     <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
     <span>Menu</span>
   </a>
-
   <a class="cc-fab-item" data-i="1" href="https://lynk.id/cocenter" target="_blank" rel="noopener">
     <svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
     <span>Lynk.id</span>
   </a>
-
   <a class="cc-fab-item" data-i="2" href="transaksi.html">
     <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/></svg>
     <span>Transaksi</span>
   </a>
-
   <a class="cc-fab-item" data-i="3" href="profile.html">
     <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
     <span>Profile</span>
   </a>
-
   <div class="cc-fab-main" id="cc-fab-main">
     <img class="cc-fab-logo" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjgKAkQ6fTJOBPoOVz21klx2Vw6CXegaFe7QnvWoaDZTt1raufO5Ikvqu0JrP93QUf_iAcqVp8IkcTZjTx_e1mMqJENEYIpEjv-br9ApdDAeMiPcm8xoO-dFAmPJa-9y22yJdNme0Eb-EFxm-dS0Pd2UwUNu2cfB5pxS7KA7RP1JPKB-79xmqs5Vl9pSYHn/s1600/IMG_20260808_230713.png" alt="Co Center">
-
     <svg class="cc-fab-icon-close" viewBox="0 0 24 24">
       <line x1="6" y1="6" x2="18" y2="18"/>
       <line x1="18" y1="6" x2="6" y2="18"/>
@@ -780,12 +780,9 @@
 <script>
 document.addEventListener('DOMContentLoaded', function () {
 
-  // =========================================================================
-  // KONFIGURASI TOKEN GITHUB & GIST (DISUNTIK MATI)
-  // =========================================================================
   var GITHUB_GIST_CONFIG = {
-    defaultToken: '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', // Token disuntik mati
-    defaultMasterGistId: ''  // Opsional: isi ID Gist pusat jika semua user masuk 1 Gist
+    defaultToken: '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',
+    defaultMasterGistId: ''
   };
 
   var toastTimer = null;
@@ -800,7 +797,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }, 2800);
   }
 
-  // ================= 0. FIRST INSTALL TIMESTAMP & DYNAMIC FILENAME =================
   function getOrInitFirstInstall() {
     var ts = localStorage.getItem('cc_first_install');
     if (!ts) {
@@ -838,10 +834,10 @@ document.addEventListener('DOMContentLoaded', function () {
     var activeGistId = localStorage.getItem('cc_gist_id') || extractGistId(GITHUB_GIST_CONFIG.defaultMasterGistId);
     if (badgeEl) {
       if (activeGistId) {
-        badgeEl.textContent = 'Gist: ' + activeGistId.substring(0, 8) + '...';
+        badgeEl.textContent = 'Status: Terhubung';
         badgeEl.classList.add('is-connected');
       } else {
-        badgeEl.textContent = 'Gist: Belum Terhubung';
+        badgeEl.textContent = 'Status: Belum Disimpan';
         badgeEl.classList.remove('is-connected');
       }
     }
@@ -850,7 +846,7 @@ document.addEventListener('DOMContentLoaded', function () {
   getOrInitFirstInstall();
   refreshGistStatusUI();
 
-  // ================= 1. BACKGROUND & THEME LOGIC =================
+  // BACKGROUND LOGIC
   var bgEl = document.getElementById('cc-bg-element');
   var overlayEl = document.getElementById('cc-overlay-element');
   var themeToggle = document.getElementById('theme-toggle');
@@ -882,12 +878,11 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  // ================= 2. NAVBAR MODE LOGIC =================
+  // NAVBAR MODE LOGIC
   var optNavbarBtn = document.getElementById('opt-nav-navbar');
   var optFabBtn = document.getElementById('opt-nav-fab');
   var bottomNavEl = document.getElementById('cc-bottom-nav');
   var fabStage = document.getElementById('cc-fab-stage');
-  var fabMain = document.getElementById('cc-fab-main');
   var fabBackdrop = document.getElementById('cc-fab-backdrop');
   var fabMovableRow = document.getElementById('fab-movable-row');
 
@@ -924,7 +919,7 @@ document.addEventListener('DOMContentLoaded', function () {
   if (optNavbarBtn) optNavbarBtn.addEventListener('click', function () { if (getNavMode() !== 'navbar') applyNavMode('navbar', true); });
   if (optFabBtn) optFabBtn.addEventListener('click', function () { if (getNavMode() !== 'fab') applyNavMode('fab', true); });
 
-  // ================= 3. PROFILE PREVIEW (AVATAR & BANNER TERBARU) =================
+  // PROFILE PREVIEW
   var previewAvatarBox = document.getElementById('preview-avatar-box');
   var previewBannerBox = document.getElementById('preview-banner-box');
   var profileName = document.getElementById('preview-name');
@@ -957,7 +952,6 @@ document.addEventListener('DOMContentLoaded', function () {
   }
   updateProfilePreview();
 
-  // ================= 4. COLLECT & RESTORE ALL APP DATA =================
   var ALL_STORAGE_KEYS = [
     'cc_first_install', 'cc_user_name', 'cc_user_avatar', 'cc_user_banner', 'cc_is_logged',
     'cc_google_linked', 'cc_google_email', 'cc_comersio_linked', 'cc_comersio_email',
@@ -998,11 +992,10 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
-  // ================= 5. GITHUB GIST PUSH & FETCH ENGINE =================
   var latestGistHtmlUrl = localStorage.getItem('cc_gist_html_url') || '';
   var latestGistRawUrl = localStorage.getItem('cc_gist_raw_url') || '';
 
-  async function pushDataToGitHubGist(customGistIdInput) {
+  async function pushDataToCloud(customGistIdInput) {
     var token = GITHUB_GIST_CONFIG.defaultToken;
     var dynamicFilename = getDynamicSaveFilename();
     var allData = collectAllAppData();
@@ -1045,7 +1038,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (!response.ok) {
       var errData = await response.json().catch(function() { return {}; });
-      throw new Error(errData.message || ('GitHub API Error ' + response.status));
+      throw new Error(errData.message || ('Gagal Menyimpan Data (HTTP ' + response.status + ')'));
     }
 
     var result = await response.json();
@@ -1068,19 +1061,19 @@ document.addEventListener('DOMContentLoaded', function () {
     };
   }
 
-  async function inspectOrLoadGist(inputStr, specificFilename) {
+  async function inspectOrLoadCloud(inputStr, specificFilename) {
     var cleanInput = inputStr.trim();
 
     if (cleanInput.indexOf('gist.githubusercontent.com') !== -1 && !specificFilename) {
       var rawRes = await fetch(cleanInput, { cache: 'no-store' });
-      if (!rawRes.ok) throw new Error('Gagal mengambil JSON dari Raw URL (HTTP ' + rawRes.status + ').');
+      if (!rawRes.ok) throw new Error('Gagal mengambil data dari tautan.');
       var rawJson = await rawRes.json();
       return { mode: 'direct', data: rawJson };
     }
 
     var gistId = extractGistId(cleanInput);
     if (!gistId) {
-      throw new Error('Link Gist atau Gist ID tidak valid.');
+      throw new Error('Tautan atau ID penyimpanan tidak valid.');
     }
 
     var headers = { 'Accept': 'application/vnd.github+json' };
@@ -1094,7 +1087,7 @@ document.addEventListener('DOMContentLoaded', function () {
       cache: 'no-store'
     });
     if (!apiRes.ok) {
-      throw new Error('Gist tidak ditemukan / token tidak valid (HTTP ' + apiRes.status + ').');
+      throw new Error('Penyimpanan tidak ditemukan.');
     }
 
     var gistData = await apiRes.json();
@@ -1104,7 +1097,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     if (jsonFilenames.length === 0) {
-      throw new Error('Tidak ada file .json di dalam Gist ini.');
+      throw new Error('Tidak ada file cadangan di dalam penyimpanan ini.');
     }
 
     var chosenFile = specificFilename || null;
@@ -1140,7 +1133,7 @@ document.addEventListener('DOMContentLoaded', function () {
     };
   }
 
-  // ================= 6. MODAL INTERACTION =================
+  // MODAL INTERACTION
   var gistModal = document.getElementById('cc-gist-modal');
   var modalHeading = document.getElementById('cc-modal-heading');
   var modalDesc = document.getElementById('cc-modal-desc');
@@ -1163,6 +1156,29 @@ document.addEventListener('DOMContentLoaded', function () {
   var btnFetchGistNow = document.getElementById('btn-fetch-gist-now');
   var btnCloseModal = document.getElementById('btn-close-modal');
 
+  // Toggle Mask / Unmask Password Input
+  var btnToggleMaskUrl = document.getElementById('btn-toggle-mask-url');
+  if (btnToggleMaskUrl && displayRawUrl) {
+    btnToggleMaskUrl.addEventListener('click', function() {
+      if (displayRawUrl.type === 'password') {
+        displayRawUrl.type = 'text';
+      } else {
+        displayRawUrl.type = 'password';
+      }
+    });
+  }
+
+  var btnToggleMaskLoad = document.getElementById('btn-toggle-mask-load');
+  if (btnToggleMaskLoad && inputGistUrl) {
+    btnToggleMaskLoad.addEventListener('click', function() {
+      if (inputGistUrl.type === 'password') {
+        inputGistUrl.type = 'text';
+      } else {
+        inputGistUrl.type = 'password';
+      }
+    });
+  }
+
   function renderGistFileChoices(gistId, filesArr) {
     if (!fileListBox || !fileListWrap) return;
     fileListBox.innerHTML = '';
@@ -1184,10 +1200,10 @@ document.addEventListener('DOMContentLoaded', function () {
         loadBtn.disabled = true;
         loadBtn.textContent = '...';
         try {
-          var res = await inspectOrLoadGist(gistId, item.filename);
+          var res = await inspectOrLoadCloud(gistId, item.filename);
           if (res.mode === 'direct' && restoreAllAppData(res.data)) {
             gistModal.classList.remove('show');
-            showToast('Data ' + item.filename + ' dipulihkan!');
+            showToast('Data ' + item.filename + ' berhasil dipulihkan!');
             setTimeout(function() { location.reload(); }, 1100);
           }
         } catch (err) {
@@ -1211,13 +1227,14 @@ document.addEventListener('DOMContentLoaded', function () {
         ghGistIdInput.value = localStorage.getItem('cc_gist_id') || GITHUB_GIST_CONFIG.defaultMasterGistId || '';
       }
 
-      modalHeading.textContent = 'Upload ke GitHub Gist';
-      modalDesc.textContent = 'Data dikemas ke file JSON dinamis (Nama + Waktu Install) dan langsung di-push ke GitHub Gist.';
+      modalHeading.textContent = 'Simpan Data Cloud';
+      modalDesc.textContent = 'Data Anda akan dienkapsulasi dan disimpan secara aman ke cloud.';
       viewSave.style.display = 'flex';
       viewLoad.style.display = 'none';
 
       if (latestGistRawUrl) {
-        displayRawUrl.textContent = latestGistRawUrl;
+        displayRawUrl.value = latestGistRawUrl;
+        displayRawUrl.type = 'password';
         gistResultWrap.style.display = 'flex';
       } else {
         gistResultWrap.style.display = 'none';
@@ -1233,18 +1250,22 @@ document.addEventListener('DOMContentLoaded', function () {
 
       var origText = btnPushGistNow.textContent;
       btnPushGistNow.disabled = true;
-      btnPushGistNow.textContent = 'Mengunggah ke GitHub Gist...';
+      btnPushGistNow.textContent = 'Menyimpan ke Cloud...';
 
       try {
-        var res = await pushDataToGitHubGist(customGistId);
+        var res = await pushDataToCloud(customGistId);
         latestGistHtmlUrl = res.htmlUrl;
         latestGistRawUrl = res.rawUrl;
 
+        // Auto-simpan tautan ke localStorage agar langsung terbaca di menu load perangkat ini
+        localStorage.setItem('cc_auto_saved_link', res.rawUrl);
+
         if (ghGistIdInput) ghGistIdInput.value = res.gistId;
-        displayRawUrl.textContent = res.rawUrl;
+        displayRawUrl.value = res.rawUrl;
+        displayRawUrl.type = 'password';
         gistResultWrap.style.display = 'flex';
         refreshGistStatusUI();
-        showToast('Berhasil! Save data masuk ke GitHub Gist');
+        showToast('Berhasil! Data tersimpan di Cloud');
       } catch (err) {
         showToast('Gagal: ' + err.message);
       } finally {
@@ -1256,19 +1277,25 @@ document.addEventListener('DOMContentLoaded', function () {
 
   if (btnOpenLoad) {
     btnOpenLoad.addEventListener('click', function() {
-      modalHeading.textContent = 'Ambil Data dari GitHub Gist';
-      modalDesc.textContent = 'Tempel Link Raw JSON atau Link Gist untuk memulihkan save data.';
+      modalHeading.textContent = 'Muat Data dari Cloud';
+      modalDesc.textContent = 'Tautan tersimpan otomatis di perangkat ini. Cukup tekan tombol muat untuk mengambil data.';
       viewSave.style.display = 'none';
       viewLoad.style.display = 'flex';
       fileListWrap.style.display = 'none';
 
+      // Ambil otomatis dari auto-saved link atau fallback ke raw url terakhir
+      var autoSaved = localStorage.getItem('cc_auto_saved_link') || latestGistRawUrl;
       var knownGistId = localStorage.getItem('cc_gist_id') || extractGistId(GITHUB_GIST_CONFIG.defaultMasterGistId);
-      inputGistUrl.value = latestGistRawUrl || (knownGistId ? 'https://gist.github.com/' + knownGistId : '');
+      
+      if (inputGistUrl) {
+        inputGistUrl.value = autoSaved || (knownGistId ? 'https://gist.github.com/' + knownGistId : '');
+        inputGistUrl.type = 'password';
+      }
 
       gistModal.classList.add('show');
 
-      if (knownGistId) {
-        inspectOrLoadGist(knownGistId).then(function(res) {
+      if (knownGistId && !autoSaved) {
+        inspectOrLoadCloud(knownGistId).then(function(res) {
           if (res.mode === 'list') {
             renderGistFileChoices(res.gistId, res.files);
           }
@@ -1281,26 +1308,28 @@ document.addEventListener('DOMContentLoaded', function () {
     btnFetchGistNow.addEventListener('click', async function() {
       var urlVal = inputGistUrl ? inputGistUrl.value.trim() : '';
       if (!urlVal) {
-        showToast('Masukkan Link Raw JSON atau Link Gist!');
+        showToast('Tautan atau ID belum tersedia!');
         return;
       }
 
       var origText = btnFetchGistNow.textContent;
       btnFetchGistNow.disabled = true;
-      btnFetchGistNow.textContent = 'Mengambil dari GitHub...';
+      btnFetchGistNow.textContent = 'Memuat Data...';
 
       try {
-        var res = await inspectOrLoadGist(urlVal);
+        var res = await inspectOrLoadCloud(urlVal);
         if (res.mode === 'list') {
           renderGistFileChoices(res.gistId, res.files);
-          showToast('Pilih file JSON save data di bawah!');
+          showToast('Pilih file cadangan di bawah!');
         } else if (res.mode === 'direct') {
           if (restoreAllAppData(res.data)) {
+            // Simpan otomatis tautan load ke device
+            localStorage.setItem('cc_auto_saved_link', urlVal);
             gistModal.classList.remove('show');
             showToast('Data berhasil dipulihkan! Memuat ulang...');
             setTimeout(function() { location.reload(); }, 1100);
           } else {
-            throw new Error('Isi file JSON tidak valid.');
+            throw new Error('Format data tidak valid.');
           }
         }
       } catch (err) {
@@ -1314,22 +1343,22 @@ document.addEventListener('DOMContentLoaded', function () {
 
   if (btnCopyRawUrl) {
     btnCopyRawUrl.addEventListener('click', function() {
-      var target = latestGistRawUrl || displayRawUrl.textContent;
+      var target = latestGistRawUrl || displayRawUrl.value;
       navigator.clipboard.writeText(target).then(function() {
-        showToast('Link Raw JSON berhasil disalin!');
+        showToast('Tautan berhasil disalin!');
       }).catch(function() {
-        showToast('Gagal menyalin link');
+        showToast('Gagal menyalin tautan');
       });
     });
   }
 
   if (btnCopyGistUrl) {
     btnCopyGistUrl.addEventListener('click', function() {
-      var target = latestGistHtmlUrl || displayRawUrl.textContent;
+      var target = localStorage.getItem('cc_gist_id') || displayRawUrl.value;
       navigator.clipboard.writeText(target).then(function() {
-        showToast('Link Gist berhasil disalin!');
+        showToast('ID Berhasil Disalin!');
       }).catch(function() {
-        showToast('Gagal menyalin link');
+        showToast('Gagal menyalin ID');
       });
     });
   }
@@ -1354,11 +1383,11 @@ document.addEventListener('DOMContentLoaded', function () {
       downloadAnchor.click();
       downloadAnchor.remove();
 
-      showToast('Unduhan dimulai: ' + dynamicFilename);
+      showToast('Unduhan file dimulai: ' + dynamicFilename);
     });
   }
 
-  // ================= 7. FAB FAN MENU + DRAG LOGIC =================
+  // FAB FAN MENU & DRAG
   var savedPosBeforeOpen = null;
 
   function isFabMovable() {
@@ -1432,6 +1461,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   var DRAG_THRESHOLD = 8;
   var dragState = { active: false, hasMoved: false, isMovable: false, startX: 0, startY: 0, startLeft: 0, startTop: 0, pointerId: null };
+  var fabMain = document.getElementById('cc-fab-main');
 
   if (fabMain) {
     fabMain.addEventListener('pointerdown', function(e) {
