@@ -614,8 +614,8 @@
       <div class="cc-settings-group">
         <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px; flex-wrap:wrap;">
           <div>
-            <div class="cc-setting-label" style="margin-bottom: 4px;">Save Data JSON Dinamis</div>
-            <div class="cc-setting-desc">Simpan data lokal ke cloud secara privat menggunakan token tertanam otomatis.</div>
+            <div class="cc-setting-label" style="margin-bottom: 4px;">Simpan &amp; Muat Data Cloud</div>
+            <div class="cc-setting-desc">Data disinkronkan secara aman. Tautan tersimpan otomatis di perangkat ini.</div>
           </div>
           <span class="cc-gist-status-pill" id="gist-connection-badge">Status: Belum Disimpan</span>
         </div>
@@ -658,11 +658,6 @@
     
     <!-- VIEW 1: SAVE DATA -->
     <div id="cc-modal-view-save" style="display:flex; flex-direction:column; gap:10px;">
-      <div>
-        <label class="cc-modal-label">ID / Referensi Cloud (Opsional)</label>
-        <input type="text" class="cc-modal-input" id="cc-gh-gistid-input" placeholder="Dikosongkan untuk membuat penyimpanan baru..." autocomplete="off" spellcheck="false" style="padding-right:13px;">
-      </div>
-
       <div class="cc-file-preview-box">
         <span>File JSON yang akan di-upload:</span>
         <strong id="modal-target-filename">-</strong>
@@ -672,20 +667,19 @@
         Proses &amp; Simpan Data
       </button>
 
-      <!-- HASIL LINK TERSENDIRI DENGAN FUNGSI MASK/HIDE -->
+      <!-- HASIL TAUTAN DENGAN MASK / HIDE -->
       <div id="cc-gist-result-wrap" style="display:none; flex-direction:column; gap:8px; margin-top:2px;">
         <div>
           <label class="cc-modal-label" style="color:#29e0c9;">Tautan Akses Data (Disembunyikan):</label>
           <div class="cc-input-masked-wrap">
             <input type="password" class="cc-modal-input" id="cc-display-raw-url" value="" readonly style="color:#ffd23f;">
             <button type="button" class="cc-toggle-eye" id="btn-toggle-mask-url" title="Tampilkan/Sembunyikan Tautan">
-              <svg viewBox="0 0 24 24" id="eye-icon"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+              <svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
             </button>
           </div>
         </div>
         <div class="cc-modal-actions">
           <button type="button" class="cc-btn-action cc-btn-gist" id="btn-copy-raw-url" style="padding:9px;">Salin Tautan</button>
-          <button type="button" class="cc-btn-action cc-btn-sd" id="btn-copy-gist-url" style="padding:9px;">Salin ID Saja</button>
         </div>
       </div>
     </div>
@@ -693,9 +687,9 @@
     <!-- VIEW 2: LOAD DATA -->
     <div id="cc-modal-view-load" style="display:none; flex-direction:column; gap:10px;">
       <div>
-        <label class="cc-modal-label">Tautan Simpanan / ID Cloud (Auto-Terisi di Perangkat Ini)</label>
+        <label class="cc-modal-label">Tautan Simpanan Cloud (Auto-Terisi di Perangkat Ini)</label>
         <div class="cc-input-masked-wrap">
-          <input type="password" class="cc-modal-input" id="cc-input-gist-url" placeholder="Tempel tautan atau ID penyimpanan di sini..." autocomplete="off" spellcheck="false">
+          <input type="password" class="cc-modal-input" id="cc-input-gist-url" placeholder="Tautan akan otomatis terisi..." autocomplete="off" spellcheck="false">
           <button type="button" class="cc-toggle-eye" id="btn-toggle-mask-load" title="Tampilkan/Sembunyikan Input">
             <svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
           </button>
@@ -995,14 +989,13 @@ document.addEventListener('DOMContentLoaded', function () {
   var latestGistHtmlUrl = localStorage.getItem('cc_gist_html_url') || '';
   var latestGistRawUrl = localStorage.getItem('cc_gist_raw_url') || '';
 
-  async function pushDataToCloud(customGistIdInput) {
+  async function pushDataToCloud() {
     var token = GITHUB_GIST_CONFIG.defaultToken;
     var dynamicFilename = getDynamicSaveFilename();
     var allData = collectAllAppData();
     var jsonContent = JSON.stringify(allData, null, 2);
 
-    var targetGistId = extractGistId(customGistIdInput) ||
-                       localStorage.getItem('cc_gist_id') ||
+    var targetGistId = localStorage.getItem('cc_gist_id') ||
                        extractGistId(GITHUB_GIST_CONFIG.defaultMasterGistId);
     var oldFilename = localStorage.getItem('cc_gist_filename');
 
@@ -1053,6 +1046,9 @@ document.addEventListener('DOMContentLoaded', function () {
     localStorage.setItem('cc_gist_filename', dynamicFilename);
     localStorage.setItem('cc_gist_html_url', result.html_url);
     localStorage.setItem('cc_gist_raw_url', evergreenRawUrl);
+
+    // AUTO-SAVE LINK KE LOCALSTORAGE SUPAYA LANGSUNG TERTANAM DI DEVICE INI
+    localStorage.setItem('cc_auto_saved_link', evergreenRawUrl);
 
     return {
       gistId: result.id,
@@ -1140,7 +1136,6 @@ document.addEventListener('DOMContentLoaded', function () {
   var viewSave = document.getElementById('cc-modal-view-save');
   var viewLoad = document.getElementById('cc-modal-view-load');
 
-  var ghGistIdInput = document.getElementById('cc-gh-gistid-input');
   var gistResultWrap = document.getElementById('cc-gist-result-wrap');
   var displayRawUrl = document.getElementById('cc-display-raw-url');
 
@@ -1152,7 +1147,6 @@ document.addEventListener('DOMContentLoaded', function () {
   var btnOpenLoad = document.getElementById('btn-open-gist-load');
   var btnPushGistNow = document.getElementById('btn-push-gist-now');
   var btnCopyRawUrl = document.getElementById('btn-copy-raw-url');
-  var btnCopyGistUrl = document.getElementById('btn-copy-gist-url');
   var btnFetchGistNow = document.getElementById('btn-fetch-gist-now');
   var btnCloseModal = document.getElementById('btn-close-modal');
 
@@ -1160,22 +1154,14 @@ document.addEventListener('DOMContentLoaded', function () {
   var btnToggleMaskUrl = document.getElementById('btn-toggle-mask-url');
   if (btnToggleMaskUrl && displayRawUrl) {
     btnToggleMaskUrl.addEventListener('click', function() {
-      if (displayRawUrl.type === 'password') {
-        displayRawUrl.type = 'text';
-      } else {
-        displayRawUrl.type = 'password';
-      }
+      displayRawUrl.type = (displayRawUrl.type === 'password') ? 'text' : 'password';
     });
   }
 
   var btnToggleMaskLoad = document.getElementById('btn-toggle-mask-load');
   if (btnToggleMaskLoad && inputGistUrl) {
     btnToggleMaskLoad.addEventListener('click', function() {
-      if (inputGistUrl.type === 'password') {
-        inputGistUrl.type = 'text';
-      } else {
-        inputGistUrl.type = 'password';
-      }
+      inputGistUrl.type = (inputGistUrl.type === 'password') ? 'text' : 'password';
     });
   }
 
@@ -1202,6 +1188,7 @@ document.addEventListener('DOMContentLoaded', function () {
         try {
           var res = await inspectOrLoadCloud(gistId, item.filename);
           if (res.mode === 'direct' && restoreAllAppData(res.data)) {
+            localStorage.setItem('cc_auto_saved_link', item.rawUrl);
             gistModal.classList.remove('show');
             showToast('Data ' + item.filename + ' berhasil dipulihkan!');
             setTimeout(function() { location.reload(); }, 1100);
@@ -1223,12 +1210,8 @@ document.addEventListener('DOMContentLoaded', function () {
   if (btnOpenSave) {
     btnOpenSave.addEventListener('click', function() {
       refreshGistStatusUI();
-      if (ghGistIdInput) {
-        ghGistIdInput.value = localStorage.getItem('cc_gist_id') || GITHUB_GIST_CONFIG.defaultMasterGistId || '';
-      }
-
       modalHeading.textContent = 'Simpan Data Cloud';
-      modalDesc.textContent = 'Data Anda akan dienkapsulasi dan disimpan secara aman ke cloud.';
+      modalDesc.textContent = 'Data Anda akan disimpan secara aman ke cloud.';
       viewSave.style.display = 'flex';
       viewLoad.style.display = 'none';
 
@@ -1246,26 +1229,20 @@ document.addEventListener('DOMContentLoaded', function () {
 
   if (btnPushGistNow) {
     btnPushGistNow.addEventListener('click', async function() {
-      var customGistId = ghGistIdInput ? ghGistIdInput.value.trim() : '';
-
       var origText = btnPushGistNow.textContent;
       btnPushGistNow.disabled = true;
       btnPushGistNow.textContent = 'Menyimpan ke Cloud...';
 
       try {
-        var res = await pushDataToCloud(customGistId);
+        var res = await pushDataToCloud();
         latestGistHtmlUrl = res.htmlUrl;
         latestGistRawUrl = res.rawUrl;
 
-        // Auto-simpan tautan ke localStorage agar langsung terbaca di menu load perangkat ini
-        localStorage.setItem('cc_auto_saved_link', res.rawUrl);
-
-        if (ghGistIdInput) ghGistIdInput.value = res.gistId;
         displayRawUrl.value = res.rawUrl;
         displayRawUrl.type = 'password';
         gistResultWrap.style.display = 'flex';
         refreshGistStatusUI();
-        showToast('Berhasil! Data tersimpan di Cloud');
+        showToast('Berhasil! Data tersimpan di Cloud & tertaut otomatis');
       } catch (err) {
         showToast('Gagal: ' + err.message);
       } finally {
@@ -1278,23 +1255,23 @@ document.addEventListener('DOMContentLoaded', function () {
   if (btnOpenLoad) {
     btnOpenLoad.addEventListener('click', function() {
       modalHeading.textContent = 'Muat Data dari Cloud';
-      modalDesc.textContent = 'Tautan tersimpan otomatis di perangkat ini. Cukup tekan tombol muat untuk mengambil data.';
+      modalDesc.textContent = 'Tautan tersimpan otomatis di perangkat ini. Tekan tombol muat untuk mengambil data.';
       viewSave.style.display = 'none';
       viewLoad.style.display = 'flex';
       fileListWrap.style.display = 'none';
 
-      // Ambil otomatis dari auto-saved link atau fallback ke raw url terakhir
-      var autoSaved = localStorage.getItem('cc_auto_saved_link') || latestGistRawUrl;
+      // AMBIL OTOMATIS DARI AUTO-SAVED LINK DI DEVICE INI
+      var autoSavedLink = localStorage.getItem('cc_auto_saved_link') || latestGistRawUrl;
       var knownGistId = localStorage.getItem('cc_gist_id') || extractGistId(GITHUB_GIST_CONFIG.defaultMasterGistId);
       
       if (inputGistUrl) {
-        inputGistUrl.value = autoSaved || (knownGistId ? 'https://gist.github.com/' + knownGistId : '');
+        inputGistUrl.value = autoSavedLink || (knownGistId ? 'https://gist.github.com/' + knownGistId : '');
         inputGistUrl.type = 'password';
       }
 
       gistModal.classList.add('show');
 
-      if (knownGistId && !autoSaved) {
+      if (knownGistId && !autoSavedLink) {
         inspectOrLoadCloud(knownGistId).then(function(res) {
           if (res.mode === 'list') {
             renderGistFileChoices(res.gistId, res.files);
@@ -1308,7 +1285,7 @@ document.addEventListener('DOMContentLoaded', function () {
     btnFetchGistNow.addEventListener('click', async function() {
       var urlVal = inputGistUrl ? inputGistUrl.value.trim() : '';
       if (!urlVal) {
-        showToast('Tautan atau ID belum tersedia!');
+        showToast('Belum ada tautan tersimpan di perangkat ini!');
         return;
       }
 
@@ -1323,7 +1300,6 @@ document.addEventListener('DOMContentLoaded', function () {
           showToast('Pilih file cadangan di bawah!');
         } else if (res.mode === 'direct') {
           if (restoreAllAppData(res.data)) {
-            // Simpan otomatis tautan load ke device
             localStorage.setItem('cc_auto_saved_link', urlVal);
             gistModal.classList.remove('show');
             showToast('Data berhasil dipulihkan! Memuat ulang...');
@@ -1348,17 +1324,6 @@ document.addEventListener('DOMContentLoaded', function () {
         showToast('Tautan berhasil disalin!');
       }).catch(function() {
         showToast('Gagal menyalin tautan');
-      });
-    });
-  }
-
-  if (btnCopyGistUrl) {
-    btnCopyGistUrl.addEventListener('click', function() {
-      var target = localStorage.getItem('cc_gist_id') || displayRawUrl.value;
-      navigator.clipboard.writeText(target).then(function() {
-        showToast('ID Berhasil Disalin!');
-      }).catch(function() {
-        showToast('Gagal menyalin ID');
       });
     });
   }
