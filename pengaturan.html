@@ -774,10 +774,38 @@
 <script>
 document.addEventListener('DOMContentLoaded', function () {
 
+  // ============================================================
+  // ⚠️ FIX #1: PREFIX TOKEN WAJIB LOWERCASE "ghp_" — bukan "Ghp_"
+  // ============================================================
   var GITHUB_GIST_CONFIG = {
-    defaultToken: 'Ghp_RNGhTZefJkjHWuWbKj87KXfJICLLVm2Fr216', // Token baru yang lu kasih
+    defaultToken: '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',
     defaultMasterGistId: ''
   };
+
+  // ============================================================
+  // FIX #2: Validasi format token otomatis di awal (bantu diagnosa)
+  // ============================================================
+  (function validateToken() {
+    var raw = GITHUB_GIST_CONFIG.defaultToken || '';
+    var token = raw.trim();
+    if (raw !== token) {
+      console.warn('[CoCenter] Token ada spasi/newline → di-trim otomatis');
+      GITHUB_GIST_CONFIG.defaultToken = token;
+    }
+    if (!token) {
+      console.warn('[CoCenter] Token GitHub kosong!');
+      return;
+    }
+    if (!/^ghp_[A-Za-z0-9]{36}$/.test(token) && !/^github_pat_/.test(token)) {
+      console.error('[CoCenter] ⚠️ FORMAT TOKEN SALAH!', {
+        prefix4: token.substring(0, 4),
+        length: token.length,
+        hint: 'Classic PAT harus "ghp_" (lowercase g) + 36 karakter = total 40 karakter.'
+      });
+    } else {
+      console.log('[CoCenter] ✅ Format token OK:', token.substring(0, 4) + '...(' + token.length + ' chars)');
+    }
+  })();
 
   var toastTimer = null;
   function showToast(msg) {
@@ -989,6 +1017,26 @@ document.addEventListener('DOMContentLoaded', function () {
   var latestGistHtmlUrl = localStorage.getItem('cc_gist_html_url') || '';
   var latestGistRawUrl = localStorage.getItem('cc_gist_raw_url') || '';
 
+  // ============================================================
+  // FIX #3: Error handler dengan pesan jelas per status code
+  // ============================================================
+  function buildGitHubError(response, errData) {
+    var errMsg = (errData && errData.message) || ('HTTP ' + response.status);
+    switch (response.status) {
+      case 401:
+        return '❌ BAD CREDENTIALS (401): Token tidak valid / expired / format salah.\n' +
+               'Cek: prefix "ghp_" harus lowercase, belum expired, tanpa spasi.\n' +
+               'Respons GitHub: ' + errMsg;
+      case 403:
+        return '⛔ FORBIDDEN (403): Token valid tapi tidak punya izin scope "gist".\n' +
+               'Buat ulang token & centang scope gist.\nRespons: ' + errMsg;
+      case 404:
+        return '🔍 NOT FOUND (404): Gist/resource tidak ditemukan atau bukan milik akun token ini.';
+      default:
+        return '⚠️ HTTP ' + response.status + ': ' + errMsg;
+    }
+  }
+
   async function pushDataToCloud() {
     var token = GITHUB_GIST_CONFIG.defaultToken;
     var dynamicFilename = getDynamicSaveFilename();
@@ -1031,7 +1079,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (!response.ok) {
       var errData = await response.json().catch(function() { return {}; });
-      throw new Error(errData.message || ('Gagal Menyimpan Data (HTTP ' + response.status + ')'));
+      throw new Error(buildGitHubError(response, errData));
     }
 
     var result = await response.json();
@@ -1046,8 +1094,6 @@ document.addEventListener('DOMContentLoaded', function () {
     localStorage.setItem('cc_gist_filename', dynamicFilename);
     localStorage.setItem('cc_gist_html_url', result.html_url);
     localStorage.setItem('cc_gist_raw_url', evergreenRawUrl);
-
-    // AUTO-SAVE LINK KE LOCALSTORAGE SUPAYA LANGSUNG TERTANAM DI DEVICE INI
     localStorage.setItem('cc_auto_saved_link', evergreenRawUrl);
 
     return {
@@ -1083,7 +1129,8 @@ document.addEventListener('DOMContentLoaded', function () {
       cache: 'no-store'
     });
     if (!apiRes.ok) {
-      throw new Error('Penyimpanan tidak ditemukan.');
+      var errData = await apiRes.json().catch(function() { return {}; });
+      throw new Error(buildGitHubError(apiRes, errData));
     }
 
     var gistData = await apiRes.json();
@@ -1128,6 +1175,32 @@ document.addEventListener('DOMContentLoaded', function () {
       })
     };
   }
+
+  // ============================================================
+  // FIX #4: Test token manual dari console DevTools
+  // Pemakaian: testGitHubToken()
+  // ============================================================
+  window.testGitHubToken = async function() {
+    var token = (GITHUB_GIST_CONFIG.defaultToken || '').trim();
+    console.log('%c[CoCenter Token Test]', 'color:#29e0c9;font-weight:bold');
+    console.log('Length:', token.length, '| Prefix:', token.substring(0, 4));
+    try {
+      var r = await fetch('https://api.github.com/user', {
+        headers: { 'Authorization': 'Bearer ' + token }
+      });
+      if (r.ok) {
+        var u = await r.json();
+        console.log('%c✅ TOKEN VALID', 'color:#29e0c9;font-weight:bold', '— login:', u.login);
+        showToast('Token valid: ' + u.login);
+      } else {
+        var e = await r.json().catch(function() { return {}; });
+        console.error('❌ TOKEN INVALID → HTTP', r.status, e.message);
+        showToast('Token invalid: ' + (e.message || r.status));
+      }
+    } catch (err) {
+      console.error('Network error:', err);
+    }
+  };
 
   // MODAL INTERACTION
   var gistModal = document.getElementById('cc-gist-modal');
@@ -1214,7 +1287,6 @@ document.addEventListener('DOMContentLoaded', function () {
       viewSave.style.display = 'flex';
       viewLoad.style.display = 'none';
 
-      // Selalu muat tautan yang sudah ada/tersimpan sebelumnya ke kotak input tersembunyi
       var currentSavedLink = localStorage.getItem('cc_auto_saved_link') || latestGistRawUrl;
       if (displayRawUrl) {
         displayRawUrl.value = currentSavedLink;
