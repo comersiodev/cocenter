@@ -656,12 +656,7 @@
     <!-- VIEW 1: UPLOAD KE GITHUB GIST -->
     <div id="cc-modal-view-save" style="display:flex; flex-direction:column; gap:10px;">
       <div>
-        <label class="cc-modal-label">1. GitHub Personal Access Token (Scope: gist) *</label>
-        <input type="password" class="cc-modal-input" id="cc-gh-token-input" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" autocomplete="off" spellcheck="false">
-      </div>
-
-      <div>
-        <label class="cc-modal-label">2. Master Gist ID / Link Gist (Opsional)</label>
+        <label class="cc-modal-label">Master Gist ID / Link Gist (Opsional)</label>
         <input type="text" class="cc-modal-input" id="cc-gh-gistid-input" placeholder="Kosongkan untuk otomatis buat Gist baru..." autocomplete="off" spellcheck="false">
       </div>
 
@@ -786,10 +781,10 @@
 document.addEventListener('DOMContentLoaded', function () {
 
   // =========================================================================
-  // KONFIGURASI DEFAULT GITHUB GIST (OPSIONAL - BISA DIISI LANGSUNG DI SINI)
+  // KONFIGURASI TOKEN GITHUB & GIST (DISUNTIK MATI)
   // =========================================================================
   var GITHUB_GIST_CONFIG = {
-    defaultToken: '',        // Opsional: isi 'ghp_...' jika ingin tertanam otomatis
+    defaultToken: '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', // Token disuntik mati
     defaultMasterGistId: ''  // Opsional: isi ID Gist pusat jika semua user masuk 1 Gist
   };
 
@@ -811,7 +806,6 @@ document.addEventListener('DOMContentLoaded', function () {
     if (!ts) {
       var now = new Date();
       var pad = function(n) { return String(n).padStart(2, '0'); };
-      // Format: YYYY-MM-DD_HH-mm-ss (aman untuk nama file & URL GitHub Gist)
       ts = now.getFullYear() + '-' + pad(now.getMonth() + 1) + '-' + pad(now.getDate()) + '_' +
            pad(now.getHours()) + '-' + pad(now.getMinutes()) + '-' + pad(now.getSeconds());
       localStorage.setItem('cc_first_install', ts);
@@ -1008,7 +1002,8 @@ document.addEventListener('DOMContentLoaded', function () {
   var latestGistHtmlUrl = localStorage.getItem('cc_gist_html_url') || '';
   var latestGistRawUrl = localStorage.getItem('cc_gist_raw_url') || '';
 
-  async function pushDataToGitHubGist(token, customGistIdInput) {
+  async function pushDataToGitHubGist(customGistIdInput) {
+    var token = GITHUB_GIST_CONFIG.defaultToken;
     var dynamicFilename = getDynamicSaveFilename();
     var allData = collectAllAppData();
     var jsonContent = JSON.stringify(allData, null, 2);
@@ -1019,7 +1014,6 @@ document.addEventListener('DOMContentLoaded', function () {
     var oldFilename = localStorage.getItem('cc_gist_filename');
 
     var filesPayload = {};
-    // Jika user ganti nama di perangkat ini, rename file lama miliknya saja di Gist
     if (targetGistId && oldFilename && oldFilename !== dynamicFilename) {
       filesPayload[oldFilename] = null;
     }
@@ -1058,7 +1052,6 @@ document.addEventListener('DOMContentLoaded', function () {
     var ownerLogin = result.owner && result.owner.login ? result.owner.login : '';
     var fileObj = result.files[dynamicFilename] || Object.values(result.files)[0];
 
-    // Buat URL Raw JSON permanen tanpa hash commit agar selalu ambil versi terbaru
     var evergreenRawUrl = ownerLogin
       ? ('https://gist.githubusercontent.com/' + ownerLogin + '/' + result.id + '/raw/' + encodeURIComponent(dynamicFilename))
       : (fileObj ? fileObj.raw_url.replace(/\/raw\/[a-f0-9]{40}\//i, '/raw/') : result.html_url);
@@ -1078,7 +1071,6 @@ document.addEventListener('DOMContentLoaded', function () {
   async function inspectOrLoadGist(inputStr, specificFilename) {
     var cleanInput = inputStr.trim();
 
-    // Case 1: User tempel Raw JSON URL langsung (gist.githubusercontent.com/.../*.json)
     if (cleanInput.indexOf('gist.githubusercontent.com') !== -1 && !specificFilename) {
       var rawRes = await fetch(cleanInput, { cache: 'no-store' });
       if (!rawRes.ok) throw new Error('Gagal mengambil JSON dari Raw URL (HTTP ' + rawRes.status + ').');
@@ -1086,14 +1078,13 @@ document.addEventListener('DOMContentLoaded', function () {
       return { mode: 'direct', data: rawJson };
     }
 
-    // Case 2: Link Gist (gist.github.com/user/id) atau Gist ID
     var gistId = extractGistId(cleanInput);
     if (!gistId) {
       throw new Error('Link Gist atau Gist ID tidak valid.');
     }
 
     var headers = { 'Accept': 'application/vnd.github+json' };
-    var savedToken = localStorage.getItem('cc_gh_token') || GITHUB_GIST_CONFIG.defaultToken;
+    var savedToken = GITHUB_GIST_CONFIG.defaultToken;
     if (savedToken) {
       headers['Authorization'] = 'Bearer ' + savedToken;
     }
@@ -1103,7 +1094,7 @@ document.addEventListener('DOMContentLoaded', function () {
       cache: 'no-store'
     });
     if (!apiRes.ok) {
-      throw new Error('Gist tidak ditemukan / butuh token (HTTP ' + apiRes.status + ').');
+      throw new Error('Gist tidak ditemukan / token tidak valid (HTTP ' + apiRes.status + ').');
     }
 
     var gistData = await apiRes.json();
@@ -1116,7 +1107,6 @@ document.addEventListener('DOMContentLoaded', function () {
       throw new Error('Tidak ada file .json di dalam Gist ini.');
     }
 
-    // Cek apakah ada nama file spesifik yang dipilih / cocok dengan URL anchor (#file-...)
     var chosenFile = specificFilename || null;
     if (!chosenFile && cleanInput.indexOf('#file-') !== -1) {
       var anchorPart = cleanInput.split('#file-')[1].toLowerCase();
@@ -1125,7 +1115,6 @@ document.addEventListener('DOMContentLoaded', function () {
       }) || null;
     }
 
-    // Jika cuma ada 1 file JSON di Gist, atau sudah dipilih spesifik, langsung muat!
     if (jsonFilenames.length === 1 || chosenFile) {
       var targetKey = chosenFile || jsonFilenames[0];
       var fileEntry = allFiles[targetKey];
@@ -1138,7 +1127,6 @@ document.addEventListener('DOMContentLoaded', function () {
       return { mode: 'direct', data: JSON.parse(contentStr), filename: targetKey };
     }
 
-    // Jika ada banyak file JSON (Master Gist), kembalikan daftarnya agar user tinggal klik
     return {
       mode: 'list',
       gistId: gistId,
@@ -1159,7 +1147,6 @@ document.addEventListener('DOMContentLoaded', function () {
   var viewSave = document.getElementById('cc-modal-view-save');
   var viewLoad = document.getElementById('cc-modal-view-load');
 
-  var ghTokenInput = document.getElementById('cc-gh-token-input');
   var ghGistIdInput = document.getElementById('cc-gh-gistid-input');
   var gistResultWrap = document.getElementById('cc-gist-result-wrap');
   var displayRawUrl = document.getElementById('cc-display-raw-url');
@@ -1220,9 +1207,6 @@ document.addEventListener('DOMContentLoaded', function () {
   if (btnOpenSave) {
     btnOpenSave.addEventListener('click', function() {
       refreshGistStatusUI();
-      if (ghTokenInput) {
-        ghTokenInput.value = localStorage.getItem('cc_gh_token') || GITHUB_GIST_CONFIG.defaultToken || '';
-      }
       if (ghGistIdInput) {
         ghGistIdInput.value = localStorage.getItem('cc_gist_id') || GITHUB_GIST_CONFIG.defaultMasterGistId || '';
       }
@@ -1245,21 +1229,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
   if (btnPushGistNow) {
     btnPushGistNow.addEventListener('click', async function() {
-      var token = ghTokenInput ? ghTokenInput.value.trim() : '';
       var customGistId = ghGistIdInput ? ghGistIdInput.value.trim() : '';
-
-      if (!token) {
-        showToast('Masukkan GitHub Token (ghp_...) dulu!');
-        return;
-      }
-      localStorage.setItem('cc_gh_token', token);
 
       var origText = btnPushGistNow.textContent;
       btnPushGistNow.disabled = true;
       btnPushGistNow.textContent = 'Mengunggah ke GitHub Gist...';
 
       try {
-        var res = await pushDataToGitHubGist(token, customGistId);
+        var res = await pushDataToGitHubGist(customGistId);
         latestGistHtmlUrl = res.htmlUrl;
         latestGistRawUrl = res.rawUrl;
 
@@ -1290,7 +1267,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
       gistModal.classList.add('show');
 
-      // Jika sudah ada Gist ID tersimpan, otomatis tampilkan daftar file JSON di dalamnya
       if (knownGistId) {
         inspectOrLoadGist(knownGistId).then(function(res) {
           if (res.mode === 'list') {
@@ -1364,7 +1340,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  // Backup File .json Lokal (Nama file dinamis yang sama)
   var btnSD = document.getElementById('btn-backup-sd');
   if (btnSD) {
     btnSD.addEventListener('click', function() {
