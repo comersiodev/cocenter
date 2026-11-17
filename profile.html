@@ -2,1307 +2,2342 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>Co Center - Profil Pengguna</title>
-
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,700;0,800;1,400&display=swap" rel="stylesheet">
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Pengaturan Profile - Delta Comersia</title>
+<link rel="stylesheet" href="style.css">
+<meta name="theme-color" content="#000000">
 <style>
-  #cc-container, #cc-container * {
-    font-family: 'JetBrains Mono', monospace !important;
-    box-sizing: border-box;
-  }
-  html, body {
-    margin: 0 !important; padding: 0 !important; height: 100% !important;
-    overflow: hidden !important; background: #05060a !important; color: #fff;
-  }
-  #cc-container {
-    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; height: 100dvh;
-    z-index: 999999; background: #05060a; overflow-y: auto; -webkit-overflow-scrolling: touch;
-    padding-top: calc(75px + env(safe-area-inset-top, 0px));
-    padding-bottom: calc(95px + env(safe-area-inset-bottom, 0px));
-  }
+  @font-face{ font-family: 'OswaldBold'; src: url('oswald-bold.ttf') format('truetype'); font-weight: 700; font-style: normal; }
+  @font-face{ font-family: 'FiraCondBold'; src: url('firasanscondensed-bold.otf') format('opentype'); font-weight: 700; font-style: normal; }
+  @font-face{ font-family: 'FiraCondBook'; src: url('firasanscondensed-book.otf') format('opentype'); font-weight: 400; font-style: normal; }
+  :root{ --hijau: #2f6b3a; --hijau-terang: #4caf5e; --emas: #e8b13c; --emas-terang: #ffd166; --gelap: #0b0f0c; }
+  *{ box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body{ margin: 0; padding: 0; height: 100%; overflow: hidden; font-family: 'FiraCondBook', sans-serif; }
+  body{ position: relative; width: 100%; height: 100vh; background: #0a0a0a; }
+  .bg-layer{ position: fixed; inset: 0; background-image: url('background.jpg'); background-size: cover; background-position: center center; background-repeat: no-repeat; z-index: 0; }
+  .bg-dim{ position: fixed; inset: 0; background: rgba(6, 10, 7, 0.78); z-index: 1; }
+  .blur-active{ filter: blur(6px); pointer-events: none; transition: filter 0.3s ease; }
+  .mbanking-topbar{ position: fixed; top: 0; left: 0; right: 0; height: 56px; background: rgba(10, 14, 11, 0.95); border-bottom: 1px solid rgba(232, 177, 60, 0.25); display: flex; align-items: center; justify-content: space-between; padding: 0 16px; z-index: 20; backdrop-filter: blur(8px); }
+  .mbanking-brand-container{ display: flex; flex-direction: column; justify-content: center; }
+  .mbanking-brand{ font-family: 'OswaldBold', sans-serif; font-size: 1.1rem; color: #ffffff; letter-spacing: 0.5px; line-height: 1.1; }
+  .mbanking-brand span{ color: var(--emas-terang); }
+  .mbanking-greeting-top{ font-size: 0.7rem; color: var(--emas-terang); font-family: 'FiraCondBold', sans-serif; margin-top: 1px; line-height: 1; }
 
-  .cc-main-shell {
-    width: 100%;
-    max-width: 540px;
-    margin: 0 auto;
-  }
-
-  /* ================= VARIAN BACKGROUND (SINKRON PENGATURAN.HTML) ================= */
-  .cc-bg.bg-simple {
-    position: fixed; inset: 0; z-index: -1;
-    background: linear-gradient(135deg, #090a0f 0%, #12151f 50%, #1a1614 100%) !important;
-    background-size: cover;
-    transition: background 0.3s ease;
-  }
-  .cc-overlay.bg-simple {
-    position: fixed; inset: 0; z-index: -1;
-    background: rgba(12, 10, 8, 0.65) !important;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    transition: background 0.3s ease;
-  }
-
-  .cc-bg.bg-default {
-    position: fixed; inset: 0; z-index: -1;
-    background: #000 url('https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh9DocQHrQw9p05Lbkght7m-rpO8O2HS6s3VG28Nc7FW6LPePf_AYJ3E104I15aD8OUsQRINz7QGbgv7EeJXKZKXdecQ-RAHvowdbS5vPqDrfZ63ZC3w-FOPKWPcVBKY5IFdenDmRixqc-Jy8BvVpAp6ReI7Io5UdxjNnlzY_TZLuTW6xaepq9RkRMA92kV/s1600/11.gif') no-repeat center center;
-    background-size: cover;
-    transition: background 0.3s ease;
-  }
-  .cc-overlay.bg-default {
-    position: fixed; inset: 0; z-index: -1;
-    background: rgba(3,4,8,0.78);
-    transition: background 0.3s ease;
-  }
-
-  /* ============ HEADER FIXED ============ */
-  .cc-nav {
+  /* ================= LANG SWITCHER TOPBAR ================= */
+  .lang-toggle-pill{
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    padding: calc(15px + env(safe-area-inset-top, 0px)) 20px 15px;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    z-index: 100;
-    background: rgba(5, 6, 10, 0.85);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-bottom: 1px solid rgba(255,255,255,0.08);
-  }
-  .cc-nav-inner {
-    width: 100%;
-    max-width: 540px;
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  .cc-brand { display:flex; align-items:center; gap:12px; font-weight:800; font-size:18px; color:#fff; letter-spacing:-0.5px; }
-  .cc-img { width:35px; height:35px; border-radius:10px; object-fit: cover; }
-  .cc-brand-wrap { display:flex; flex-direction:column; gap:2px; }
-  .cc-brand-row { display:flex; align-items:center; gap:12px; }
-  .cc-subtitle { font-size: 10px; font-weight:700; color:#a9b2c3; letter-spacing: 2px; text-transform: uppercase; margin-left: 47px; }
-  
-  .cc-settings-badge {
-    display: flex; align-items: center; gap: 6px; background: rgba(255, 210, 63, 0.1);
-    border: 1px solid rgba(255, 210, 63, 0.35); color: #ffd23f; font-weight: 800; font-size: 11px;
-    padding: 6px 12px; border-radius: 20px; text-decoration: none;
-    transition: transform 0.15s ease, background 0.2s ease;
-    -webkit-tap-highlight-color: transparent;
-  }
-  .cc-settings-badge:hover {
-    background: rgba(255, 210, 63, 0.18);
-  }
-  .cc-settings-badge:active {
-    transform: scale(0.95);
-  }
-  .cc-settings-badge svg { width: 14px; height: 14px; fill: currentColor; }
-
-  .cc-section { padding: 15px 20px; display: flex; flex-direction: column; align-items: center; }
-
-  /* ================= PROFILE CARD + BANNER ================= */
-  .cc-profile-box {
-    width: 100%;
-    max-width: 440px;
-    background: #0d0f16;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: #121814;
+    border: 1.5px solid var(--emas-terang);
     border-radius: 20px;
-    overflow: hidden;
+    padding: 2px;
+    gap: 2px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+  }
+  .lang-pill-btn{
+    border: none;
+    background: transparent;
+    color: #aaa;
+    font-family: 'FiraCondBold', sans-serif;
+    font-size: 0.68rem;
+    padding: 4px 8px;
+    border-radius: 16px;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+    line-height: 1;
+    letter-spacing: 0.4px;
+  }
+  .lang-pill-btn.active{
+    background: var(--emas-terang);
+    color: #000;
+  }
+
+  .back-home-btn{ width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--emas-terang); background: #121814; display: flex; align-items: center; justify-content: center; cursor: pointer; text-decoration: none; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 2px 8px rgba(0,0,0,0.5); }
+  .back-home-btn:hover{ transform: scale(1.08); box-shadow: 0 0 12px rgba(255, 209, 102, 0.4); }
+  .back-home-btn svg{ width: 18px; height: 18px; fill: var(--emas-terang); }
+  #screen-profile{ position: fixed; inset: 0; z-index: 5; display: flex; flex-direction: column; align-items: center; padding-top: 72px; padding-bottom: 110px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+
+  /* ================= PROFILE CARD ================= */
+  .profile-card-container{
+    width: 92%;
+    max-width: 360px;
+    background: rgba(12, 17, 13, 0.95);
+    border: 2px solid var(--emas);
+    border-radius: 16px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.6);
     display: flex;
     flex-direction: column;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    align-items: center;
+    margin-bottom: 24px;
+    overflow: visible;
+    padding: 0;
   }
 
-  .cc-banner-container {
-    position: relative;
+  .hero-wrap{ width: 100%; position: relative; margin-bottom: 48px; }
+  .hero-banner{ width: 100%; aspect-ratio: 2.5 / 1; border-radius: 14px 14px 0 0; background: linear-gradient(135deg, #111a13, #1c2b1e); overflow: hidden; position: relative; display: flex; align-items: center; justify-content: center; cursor: default; transition: filter 0.2s; }
+  .hero-banner.has-banner{ cursor: pointer; }
+  .hero-banner.has-banner:hover{ filter: brightness(1.08); }
+  body.edit-mode .hero-banner{ cursor: pointer; }
+  body.edit-mode .hero-banner:hover{ filter: brightness(1.15); }
+  .hero-banner .banner-preview-img{ width: 100%; height: 100%; object-fit: cover; display: block; }
+  .banner-empty-state{ display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; color: #888; padding: 8px; text-align: center; pointer-events: none; }
+  .banner-empty-state svg{ width: 30px; height: 30px; fill: rgba(255,209,102,0.5); margin-bottom: 2px; }
+  .banner-empty-title{ font-family: 'FiraCondBold', sans-serif; font-size: 0.78rem; color: var(--emas-terang); letter-spacing: 0.5px; }
+  .banner-empty-sub{ font-size: 0.62rem; color: #777; font-family: 'FiraCondBook', sans-serif; }
+  .banner-edit-badge{ position: absolute; bottom: 8px; right: 8px; background: rgba(0,0,0,0.78); border: 1.5px solid var(--emas-terang); color: var(--emas-terang); padding: 3px 8px; border-radius: 20px; font-family: 'FiraCondBold', sans-serif; font-size: 0.65rem; display: none; align-items: center; gap: 3px; backdrop-filter: blur(6px); pointer-events: none; }
+  .banner-edit-badge svg{ width: 10px; height: 10px; fill: currentColor; }
+  .banner-remove-btn{ position: absolute; top: 8px; right: 8px; width: 26px; height: 26px; border-radius: 50%; background: rgba(0,0,0,0.78); border: 1.5px solid #ff5555; color: #ff5555; display: none; align-items: center; justify-content: center; cursor: pointer; z-index: 5; backdrop-filter: blur(6px); transition: background 0.2s, transform 0.15s; padding: 0; }
+  .banner-remove-btn:hover{ background: rgba(255,85,85,0.4); }
+  .banner-remove-btn:active{ transform: scale(0.9); }
+  .banner-remove-btn svg{ width: 11px; height: 11px; fill: currentColor; }
+  body.edit-mode .hero-banner.has-banner .banner-edit-badge{ display: flex; }
+  body.edit-mode .hero-banner.has-banner .banner-remove-btn{ display: flex; }
+
+  .hero-avatar-wrapper{ position: absolute; bottom: -40px; left: 50%; transform: translateX(-50%); z-index: 3; cursor: default; }
+  .hero-avatar-wrapper.has-avatar{ cursor: pointer; }
+  .hero-avatar-wrapper.has-avatar:hover .hero-avatar{ transform: scale(1.04); }
+  body.edit-mode .hero-avatar-wrapper{ cursor: pointer; }
+  .hero-avatar{ width: 80px; height: 80px; border-radius: 50%; border: 3px solid #0d120f; box-shadow: 0 0 0 2px var(--emas-terang), 0 4px 20px rgba(0,0,0,0.7); overflow: hidden; background: #1e2620; display: flex; align-items: center; justify-content: center; transition: transform 0.2s; }
+  body.edit-mode .hero-avatar-wrapper:hover .hero-avatar{ transform: scale(1.04); }
+  .hero-avatar img, .hero-avatar svg{ width: 100%; height: 100%; object-fit: cover; }
+  .hero-avatar svg{ width: 38px; height: 38px; fill: var(--emas-terang); }
+  .avatar-badge-edit{ position: absolute; bottom: 0; right: 0; background: var(--emas-terang); color: #000; border-radius: 50%; width: 24px; height: 24px; display: none; align-items: center; justify-content: center; font-size: 11px; border: 2px solid #0d120f; box-shadow: 0 2px 6px rgba(0,0,0,0.5); }
+  body.edit-mode .avatar-badge-edit{ display: flex; }
+
+  /* ================= VIEW MODE INFO ================= */
+  .view-mode-content{ width: 100%; padding: 0 16px 16px 16px; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .view-username{ font-family: 'OswaldBold', sans-serif; font-size: 1.3rem; color: #fff; letter-spacing: 0.5px; text-align: center; line-height: 1.2; margin-top: 2px; word-break: break-word; }
+  .view-username.empty{ color: #555; font-family: 'FiraCondBook', sans-serif; font-style: italic; font-size: 0.95rem; }
+  .view-title-badge{ display: inline-block; background: rgba(232,177,60,0.12); border: 1px solid rgba(232,177,60,0.4); color: var(--emas-terang); padding: 4px 14px; border-radius: 20px; font-family: 'FiraCondBold', sans-serif; font-size: 0.78rem; letter-spacing: 0.5px; }
+  .view-title-badge.empty{ background: transparent; border-color: rgba(255,255,255,0.1); color: #555; }
+  .view-email{ font-family: 'FiraCondBook', sans-serif; font-size: 0.82rem; color: #999; text-align: center; margin-bottom: 6px; word-break: break-word; }
+  .view-email.empty{ color: #555; font-style: italic; }
+  .profile-edit-btn{ width: 100%; background: var(--emas-terang); color: #000; border: none; border-radius: 10px; padding: 12px; font-family: 'FiraCondBold', sans-serif; font-size: 0.92rem; cursor: pointer; margin-top: 4px; box-shadow: 0 4px 12px rgba(255, 209, 102, 0.3); transition: transform 0.2s, box-shadow 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+  .profile-edit-btn:hover{ transform: translateY(-2px); box-shadow: 0 0 15px rgba(255, 209, 102, 0.5); }
+  .profile-edit-btn:active{ transform: scale(0.97); }
+  .profile-edit-btn svg{ width: 15px; height: 15px; fill: currentColor; }
+
+  /* ================= EMBEDDED OWNER CODE BOX ================= */
+  .embedded-code-card{
     width: 100%;
-    height: 132px;
-    background: linear-gradient(135deg, #171b29 0%, #241f14 55%, #121520 100%);
-    border-bottom: 1px solid rgba(255, 210, 63, 0.25);
-    overflow: hidden;
-    cursor: pointer;
+    margin-top: 8px;
+    padding: 9px 11px;
+    background: rgba(47, 107, 58, 0.16);
+    border: 1px solid rgba(76, 175, 94, 0.5);
+    border-radius: 10px;
+    display: none;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .embedded-code-card.visible{ display: flex; }
+  .embedded-code-top{
     display: flex;
     align-items: center;
-    justify-content: center;
-    -webkit-tap-highlight-color: transparent;
+    justify-content: space-between;
+    gap: 6px;
   }
-  .cc-banner-container img {
+  .embedded-code-badge{
+    font-family: 'FiraCondBold', sans-serif;
+    font-size: 0.72rem;
+    color: #7ee290;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .embedded-code-row{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    background: rgba(0, 0, 0, 0.55);
+    border: 1px solid rgba(232, 177, 60, 0.3);
+    border-radius: 8px;
+    padding: 6px 8px;
+  }
+  .embedded-code-value{
+    font-family: monospace;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--emas-terang);
+    letter-spacing: 1px;
+    user-select: all;
+  }
+  .embedded-code-actions{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .code-mini-btn{
+    border: none;
+    border-radius: 6px;
+    padding: 4px 8px;
+    font-family: 'FiraCondBold', sans-serif;
+    font-size: 0.7rem;
+    cursor: pointer;
+    transition: transform 0.15s, opacity 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+  }
+  .code-mini-btn:active{ transform: scale(0.93); }
+  .code-mini-btn.copy{
+    background: var(--emas-terang);
+    color: #000;
+  }
+  .code-mini-btn.delete{
+    background: rgba(255, 85, 85, 0.18);
+    color: #ff6b6b;
+    border: 1px solid rgba(255, 85, 85, 0.45);
+  }
+  .code-mini-btn.delete:hover{
+    background: rgba(255, 85, 85, 0.32);
+  }
+
+  /* ================= LANG CARD ROW ================= */
+  .lang-card-row{
+    width: 100%;
+    margin-top: 10px;
+    padding: 9px 12px;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(232, 177, 60, 0.35);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .lang-card-label{
+    font-family: 'FiraCondBold', sans-serif;
+    font-size: 0.76rem;
+    color: var(--emas-terang);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .lang-card-btns{
+    display: flex;
+    gap: 6px;
+  }
+  .lang-choice-btn{
+    padding: 5px 10px;
+    border-radius: 8px;
+    border: 1px solid rgba(232, 177, 60, 0.35);
+    background: #121814;
+    color: #bbb;
+    font-family: 'FiraCondBold', sans-serif;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .lang-choice-btn.active{
+    background: var(--emas-terang);
+    color: #000;
+    border-color: var(--emas-terang);
+    box-shadow: 0 0 10px rgba(255, 209, 102, 0.35);
+  }
+
+  /* ================= GALLERY ================= */
+  .gallery-section{
+    width: 100%;
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px dashed rgba(232, 177, 60, 0.25);
+  }
+  .gallery-header{
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'FiraCondBold', sans-serif;
+    font-size: 0.78rem;
+    color: var(--emas-terang);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+  }
+  .gallery-header-icon{ width: 15px; height: 15px; fill: var(--emas-terang); }
+  .gallery-grid{
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 4px;
+    width: 100%;
+  }
+  .gallery-thumb{
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid rgba(232, 177, 60, 0.35);
+    cursor: pointer;
+    transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+    display: block;
+    background: #111;
+  }
+  .gallery-thumb:hover{
+    transform: scale(1.06);
+    border-color: var(--emas-terang);
+    box-shadow: 0 0 10px rgba(255, 209, 102, 0.4);
+    z-index: 2;
+    position: relative;
+  }
+  .gallery-thumb:active{ transform: scale(0.95); }
+
+  /* ================= DISK PLAYER ================= */
+  .disk-player-wrap{
+    width: 100%;
+    margin-top: 12px;
+    padding: 10px 12px;
+    background: rgba(0, 0, 0, 0.55);
+    border: 1.5px solid rgba(232, 177, 60, 0.4);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.4);
+  }
+  .disk-container{
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+    cursor: pointer;
+    border: 2px solid var(--emas-terang);
+    box-shadow: 0 0 12px rgba(255, 209, 102, 0.3);
+    background: #111;
+    position: relative;
+    user-select: none;
+    -webkit-user-select: none;
+    transition: box-shadow 0.2s;
+  }
+  .disk-container:active{ box-shadow: 0 0 20px rgba(255, 209, 102, 0.6); }
+  .disk-img{
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;
+    animation: diskSpin 3.5s linear infinite;
+    animation-play-state: paused;
   }
-  .cc-banner-placeholder {
+  .disk-container.playing .disk-img{ animation-play-state: running; }
+  .disk-container.playing{ box-shadow: 0 0 18px rgba(255, 209, 102, 0.65); }
+  @keyframes diskSpin{
+    from{ transform: rotate(0deg); }
+    to{ transform: rotate(360deg); }
+  }
+  .disk-info{
+    flex: 1;
+    min-width: 0;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    color: rgba(255, 210, 63, 0.65);
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.6px;
-    text-transform: uppercase;
-    pointer-events: none;
+    gap: 2px;
   }
-  .cc-banner-placeholder svg {
-    width: 24px;
-    height: 24px;
-    fill: currentColor;
-    opacity: 0.85;
-  }
-  .cc-banner-actions {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    z-index: 3;
-  }
-  .cc-banner-pill-btn {
-    background: rgba(13, 15, 22, 0.82);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    border: 1px solid rgba(255, 210, 63, 0.45);
-    color: #ffd23f;
-    font-size: 9.5px;
-    font-weight: 800;
-    padding: 5px 9px;
-    border-radius: 8px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    transition: background 0.15s ease, transform 0.15s ease;
-  }
-  .cc-banner-pill-btn:hover {
-    background: rgba(255, 210, 63, 0.18);
-  }
-  .cc-banner-pill-btn:active {
-    transform: scale(0.94);
-  }
-  .cc-banner-pill-btn svg {
-    width: 12px;
-    height: 12px;
-    fill: currentColor;
-  }
-  .cc-banner-pill-btn.is-danger {
-    border-color: rgba(255, 45, 106, 0.5);
-    color: #ff2d6a;
-  }
-  .cc-banner-pill-btn.is-danger:hover {
-    background: rgba(255, 45, 106, 0.18);
-  }
-
-  .cc-profile-body {
-    padding: 0 24px 24px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 18px;
-  }
-
-  .cc-avatar-container {
-    position: relative;
-    width: 96px;
-    height: 96px;
-    margin-top: -48px;
-    z-index: 4;
-    border-radius: 50%;
-    border: 3px solid #ffd23f;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.65);
-    overflow: hidden;
-    background: #151824;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    -webkit-tap-highlight-color: transparent;
-  }
-  .cc-avatar-container img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .cc-avatar-container svg { width: 40px; height: 40px; fill: #ffd23f; }
-  .cc-avatar-overlay {
-    position: absolute; inset: 0; background: rgba(0,0,0,0.55);
-    display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.2s ease;
-  }
-  .cc-avatar-container:hover .cc-avatar-overlay { opacity: 1; }
-  .cc-avatar-overlay svg { width: 24px; height: 24px; fill: #fff; }
-
-  .cc-form-group { width: 100%; display: flex; flex-direction: column; gap: 8px; text-align: left; }
-  .cc-label { font-size: 11px; font-weight: 700; color: #a9b2c3; text-transform: uppercase; }
-  .cc-input {
-    width: 100%; background: #05060a; border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 12px; padding: 12px 16px; color: #fff; font-size: 13px; font-weight: 700; outline: none;
-  }
-  .cc-input:focus { border-color: #ffd23f; }
-
-  .cc-link-row {
-    display: flex; align-items: center; justify-content: space-between;
-    background: #05060a; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 10px 14px; width: 100%;
-  }
-  .cc-link-info { display: flex; flex-direction: column; gap: 2px; max-width: 190px; }
-  .cc-link-title { font-size: 12px; font-weight: 800; color: #fff; }
-  .cc-link-status { font-size: 10px; font-weight: 700; color: #29e0c9; }
-  .cc-link-email { font-size: 10px; color: #ffd23f; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-top: 2px; }
-
-  .cc-btn {
-    padding: 8px 14px; border-radius: 8px; font-weight: 800; font-size: 11px; cursor: pointer; border: none;
-    display: flex; align-items: center; justify-content: center; gap: 6px; text-decoration: none;
-    transition: transform 0.15s ease, opacity 0.15s ease;
-    -webkit-tap-highlight-color: transparent;
-  }
-  .cc-btn:active { transform: scale(0.96); }
-  .cc-btn-primary { width: 100%; padding: 12px; border-radius: 12px; font-size: 12px; background: #ffd23f; color: #0b1226; }
-  .cc-btn-action { background: rgba(41, 224, 201, 0.15); color: #29e0c9; border: 1px solid rgba(41, 224, 201, 0.4); }
-  .cc-btn-unbind { background: rgba(255, 45, 106, 0.15); color: #ff2d6a; border: 1px solid rgba(255, 45, 106, 0.4); display: none; }
-
-  /* ================= MODAL CROP AVATAR & BANNER ================= */
-  .cc-crop-modal {
-    position: fixed; inset: 0; z-index: 1000000; background: rgba(3,4,8,0.9); backdrop-filter: blur(8px);
-    display: flex; align-items: center; justify-content: center; padding: 20px; opacity: 0; visibility: hidden; transition: all 0.3s ease;
-  }
-  .cc-crop-modal.show { opacity: 1; visibility: visible; }
-  .cc-crop-box {
-    background: #0d0f16; border: 1px solid rgba(255,255,255,0.15); border-radius: 20px; padding: 20px; width: 100%; max-width: 380px;
-    display: flex; flex-direction: column; align-items: center; gap: 14px;
-  }
-  .cc-crop-title { font-weight: 800; font-size: 13px; color: #ffd23f; text-transform: uppercase; }
-  .cc-crop-hint { font-size: 10px; color: #a9b2c3; text-align: center; margin-top: -6px; }
-  .cc-canvas-wrap {
-    width: 260px; height: 260px; border: 2px dashed #29e0c9; border-radius: 12px; overflow: hidden; background: #000;
-    display: flex; align-items: center; justify-content: center;
-    touch-action: none;
-    cursor: grab;
-  }
-  .cc-canvas-wrap:active { cursor: grabbing; }
-  .cc-canvas-wrap.is-banner {
-    width: 320px;
-    height: 112px;
-  }
-  .cc-crop-actions { display: flex; gap: 10px; width: 100%; }
-
-  .cc-toast {
-    position: fixed; bottom: 88px; left: 50%; transform: translateX(-50%) translateY(20px);
-    background: rgba(13, 15, 22, 0.95); border: 1px solid #ffd23f; color: #ffd23f;
-    padding: 10px 20px; border-radius: 20px; font-size: 12px; font-weight: 800; z-index: 1000000; opacity: 0; visibility: hidden; transition: all 0.3s ease;
+  .disk-song-title{
+    font-family: 'FiraCondBold', sans-serif;
+    font-size: 0.85rem;
+    color: #fff;
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    letter-spacing: 0.3px;
   }
-  .cc-toast.show { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
+  .disk-song-status{
+    font-family: 'FiraCondBook', sans-serif;
+    font-size: 0.68rem;
+    color: #888;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .disk-container.playing ~ .disk-info .disk-song-status{ color: var(--emas-terang); }
 
-  /* ============================================================
-     ===== NAVBAR BAWAH BIASA (DEFAULT — SINKRON PENGATURAN) =====
-     ============================================================ */
-  .cc-bottom-nav {
-    position: fixed;
+  /* ================= EDIT MODE FORM ================= */
+  .edit-mode-content{ width: 100%; padding: 0 16px 16px 16px; display: none; flex-direction: column; }
+  body.edit-mode .view-mode-content{ display: none; }
+  body.edit-mode .edit-mode-content{ display: flex; }
+  .profile-form-group{ width: 100%; margin-bottom: 10px; display: flex; flex-direction: column; position: relative; }
+  .profile-label{ font-family: 'FiraCondBold', sans-serif; font-size: 0.75rem; color: var(--emas-terang); text-transform: uppercase; margin-bottom: 4px; display: flex; align-items: center; justify-content: space-between; }
+  .profile-label-hint{ font-family: 'FiraCondBook', sans-serif; font-size: 0.66rem; color: #888; text-transform: none; }
+  .profile-input{ width: 100%; height: 40px; background: #000; border: 1px solid rgba(232, 177, 60, 0.4); border-radius: 10px; color: #fff; padding: 0 12px; font-family: 'FiraCondBook', sans-serif; font-size: 0.95rem; outline: none; transition: border-color 0.2s; }
+  .profile-input:focus{ border-color: var(--emas-terang); box-shadow: 0 0 8px rgba(255, 209, 102, 0.25); }
+  .custom-select-container{ position: relative; width: 100%; user-select: none; -webkit-user-select: none; z-index: 30; }
+  .custom-select-trigger{ width: 100%; height: 42px; background: #000; border: 1px solid rgba(232, 177, 60, 0.45); border-radius: 10px; color: #fff; padding: 0 12px; font-family: 'FiraCondBook', sans-serif; font-size: 0.95rem; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s; touch-action: pan-y; }
+  .custom-select-trigger:focus, .custom-select-trigger.active{ border-color: var(--emas-terang); box-shadow: 0 0 10px rgba(255, 209, 102, 0.3); }
+  .custom-select-trigger.swiped{ transform: scale(0.985); border-color: var(--emas-terang); }
+  .custom-select-left{ display: flex; align-items: center; gap: 8px; }
+  .custom-select-dots{ display: flex; align-items: center; gap: 4px; }
+  .custom-select-dot{ width: 5px; height: 5px; border-radius: 50%; background: rgba(232, 177, 60, 0.3); transition: all 0.2s; }
+  .custom-select-dot.active{ width: 12px; border-radius: 4px; background: var(--emas-terang); }
+  .custom-select-icon{ width: 18px; height: 18px; fill: var(--emas-terang); transition: transform 0.3s ease; }
+  .custom-select-trigger.active .custom-select-icon{ transform: rotate(180deg); }
+  .custom-select-options{
+    position: absolute;
+    top: calc(100% + 6px);
     left: 0;
     right: 0;
-    bottom: 0;
-    z-index: 999999;
-    background: rgba(11, 13, 20, 0.94);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border-top: 1px solid rgba(255, 210, 63, 0.25);
-    padding-bottom: env(safe-area-inset-bottom, 0px);
-    box-shadow: 0 -6px 24px rgba(0, 0, 0, 0.55);
-  }
-  .cc-bottom-nav-inner {
-    width: 100%;
-    max-width: 540px;
-    margin: 0 auto;
-    height: 60px;
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    align-items: center;
-  }
-  .cc-bnav-item {
-    display: flex;
+    background: #0d120f;
+    border: 1.5px solid var(--emas-terang);
+    border-radius: 10px;
+    z-index: 150;
+    display: none;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-    height: 100%;
-    text-decoration: none;
-    color: #a9b2c3;
-    transition: color 0.18s ease, transform 0.15s ease;
-    -webkit-tap-highlight-color: transparent;
-  }
-  .cc-bnav-item svg {
-    width: 19px;
-    height: 19px;
-    fill: none;
-    stroke: currentColor;
-    stroke-width: 1.8;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-  }
-  .cc-bnav-item span {
-    font-size: 9.5px;
-    font-weight: 700;
-    letter-spacing: 0.2px;
-  }
-  .cc-bnav-item:hover,
-  .cc-bnav-item.is-active {
-    color: #ffd23f;
-  }
-  .cc-bnav-item:active {
-    transform: scale(0.92);
-  }
-
-  /* ============================================================
-     ===== FAB FAN MENU GOLD — REVOLVER RELOAD + DRAG SUPPORT =====
-     ============================================================ */
-  .cc-fab-stage {
-    position: fixed;
-    left: 50%;
-    bottom: env(safe-area-inset-bottom, 0px);
-    transform: translateX(-50%);
-    width: 200px;
-    height: 125px;
-    z-index: 999999;
-    pointer-events: none;
-    transition: filter 0.2s ease;
-  }
-  .cc-fab-stage.cc-fab-grabbable {
-    filter: drop-shadow(0 0 6px rgba(255, 210, 63, 0.45));
-  }
-
-  .cc-fab-dock {
-    position: absolute;
-    left: 50%;
-    bottom: -95px;
-    width: 190px;
-    height: 190px;
-    margin-left: -95px;
-    border-radius: 50%;
-    background: #0d0f16;
-    border: 1.5px solid rgba(255, 210, 63, 0.65);
-    box-shadow: 0 -6px 20px rgba(0,0,0,0.5), 0 0 12px rgba(255,210,63,0.1);
+    max-height: 165px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    touch-action: pan-y;
+    box-shadow: 0 10px 24px rgba(0,0,0,0.92);
     opacity: 0;
-    transform: scale(0.3) rotate(-180deg);
-    transform-origin: 50% 100%;
-    transition: transform 0.55s cubic-bezier(0.34, 1.2, 0.64, 1), opacity 0.3s ease;
-    pointer-events: none;
-    overflow: hidden;
+    transform: translateY(-8px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
   }
-  .cc-fab-stage.cc-fab-open .cc-fab-dock {
-    opacity: 1;
-    transform: scale(1) rotate(0deg);
-  }
-
-  .cc-fab-slice {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    width: 95px;
-    height: 95px;
-    transform-origin: 0% 0%;
-    pointer-events: none;
-  }
-  .cc-fab-slice[data-s="0"] { transform: rotate(-180deg) skewY(-45deg); background: rgba(255,210,63,0.06); }
-  .cc-fab-slice[data-s="1"] { transform: rotate(-135deg) skewY(-45deg); background: rgba(255,210,63,0.12); }
-  .cc-fab-slice[data-s="2"] { transform: rotate(-90deg)  skewY(-45deg); background: rgba(255,210,63,0.06); }
-  .cc-fab-slice[data-s="3"] { transform: rotate(-45deg)  skewY(-45deg); background: rgba(255,210,63,0.12); }
-
-  .cc-fab-slice-line {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    width: 1px;
-    height: 95px;
-    background: rgba(255,210,63,0.35);
-    transform-origin: 50% 0%;
-  }
-  .cc-fab-slice-line[data-l="0"] { transform: rotate(-180deg); }
-  .cc-fab-slice-line[data-l="1"] { transform: rotate(-135deg); }
-  .cc-fab-slice-line[data-l="2"] { transform: rotate(-90deg); }
-  .cc-fab-slice-line[data-l="3"] { transform: rotate(-45deg); }
-  .cc-fab-slice-line[data-l="4"] { transform: rotate(0deg); }
-
-  .cc-fab-main {
-    position: absolute;
-    left: 50%;
-    bottom: 10px;
-    width: 54px;
-    height: 54px;
-    margin-left: -27px;
-    border-radius: 50%;
-    background: #0d0f16;
-    border: 1px solid rgba(255, 210, 63, 0.55);
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
-    display: flex; align-items: center; justify-content: center;
+  .custom-select-options.show{ display: flex; opacity: 1; transform: translateY(0); }
+  .custom-select-option{
+    padding: 12px 14px;
+    color: #ddd;
+    font-family: 'FiraCondBook', sans-serif;
+    font-size: 0.95rem;
     cursor: pointer;
-    pointer-events: auto;
-    overflow: hidden;
-    z-index: 5;
-    touch-action: none;
-    transition:
-      transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
-      bottom 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
-      border-color 0.3s ease,
-      background 0.3s ease;
-    -webkit-tap-highlight-color: transparent;
+    border-bottom: 1px solid rgba(232, 177, 60, 0.15);
+    transition: background 0.2s, color 0.2s, padding-left 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
   }
-  .cc-fab-stage.cc-fab-open .cc-fab-main {
-    bottom: -6px;
-    background: #161822;
-    border-color: rgba(255, 210, 63, 0.4);
-    transform: rotate(360deg);
+  .custom-select-option:last-child{ border-bottom: none; }
+  .custom-select-option:hover, .custom-select-option.selected{ background: rgba(232, 177, 60, 0.2); color: var(--emas-terang); padding-left: 18px; }
+
+  .edit-owner-hint{
+    margin-top: 8px;
+    padding: 8px 10px;
+    border-radius: 9px;
+    background: rgba(232, 177, 60, 0.08);
+    border: 1px dashed rgba(232, 177, 60, 0.45);
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    font-size: 0.76rem;
+    color: #ddd;
+  }
+  .edit-owner-hint.visible{ display: flex; }
+  .edit-owner-hint-btn{
+    background: var(--emas-terang);
+    color: #000;
+    border: none;
+    border-radius: 6px;
+    padding: 5px 9px;
+    font-family: 'FiraCondBold', sans-serif;
+    font-size: 0.72rem;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
   }
 
-  .cc-fab-main:active { transform: scale(0.94) rotate(0deg); }
-  .cc-fab-stage.cc-fab-open .cc-fab-main:active { transform: scale(0.94) rotate(360deg); }
+  .edit-actions-row{ display: flex; gap: 8px; width: 100%; margin-top: 6px; }
+  .edit-actions-row button{ flex: 1; border: none; border-radius: 10px; padding: 12px; font-family: 'FiraCondBold', sans-serif; font-size: 0.9rem; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; }
+  .edit-actions-row button:active{ transform: scale(0.97); }
+  .profile-cancel-btn{ background: #222; color: #ccc; border: 1px solid #444 !important; }
+  .profile-cancel-btn:hover{ background: #333; color: #fff; }
+  .profile-save-btn{ background: var(--emas-terang); color: #000; box-shadow: 0 4px 12px rgba(255, 209, 102, 0.3); }
+  .profile-save-btn:hover{ box-shadow: 0 0 15px rgba(255, 209, 102, 0.5); }
 
-  .cc-fab-main .cc-fab-logo {
+  /* ================= NAV ================= */
+  .mbanking-bottom-nav{ position: fixed; bottom: 0; left: 0; right: 0; height: 64px; background: rgba(10, 14, 11, 0.96); border-top: 1px solid rgba(232, 177, 60, 0.3); display: grid; grid-template-columns: repeat(7, 1fr); z-index: 99999; backdrop-filter: blur(8px); }
+  .nav-item{ display: flex; flex-direction: column; align-items: center; justify-content: center; text-decoration: none; color: #888; font-family: 'FiraCondBold', sans-serif; font-size: 0.55rem; gap: 3px; padding: 4px 0; transition: color 0.2s; cursor: pointer; background: none; border: none; }
+  .nav-item img{ width: 20px; height: 20px; object-fit: contain; filter: grayscale(100%) opacity(0.6); transition: filter 0.2s; }
+  .nav-item.active, .nav-item:hover{ color: var(--emas-terang); }
+  .nav-item.active img, .nav-item:hover img{ filter: none; }
+
+  /* ================= MODALS ================= */
+  .popupBox{ position: fixed; inset: 0; background: rgba(0,0,0,0.88); display: none; justify-content: center; align-items: center; z-index: 999999; padding: 16px; }
+  .popupBox.active{ display: flex; }
+  .loading-gif{ width: 60px; height: 60px; object-fit: contain; filter: drop-shadow(0 0 10px rgba(255, 209, 102, 0.5)); }
+  .popupContent, .custom-modal-box{ display: flex; flex-direction: column; width: 100%; max-width: 344px; background: #0d120f; border: 2px solid var(--emas-terang); border-radius: 16px; padding: 18px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.85); }
+  .popupContent h2{ margin-top: 0; margin-bottom: 6px; font-family: 'FiraCondBold', sans-serif; color: var(--emas-terang); font-size: 1rem; letter-spacing: 0.4px; }
+
+  /* ================= OWNER CODE & PAYMENT MODAL ================= */
+  .owner-tabs{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    background: #060907;
+    padding: 4px;
+    border-radius: 10px;
+    border: 1px solid rgba(232, 177, 60, 0.3);
+    margin-bottom: 12px;
+  }
+  .owner-tab-btn{
+    border: none;
+    background: transparent;
+    color: #999;
+    font-family: 'FiraCondBold', sans-serif;
+    font-size: 0.78rem;
+    padding: 8px 6px;
+    border-radius: 7px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .owner-tab-btn.active{
+    background: var(--emas-terang);
+    color: #000;
+    box-shadow: 0 2px 8px rgba(255, 209, 102, 0.35);
+  }
+  .owner-paste-wrap{
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 8px;
+  }
+  .owner-paste-wrap .profile-input{
+    flex: 1;
+    text-align: center;
+    letter-spacing: 1.5px;
+    font-family: monospace;
+    font-size: 0.95rem;
+  }
+  .paste-code-btn{
+    height: 40px;
+    padding: 0 12px;
+    border-radius: 10px;
+    border: 1.5px solid var(--emas-terang);
+    background: rgba(232, 177, 60, 0.14);
+    color: var(--emas-terang);
+    font-family: 'FiraCondBold', sans-serif;
+    font-size: 0.78rem;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.2s, transform 0.15s;
+  }
+  .paste-code-btn:hover{ background: rgba(232, 177, 60, 0.28); }
+  .paste-code-btn:active{ transform: scale(0.95); }
+  .owner-modal-note{
+    font-size: 0.74rem;
+    color: #999;
+    line-height: 1.35;
+    margin-bottom: 14px;
+  }
+  .pay-box{
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(232, 177, 60, 0.4);
+    border-radius: 12px;
+    padding: 12px;
+    margin-bottom: 12px;
+    text-align: center;
+  }
+  .pay-price-pill{
+    display: inline-block;
+    background: rgba(232, 177, 60, 0.16);
+    border: 1px solid var(--emas-terang);
+    color: var(--emas-terang);
+    font-family: 'OswaldBold', sans-serif;
+    font-size: 1rem;
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 8px;
+    letter-spacing: 0.4px;
+  }
+  .pay-desc{
+    font-size: 0.8rem;
+    color: #ddd;
+    line-height: 1.4;
+    margin-bottom: 10px;
+  }
+  .pay-account-box{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #0b100d;
+    border: 1.5px dashed var(--emas-terang);
+    border-radius: 9px;
+    padding: 8px 10px;
+    gap: 8px;
+  }
+  .pay-account-num{
+    font-family: 'OswaldBold', sans-serif;
+    font-size: 1.15rem;
+    color: #fff;
+    letter-spacing: 1.2px;
+    user-select: all;
+  }
+  .pay-copy-btn{
+    background: var(--emas-terang);
+    color: #000;
+    border: none;
+    border-radius: 7px;
+    padding: 6px 10px;
+    font-family: 'FiraCondBold', sans-serif;
+    font-size: 0.75rem;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .pay-copy-btn:active{ transform: scale(0.95); }
+
+  /* ================= INTERACTIVE CROPPER ================= */
+  .crop-stage-wrap{
     width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    object-fit: cover;
-    object-position: center;
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 6px auto 12px auto;
+  }
+  .crop-viewport{
+    position: relative;
+    overflow: hidden;
+    background: #050706;
+    border: 2.5px solid var(--emas-terang);
+    box-shadow: 0 0 20px rgba(0,0,0,0.85), inset 0 0 0 1px rgba(255,255,255,0.08);
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+    cursor: grab;
+  }
+  .crop-viewport:active{ cursor: grabbing; }
+  .crop-viewport.mode-avatar{
+    width: 230px;
+    height: 230px;
+    border-radius: 14px;
+  }
+  .crop-viewport.mode-banner{
+    width: 300px;
+    height: 120px;
+    border-radius: 10px;
+  }
+  .crop-viewport img{
     position: absolute;
-    top: 0; left: 0;
-    transform: scale(1) rotate(0deg);
-    transition: opacity 0.2s ease, transform 0.35s ease;
+    top: 0;
+    left: 0;
+    max-width: none;
+    max-height: none;
+    transform-origin: 0 0;
     pointer-events: none;
+    user-select: none;
+    -webkit-user-select: none;
   }
-
-  .cc-fab-main .cc-fab-icon-close {
-    width: 20px;
-    height: 20px;
-    fill: none;
-    stroke: #ffd23f;
-    stroke-width: 1.4;
-    stroke-linecap: round;
-    stroke-linejoin: round;
+  .crop-circle-guide{
     position: absolute;
-    top: 50%; left: 50%;
-    opacity: 0;
-    transform: translate(-50%, -50%) scale(0.4) rotate(-90deg);
-    transition: opacity 0.2s ease, transform 0.35s ease;
+    inset: 0;
+    border-radius: 50%;
+    border: 2px dashed rgba(255, 209, 102, 0.85);
+    box-shadow: 0 0 0 999px rgba(0, 0, 0, 0.48);
+    pointer-events: none;
+    display: none;
   }
-
-  .cc-fab-stage.cc-fab-open .cc-fab-main .cc-fab-logo {
-    opacity: 0;
-    transform: scale(0.4) rotate(90deg);
-  }
-  .cc-fab-stage.cc-fab-open .cc-fab-main .cc-fab-icon-close {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1) rotate(0deg);
-  }
-
-  .cc-fab-item {
+  .crop-viewport.mode-avatar .crop-circle-guide{ display: block; }
+  .crop-grid-lines{
     position: absolute;
-    left: 50%;
-    bottom: 12px;
-    width: 38px;
-    height: 38px;
-    margin-left: -19px;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+      linear-gradient(to right, rgba(255,209,102,0.18) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255,209,102,0.18) 1px, transparent 1px);
+    background-size: 33.333% 33.333%;
+  }
+  .crop-zoom-row{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    margin-bottom: 14px;
+    padding: 0 2px;
+  }
+  .crop-zoom-btn{
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 1px solid rgba(232, 177, 60, 0.5);
+    background: #151c17;
+    color: var(--emas-terang);
+    font-family: 'FiraCondBold', sans-serif;
+    font-size: 1rem;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    flex-shrink: 0;
+  }
+  .crop-zoom-btn:active{ transform: scale(0.92); background: rgba(232,177,60,0.2); }
+  .crop-zoom-slider{
+    flex: 1;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 5px;
+    border-radius: 4px;
+    background: rgba(232, 177, 60, 0.25);
+    outline: none;
+  }
+  .crop-zoom-slider::-webkit-slider-thumb{
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--emas-terang);
+    border: 2px solid #0d120f;
+    cursor: pointer;
+    box-shadow: 0 0 8px rgba(255, 209, 102, 0.5);
+  }
+  .crop-zoom-slider::-moz-range-thumb{
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--emas-terang);
+    border: 2px solid #0d120f;
+    cursor: pointer;
+  }
+
+  .custom-modal-title{ font-family: 'FiraCondBold', sans-serif; font-size: 1.1rem; color: var(--emas-terang); margin-bottom: 8px; }
+  .custom-modal-msg{ font-size: 0.88rem; color: #ddd; margin-bottom: 12px; line-height: 1.4; white-space: pre-wrap; }
+  .custom-modal-btn{ width: 100%; padding: 10px; border-radius: 8px; font-family: 'FiraCondBold', sans-serif; font-size: 0.9rem; cursor: pointer; border: none; background: var(--emas-terang); color: #000; }
+
+  /* ================= FULL MEDIA LIGHTBOX (BANNER / AVATAR) ================= */
+  #mediaLightboxModal{ z-index: 999998; }
+  .media-lightbox-box{
+    position: relative;
+    width: 100%;
+    max-width: 440px;
+    background: #0d120f;
+    border: 2px solid var(--emas-terang);
+    border-radius: 16px;
+    padding: 14px;
     display: flex;
     flex-direction: column;
     align-items: center;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.92);
+  }
+  .media-lightbox-title{
+    font-family: 'FiraCondBold', sans-serif;
+    font-size: 0.88rem;
+    color: var(--emas-terang);
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .media-lightbox-img{
+    width: 100%;
+    max-height: 70vh;
+    object-fit: contain;
+    border-radius: 10px;
+    background: #000;
+    display: block;
+    border: 1px solid rgba(232, 177, 60, 0.3);
+  }
+
+  /* ================= GALLERY MODAL ================= */
+  #galleryModal{ z-index: 999998; }
+  .gallery-modal-box{
+    position: relative;
+    width: 100%;
+    max-width: 380px;
+    max-height: 88vh;
+    background: #0d120f;
+    border: 2px solid var(--emas-terang);
+    border-radius: 16px;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.9);
+  }
+  .gallery-full-img{
+    width: 100%;
+    max-height: 60vh;
+    object-fit: contain;
+    border-radius: 10px;
+    background: #000;
+    display: block;
+    border: 1px solid rgba(232, 177, 60, 0.25);
+  }
+  .gallery-close-btn{
+    position: absolute;
+    top: -12px;
+    right: -12px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--emas-terang);
+    border: 2px solid #0d120f;
+    color: #000;
+    font-size: 22px;
+    font-family: 'FiraCondBold', sans-serif;
+    line-height: 1;
+    cursor: pointer;
+    z-index: 5;
+    display: flex;
+    align-items: center;
     justify-content: center;
-    gap: 2px;
-    text-decoration: none;
-    opacity: 0;
-    pointer-events: none;
-    transform: translate(0px, 0px) scale(0.3) rotate(-90deg);
-    transition:
-      transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
-      opacity 0.25s ease;
-    z-index: 4;
+    padding: 0;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.6);
+    transition: transform 0.2s;
   }
-  .cc-fab-item svg {
-    width: 16px; height: 16px;
-    fill: none;
-    stroke: #ffd23f;
-    stroke-width: 1.4;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    filter: drop-shadow(0 2px 3px rgba(0,0,0,0.6));
+  .gallery-close-btn:hover{ transform: scale(1.1); }
+  .gallery-close-btn:active{ transform: scale(0.92); }
+  .gallery-nav{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 12px;
+    gap: 10px;
   }
-  .cc-fab-item span {
-    font-size: 7.5px;
-    font-weight: 700;
-    color: #ffd23f;
-    white-space: nowrap;
-    text-shadow: 0 2px 3px rgba(0,0,0,0.8);
+  .gallery-nav-btn{
+    background: var(--emas-terang);
+    color: #000;
+    border: none;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    font-size: 22px;
+    cursor: pointer;
+    font-family: 'FiraCondBold', sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+    padding: 0;
+    line-height: 1;
+    box-shadow: 0 2px 8px rgba(255, 209, 102, 0.35);
   }
-  .cc-fab-item.cc-fab-item-disabled svg,
-  .cc-fab-item.cc-fab-item-disabled span { stroke: #ffd23f; color: #ffd23f; }
-
-  .cc-fab-stage.cc-fab-open .cc-fab-item {
-    opacity: 1;
-    pointer-events: auto;
+  .gallery-nav-btn:hover{ transform: scale(1.08); box-shadow: 0 0 14px rgba(255, 209, 102, 0.55); }
+  .gallery-nav-btn:active{ transform: scale(0.92); }
+  .gallery-counter{
+    font-family: 'FiraCondBold', sans-serif;
+    font-size: 0.9rem;
+    color: var(--emas-terang);
+    letter-spacing: 0.8px;
   }
-
-  .cc-fab-item[data-i="0"] { transition-delay: 0.10s; }
-  .cc-fab-item[data-i="1"] { transition-delay: 0.22s; }
-  .cc-fab-item[data-i="2"] { transition-delay: 0.34s; }
-  .cc-fab-item[data-i="3"] { transition-delay: 0.46s; }
-
-  .cc-fab-stage.cc-fab-open .cc-fab-item[data-i="0"] { transform: translate(-54px, 20px) scale(1) rotate(0deg); }
-  .cc-fab-stage.cc-fab-open .cc-fab-item[data-i="1"] { transform: translate(-26px, -34px) scale(1) rotate(0deg); }
-  .cc-fab-stage.cc-fab-open .cc-fab-item[data-i="2"] { transform: translate(26px, -34px) scale(1) rotate(0deg); }
-  .cc-fab-stage.cc-fab-open .cc-fab-item[data-i="3"] { transform: translate(54px, 20px) scale(1) rotate(0deg); }
-
-  .cc-fab-backdrop {
-    position: fixed; inset: 0;
-    z-index: 999998;
-    background: rgba(3,4,8,0.4);
-    opacity: 0; visibility: hidden; pointer-events: none;
-    transition: opacity 0.3s ease, visibility 0.3s ease;
-  }
-  .cc-fab-backdrop.cc-fab-backdrop-show {
-    opacity: 1; visibility: visible; pointer-events: auto;
-  }
-
-  @media (min-width: 480px) {
-    .cc-nav { padding-left: 30px; padding-right: 30px; }
-    .cc-section { padding-left: 30px; padding-right: 30px; }
-  }
+  #bgMusic{ display: none; }
 </style>
 </head>
 <body>
 
-<div id="cc-container">
-  <div class="cc-bg bg-simple" id="cc-bg-element"></div>
-  <div class="cc-overlay bg-simple" id="cc-overlay-element"></div>
+  <div class="bg-layer" id="bg-layer-el"></div>
+  <div class="bg-dim" id="bg-dim-el"></div>
 
-  <!-- Sinkronisasi awal tema latar dari pengaturan.html (default: sederhana) -->
-  <script>
-    (function () {
-      var mode = localStorage.getItem('cc_bg_mode') || 'sederhana';
-      var bgEl = document.getElementById('cc-bg-element');
-      var overlayEl = document.getElementById('cc-overlay-element');
-      if (bgEl && overlayEl) {
-        if (mode === 'default' || mode === 'animated') {
-          bgEl.className = 'cc-bg bg-default';
-          overlayEl.className = 'cc-overlay bg-default';
-        } else {
-          bgEl.className = 'cc-bg bg-simple';
-          overlayEl.className = 'cc-overlay bg-simple';
-        }
-      }
-    })();
-  </script>
-
-  <div class="cc-nav">
-    <div class="cc-nav-inner">
-      <div class="cc-brand-wrap">
-        <div class="cc-brand-row cc-brand">
-          <img class="cc-img" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjgKAkQ6fTJOBPoOVz21klx2Vw6CXegaFe7QnvWoaDZTt1raufO5Ikvqu0JrP93QUf_iAcqVp8IkcTZjTx_e1mMqJENEYIpEjv-br9ApdDAeMiPcm8xoO-dFAmPJa-9y22yJdNme0Eb-EFxm-dS0Pd2UwUNu2cfB5pxS7KA7RP1JPKB-79xmqs5Vl9pSYHn/s1600/IMG_20260808_230713.png">
-          CO CENTER
-        </div>
-        <div class="cc-subtitle">Profil Pengguna</div>
+  <div class="mbanking-topbar" id="topbar-el">
+    <div class="mbanking-brand-container">
+      <div class="mbanking-brand">Delta <span>Comersia</span></div>
+      <div class="mbanking-greeting-top" id="topbarSubtitle">Pengaturan Akun</div>
+    </div>
+    <div style="display:flex; align-items:center; gap:8px;">
+      <div class="lang-toggle-pill" role="group" aria-label="Language Switcher">
+        <button type="button" class="lang-pill-btn" id="topLangId" onclick="setAppLanguage('id')">ID</button>
+        <button type="button" class="lang-pill-btn" id="topLangEs" onclick="setAppLanguage('es')">ES</button>
       </div>
-      <a class="cc-settings-badge" href="pengaturan.html">
-        <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.47l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.47l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
-        Pengaturan
+      <a href="index.html" class="back-home-btn" id="backHomeBtn" title="Kembali ke Beranda">
+        <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
       </a>
     </div>
   </div>
 
-  <div class="cc-main-shell">
-    <div class="cc-section">
-      <div class="cc-profile-box">
+  <div id="screen-profile">
+    <div class="profile-card-container">
 
-        <!-- BANNER PROFIL (KLIK UNTUK UPLOAD) -->
-        <div class="cc-banner-container" id="trigger-banner" title="Klik untuk ubah banner profil">
-          <div id="banner-preview-wrap" style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
-            <div class="cc-banner-placeholder">
-              <svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
-              <span>Upload Banner Profil</span>
-            </div>
+      <!-- ========== HERO ========== -->
+      <div class="hero-wrap">
+        <div class="hero-banner" id="profileBannerBox" onclick="handleBannerClick()">
+          <div class="banner-empty-state" id="bannerEmptyState">
+            <svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
+            <div class="banner-empty-title" id="bannerEmptyTitle">Belum Ada Banner</div>
+            <div class="banner-empty-sub" id="bannerEmptySub">Banner profil belum diatur</div>
           </div>
-
-          <div class="cc-banner-actions">
-            <button type="button" class="cc-banner-pill-btn" id="btn-change-banner">
-              <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
-              Banner
-            </button>
-            <button type="button" class="cc-banner-pill-btn is-danger" id="btn-remove-banner" style="display:none;" title="Hapus Banner">
-              Hapus
-            </button>
+          <img id="bannerPreviewImg" class="banner-preview-img" style="display:none;" alt="Banner">
+          <div class="banner-edit-badge">
+            <svg viewBox="0 0 24 24"><path d="M9 3L7.17 5H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2h-3.17L15 3H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/><circle cx="12" cy="13" r="3"/></svg>
+            <span id="bannerEditBadgeText">Ganti</span>
           </div>
-        </div>
-        <input type="file" id="input-banner-file" accept="image/*" style="display: none;">
-
-        <div class="cc-profile-body">
-          <div class="cc-avatar-container" id="trigger-file" title="Klik untuk ubah foto profil">
-            <div id="avatar-preview-wrap" style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
-              <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
-            </div>
-            <div class="cc-avatar-overlay">
-              <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
-            </div>
-          </div>
-          <input type="file" id="input-file" accept="image/*" style="display: none;">
-
-          <div class="cc-form-group">
-            <label class="cc-label">Nama Pengguna</label>
-            <input type="text" class="cc-input" id="input-username" placeholder="Masukkan nama Anda...">
-          </div>
-
-          <div class="cc-form-group">
-            <label class="cc-label">Integrasi Akun</label>
-            
-            <div class="cc-link-row">
-              <div class="cc-link-info">
-                <div class="cc-link-title">Google</div>
-                <div class="cc-link-status" id="google-status">Belum dikaitkan</div>
-                <div class="cc-link-email" id="google-account-email"></div>
-              </div>
-              <div style="display: flex; gap: 6px;">
-                <a class="cc-btn cc-btn-action" id="btn-link-google" href="login.html?type=google">Kaitkan</a>
-                <button class="cc-btn cc-btn-unbind" id="btn-unbind-google">Putuskan</button>
-              </div>
-            </div>
-
-            <div class="cc-link-row" style="margin-top: 8px;">
-              <div class="cc-link-info">
-                <div class="cc-link-title">Comérsio Akun</div>
-                <div class="cc-link-status" id="comersio-status">Belum dikaitkan</div>
-                <div class="cc-link-email" id="comersio-account-email"></div>
-              </div>
-              <div style="display: flex; gap: 6px;">
-                <a class="cc-btn cc-btn-action" id="btn-link-comersio" href="login.html?type=comersio">Kaitkan</a>
-                <button class="cc-btn cc-btn-unbind" id="btn-unbind-comersio">Putuskan</button>
-              </div>
-            </div>
-          </div>
-
-          <button class="cc-btn cc-btn-primary" id="btn-save-profile">Simpan Perubahan</button>
+          <button type="button" class="banner-remove-btn" id="bannerRemoveBtn" onclick="removeBanner(event)" title="Hapus Banner">
+            <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+          </button>
         </div>
 
+        <div class="hero-avatar-wrapper" id="avatarWrapper" onclick="handleAvatarClick()" title="Lihat Foto Profil">
+          <div class="hero-avatar" id="profileAvatarContainer">
+            <svg viewBox="0 0 24 24" id="defaultAvatarSvg">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
+            </svg>
+          </div>
+          <div class="avatar-badge-edit">📷</div>
+        </div>
+      </div>
+
+      <input type="file" id="bannerFileInput" accept="image/*" hidden onchange="handleBannerSelected(event)">
+      <input type="file" id="avatarFileInput" accept="image/*" hidden onchange="handleImageSelected(event)">
+
+      <!-- ========== VIEW MODE ========== -->
+      <div class="view-mode-content" id="viewModeContent">
+        <div class="view-username" id="viewUsername">-</div>
+        <div class="view-title-badge" id="viewTitle">-</div>
+        <div class="view-email" id="viewEmail">-</div>
+        <button type="button" class="profile-edit-btn" onclick="enterEditMode()">
+          <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1.003 1.003 0 0 0 0-1.42l-2.34-2.34a1.003 1.003 0 0 0-1.42 0l-1.83 1.83 3.75 3.75 1.84-1.82z"/></svg>
+          <span id="editProfileBtnText">Edit Profil</span>
+        </button>
+
+        <!-- ========== EMBEDDED OWNER CODE CARD (VIEW MODE) ========== -->
+        <div class="embedded-code-card" id="viewEmbeddedCodeCard">
+          <div class="embedded-code-top">
+            <span class="embedded-code-badge" id="viewEmbeddedCodeLabel">🔑 Kode Owner Tertanam</span>
+          </div>
+          <div class="embedded-code-row">
+            <span class="embedded-code-value" id="viewEmbeddedCodeValue">cocenter1</span>
+            <div class="embedded-code-actions">
+              <button type="button" class="code-mini-btn copy" id="viewCopyCodeBtn" onclick="copyEmbeddedOwnerCode(this)">Salin</button>
+              <button type="button" class="code-mini-btn delete" id="viewDeleteCodeBtn" onclick="deleteEmbeddedOwnerCode()">Hapus</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ========== LANGUAGE SELECTOR ========== -->
+        <div class="lang-card-row">
+          <div class="lang-card-label">
+            <span>🌐</span>
+            <span id="langCardLabelText">Bahasa</span>
+          </div>
+          <div class="lang-card-btns">
+            <button type="button" class="lang-choice-btn" id="cardLangId" onclick="setAppLanguage('id')">ID · Indonesia</button>
+            <button type="button" class="lang-choice-btn" id="cardLangEs" onclick="setAppLanguage('es')">ES · Español</button>
+          </div>
+        </div>
+
+        <!-- ========== GALLERY ========== -->
+        <div class="gallery-section">
+          <div class="gallery-header">
+            <svg viewBox="0 0 24 24" class="gallery-header-icon"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
+            <span id="galleryHeaderText">Galeri</span>
+          </div>
+          <div class="gallery-grid" id="galleryGrid"></div>
+        </div>
+
+        <!-- ========== DISK PLAYER ========== -->
+        <div class="disk-player-wrap">
+          <div class="disk-container" id="diskContainer" onclick="handleDiskClick()" title="Klik: Play/Pause · Double-click: Reset">
+            <img src="Disk.png" class="disk-img" alt="Disk" onerror="this.style.display='none';this.parentElement.innerHTML='<div style=&quot;width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#ffd166;font-size:22px;&quot;>💿</div>'">
+          </div>
+          <div class="disk-info">
+            <div class="disk-song-title">Shape of My Heart</div>
+            <div class="disk-song-status" id="diskStatus">▶ Ketuk untuk Play</div>
+          </div>
+        </div>
+
+        <audio id="bgMusic" src="shapeofmyhearts.mp3" preload="auto" loop></audio>
+      </div>
+
+      <!-- ========== EDIT MODE ========== -->
+      <div class="edit-mode-content" id="editModeContent">
+        <div class="profile-form-group">
+          <label class="profile-label" id="labelUsername">Nama Pengguna / Username:</label>
+          <input type="text" id="profileUsernameInput" class="profile-input" placeholder="Masukkan nama lu...">
+        </div>
+        <div class="profile-form-group">
+          <label class="profile-label" id="labelEmail">Email:</label>
+          <input type="email" id="profileEmailInput" class="profile-input" placeholder="Masukkan email lu...">
+        </div>
+        <div class="profile-form-group">
+          <label class="profile-label">
+            <span id="labelTitle">Jabatan / Gelar (Title):</span>
+            <span class="profile-label-hint" id="titleSwipeHint">⇆ Geser / Tap</span>
+          </label>
+          <div class="custom-select-container" id="titleSelectContainer">
+            <div class="custom-select-trigger" id="titleSelectTrigger" onclick="toggleCustomSelect()">
+              <div class="custom-select-left">
+                <span id="titleSelectDisplay">Staff</span>
+              </div>
+              <div style="display:flex; align-items:center; gap:8px;">
+                <div class="custom-select-dots" aria-hidden="true">
+                  <span class="custom-select-dot active" data-dot="Staff"></span>
+                  <span class="custom-select-dot" data-dot="Employee"></span>
+                  <span class="custom-select-dot" data-dot="Owner"></span>
+                </div>
+                <svg viewBox="0 0 24 24" class="custom-select-icon"><path d="M7 10l5 5 5-5z"/></svg>
+              </div>
+            </div>
+            <div class="custom-select-options" id="titleSelectOptions">
+              <div class="custom-select-option" onclick="selectTitle('Staff')"><span>Staff</span></div>
+              <div class="custom-select-option" onclick="selectTitle('Employee')"><span>Employee</span></div>
+              <div class="custom-select-option" onclick="selectTitle('Owner')"><span>Owner</span></div>
+            </div>
+          </div>
+          <input type="hidden" id="profileTitleInput" value="Staff">
+
+          <!-- Embedded Owner Code Box inside Edit Mode -->
+          <div class="embedded-code-card" id="editEmbeddedCodeCard">
+            <div class="embedded-code-top">
+              <span class="embedded-code-badge" id="editEmbeddedCodeLabel">✔ Kode Tertanam (1x Klik Simpan)</span>
+            </div>
+            <div class="embedded-code-row">
+              <span class="embedded-code-value" id="editEmbeddedCodeValue">cocenter1</span>
+              <div class="embedded-code-actions">
+                <button type="button" class="code-mini-btn copy" id="editCopyCodeBtn" onclick="copyEmbeddedOwnerCode(this)">Salin</button>
+                <button type="button" class="code-mini-btn delete" id="editDeleteCodeBtn" onclick="deleteEmbeddedOwnerCode()">Hapus</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Locked Owner Hint inside Edit Mode -->
+          <div class="edit-owner-hint" id="editOwnerLockedHint">
+            <span id="editOwnerHintText">🔒 Butuh Kode Owner (Paste / €1000 · Rp 20.112.500)</span>
+            <button type="button" class="edit-owner-hint-btn" id="editOwnerHintBtn" onclick="openOwnerAuthFromHint()">Akses Kode</button>
+          </div>
+        </div>
+        <div class="edit-actions-row">
+          <button type="button" class="profile-cancel-btn" id="cancelEditBtn" onclick="cancelEditMode()">Batal</button>
+          <button type="button" class="profile-save-btn" id="saveEditBtn" onclick="saveProfileData()">Simpan</button>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- MODAL CROPPER (MENDUKUNG AVATAR 1:1 & BANNER 16:5.6) -->
-  <div class="cc-crop-modal" id="crop-modal">
-    <div class="cc-crop-box">
-      <div class="cc-crop-title" id="crop-modal-title">Sesuaikan Foto (1:1)</div>
-      <div class="cc-crop-hint">Geser gambar untuk mengatur posisi</div>
-      <div class="cc-canvas-wrap" id="crop-canvas-wrap">
-        <canvas id="crop-canvas" width="240" height="240"></canvas>
+  <nav class="mbanking-bottom-nav" id="bottom-nav-el">
+      <a href="index.html" class="nav-item"><img src="icon.png" alt="Home"><span id="navHome">Home</span></a>
+      <a href="product.html" class="nav-item"><img src="voucher.png" alt="Produk"><span id="navProduct">Produk</span></a>
+      <a href="debt.html" class="nav-item"><img src="debt.png" alt="Utang"><span id="navDebt">Utang</span></a>
+      <a href="customer.html" class="nav-item"><img src="nama.png" alt="Customer"><span id="navCustomer">Customer</span></a>
+      <a href="recap.html" class="nav-item"><img src="rekap.png" alt="Rekap"><span id="navRecap">Rekap</span></a>
+      <a href="monthly.html" class="nav-item"><img src="pembukuan.png" alt="Laporan"><span id="navReport">Laporan</span></a>
+      <a href="profile.html" class="nav-item active">
+          <svg viewBox="0 0 24 24" style="width:20px; height:20px; fill:currentColor; filter:none;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+          <span id="navProfile">Profil</span>
+      </a>
+  </nav>
+
+  <div id="loadingOverlay" class="popupBox" style="background: rgba(0,0,0,0.6);">
+    <img src="loading.webp" class="loading-gif" alt="Loading...">
+  </div>
+
+  <!-- ========== INTERACTIVE CROP MODAL (AVATAR 1:1 & BANNER 2.5:1) ========== -->
+  <div id="cropModalOverlay" class="popupBox">
+    <div class="popupContent">
+      <h2 id="cropModalTitle">CROP FOTO 1:1</h2>
+      <div id="cropModalDesc" style="font-size:0.75rem; color:#aaa; margin-bottom:8px;">Geser & zoom gambar untuk mengatur posisi crop.</div>
+      <div class="crop-stage-wrap">
+        <div class="crop-viewport mode-avatar" id="cropViewport">
+          <img id="cropTargetImg" src="" alt="Crop Preview" draggable="false">
+          <div class="crop-grid-lines"></div>
+          <div class="crop-circle-guide"></div>
+        </div>
       </div>
-      <div class="cc-crop-actions">
-        <button class="cc-btn" id="btn-cancel-crop" style="background:rgba(255,255,255,0.1); color:#fff; width:100%;">Batal</button>
-        <button class="cc-btn cc-btn-primary" id="btn-apply-crop" style="width:100%;">Gunakan Gambar</button>
+      <div class="crop-zoom-row">
+        <button type="button" class="crop-zoom-btn" onclick="stepCropZoom(-0.15)" aria-label="Zoom Out">−</button>
+        <input type="range" id="cropZoomSlider" class="crop-zoom-slider" min="1" max="3.5" step="0.01" value="1" oninput="onCropSliderInput(this.value)">
+        <button type="button" class="crop-zoom-btn" onclick="stepCropZoom(0.15)" aria-label="Zoom In">+</button>
+      </div>
+      <div style="display:flex; gap:8px;">
+        <button type="button" class="profile-save-btn" id="cropConfirmBtn" onclick="confirmCrop()" style="margin:0; flex:1; padding:12px; border:none; border-radius:10px; font-family:'FiraCondBold',sans-serif; cursor:pointer;">Gunakan</button>
+        <button type="button" class="profile-cancel-btn" id="cropCancelBtn" onclick="closeCropModal()" style="margin:0; flex:1; padding:12px; border-radius:10px; font-family:'FiraCondBold',sans-serif; cursor:pointer;">Batal</button>
       </div>
     </div>
   </div>
 
-  <div class="cc-toast" id="cc-toast">Profil berhasil disimpan!</div>
-
-</div>
-
-<!-- ===== NAVBAR BAWAH BIASA (DEFAULT — SINKRON PENGATURAN.HTML) ===== -->
-<nav class="cc-bottom-nav" id="cc-bottom-nav">
-  <div class="cc-bottom-nav-inner">
-    <a class="cc-bnav-item" href="index.html">
-      <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-      <span>Menu</span>
-    </a>
-
-    <a class="cc-bnav-item" href="https://lynk.id/cocenter" target="_blank" rel="noopener">
-      <svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
-      <span>Lynk.id</span>
-    </a>
-
-    <a class="cc-bnav-item" href="transaksi.html">
-      <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/></svg>
-      <span>Transaksi</span>
-    </a>
-
-    <div class="cc-bnav-item is-active" title="Kamu sedang di halaman ini">
-      <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-      <span>Profile</span>
+  <div id="customModalOverlay" class="popupBox">
+    <div class="custom-modal-box">
+      <div class="custom-modal-title" id="customModalTitle">Informasi</div>
+      <div class="custom-modal-msg" id="customModalMsg">Pesan...</div>
+      <button type="button" class="custom-modal-btn" id="customModalOkBtn" onclick="closeCustomModal()">OK</button>
     </div>
   </div>
-</nav>
 
-<!-- ===== BACKDROP FAB ===== -->
-<div class="cc-fab-backdrop" id="cc-fab-backdrop" style="display:none;"></div>
+  <!-- ========== OWNER AUTHORIZATION MODAL (PASTE CODE OR PAY €1000 / Rp 20.112.500) ========== -->
+  <div id="passwordModalOverlay" class="popupBox">
+    <div class="custom-modal-box">
+      <div class="custom-modal-title" id="pwdModalTitle">Otorisasi Owner</div>
 
-<!-- ===== FAB FAN MENU GOLD (OPSI 2 — SINKRON PENGATURAN.HTML) ===== -->
-<div class="cc-fab-stage" id="cc-fab-stage" style="display:none;">
+      <div class="owner-tabs" role="tablist">
+        <button type="button" class="owner-tab-btn active" id="ownerTabPaste" onclick="switchOwnerModalTab('paste')">🔑 Paste Kode</button>
+        <button type="button" class="owner-tab-btn" id="ownerTabPay" onclick="switchOwnerModalTab('pay')">💳 Bayar (€1000 / Rp 20.112.500)</button>
+      </div>
 
-  <div class="cc-fab-dock">
-    <div class="cc-fab-slice" data-s="0"></div>
-    <div class="cc-fab-slice" data-s="1"></div>
-    <div class="cc-fab-slice" data-s="2"></div>
-    <div class="cc-fab-slice" data-s="3"></div>
-    <div class="cc-fab-slice-line" data-l="0"></div>
-    <div class="cc-fab-slice-line" data-l="1"></div>
-    <div class="cc-fab-slice-line" data-l="2"></div>
-    <div class="cc-fab-slice-line" data-l="3"></div>
-    <div class="cc-fab-slice-line" data-l="4"></div>
+      <!-- TAB 1: PASTE / INPUT CODE -->
+      <div id="ownerPanelPaste">
+        <div class="custom-modal-msg" id="pwdModalMsg">Masukkan atau paste kode akses untuk mengaktifkan & menanamkan status Owner.</div>
+        <div class="owner-paste-wrap">
+          <input type="text" id="ownerPasswordInput" class="profile-input" placeholder="Paste kode akses..." autocomplete="off">
+          <button type="button" class="paste-code-btn" id="pasteCodeBtn" onclick="pasteOwnerCodeFromClipboard()">📋 Paste</button>
+        </div>
+        <div class="owner-modal-note" id="ownerPasteNote">Sekali berhasil, kode otomatis tertanam (1x klik ke depannya) dan bisa disalin atau dihapus kapan saja.</div>
+        <div style="display:flex; gap:8px;">
+          <button type="button" class="custom-modal-btn" id="pwdConfirmBtn" onclick="submitPassword()" style="background:var(--hijau-terang); color:#000;">Konfirmasi</button>
+          <button type="button" class="custom-modal-btn" id="pwdCancelBtn" onclick="cancelPassword()" style="background:#2a2a2a; color:#fff;">Batal</button>
+        </div>
+      </div>
+
+      <!-- TAB 2: PAYMENT (€1000 OR Rp 20.112.500 TO 1491102140) -->
+      <div id="ownerPanelPay" style="display:none;">
+        <div class="pay-box">
+          <div class="pay-price-pill" id="payPricePill">€1000 / Rp 20.112.500</div>
+          <div class="pay-desc" id="payTransferDesc">Untuk mendapatkan kode akses Owner, silakan transfer sebesar <b>€1000</b> atau <b>Rp 20.112.500</b> ke nomor rekening / tujuan berikut:</div>
+          <div class="pay-account-box">
+            <span class="pay-account-num" id="payAccountNumber">1491102140</span>
+            <button type="button" class="pay-copy-btn" id="payCopyAccountBtn" onclick="copyTransferAccount(this)">Salin</button>
+          </div>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <button type="button" class="custom-modal-btn" id="payGoPasteBtn" onclick="switchOwnerModalTab('paste')">Sudah Transfer? Paste Kode →</button>
+          <button type="button" class="custom-modal-btn" id="payCloseBtn" onclick="cancelPassword()" style="background:#2a2a2a; color:#fff;">Tutup</button>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <a class="cc-fab-item" data-i="0" href="index.html">
-    <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-    <span>Menu</span>
-  </a>
-
-  <a class="cc-fab-item" data-i="1" href="https://lynk.id/cocenter" target="_blank" rel="noopener">
-    <svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
-    <span>Lynk.id</span>
-  </a>
-
-  <a class="cc-fab-item" data-i="2" href="transaksi.html">
-    <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/></svg>
-    <span>Transaksi</span>
-  </a>
-
-  <div class="cc-fab-item cc-fab-item-disabled" data-i="3" title="Kamu sedang di halaman ini">
-    <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-    <span>Profile</span>
+  <!-- ========== FULL BANNER / AVATAR LIGHTBOX MODAL ========== -->
+  <div id="mediaLightboxModal" class="popupBox">
+    <div class="media-lightbox-box">
+      <button type="button" class="gallery-close-btn" id="mediaCloseBtn" onclick="closeMediaPreview()" title="Tutup">×</button>
+      <div class="media-lightbox-title" id="mediaLightboxTitle">Foto Profil</div>
+      <img id="mediaLightboxImg" class="media-lightbox-img" src="" alt="Full Preview">
+    </div>
   </div>
 
-  <div class="cc-fab-main" id="cc-fab-main">
-    <img class="cc-fab-logo" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjgKAkQ6fTJOBPoOVz21klx2Vw6CXegaFe7QnvWoaDZTt1raufO5Ikvqu0JrP93QUf_iAcqVp8IkcTZjTx_e1mMqJENEYIpEjv-br9ApdDAeMiPcm8xoO-dFAmPJa-9y22yJdNme0Eb-EFxm-dS0Pd2UwUNu2cfB5pxS7KA7RP1JPKB-79xmqs5Vl9pSYHn/s1600/IMG_20260808_230713.png" alt="Co Center">
-
-    <svg class="cc-fab-icon-close" viewBox="0 0 24 24">
-      <line x1="6" y1="6" x2="18" y2="18"/>
-      <line x1="18" y1="6" x2="6" y2="18"/>
-    </svg>
+  <!-- ========== GALLERY MODAL ========== -->
+  <div id="galleryModal" class="popupBox">
+    <div class="gallery-modal-box">
+      <button type="button" class="gallery-close-btn" id="galleryCloseBtn" onclick="closeGallery()" title="Tutup">×</button>
+      <img id="galleryFullImg" class="gallery-full-img" src="" alt="Gallery Preview">
+      <div class="gallery-nav">
+        <button type="button" class="gallery-nav-btn" id="galleryPrevBtn" onclick="prevGallery()" title="Sebelumnya">‹</button>
+        <span class="gallery-counter" id="galleryCounter">1 / 10</span>
+        <button type="button" class="gallery-nav-btn" id="galleryNextBtn" onclick="nextGallery()" title="Selanjutnya">›</button>
+      </div>
+    </div>
   </div>
-</div>
 
-<!-- Sinkronisasi awal gaya navigasi (Navbar Biasa default vs FAB) tanpa flicker -->
-<script>
-  (function () {
-    var navMode = localStorage.getItem('cc_nav_mode') || 'navbar';
-    var bNav = document.getElementById('cc-bottom-nav');
-    var fStage = document.getElementById('cc-fab-stage');
-    var fBack = document.getElementById('cc-fab-backdrop');
-    if (navMode === 'fab') {
-      if (bNav) bNav.style.display = 'none';
-      if (fStage) fStage.style.display = 'block';
-      if (fBack) fBack.style.display = 'block';
-    } else {
-      if (bNav) bNav.style.display = 'block';
-      if (fStage) fStage.style.display = 'none';
-      if (fBack) fBack.style.display = 'none';
-    }
-  })();
-</script>
+  <script>
+    /* ============================================================
+       ========== CONSTANTS & LANGUAGE SYSTEM (ID / ES) ==========
+       ============================================================ */
+    const LANG_STORAGE_KEY = "comersio_lang";
+    const OWNER_CODE_KEY = "owner_access_code";
+    const VALID_OWNER_CODE = "cocenter1";
+    const TRANSFER_ACCOUNT_NUM = "1491102140";
+    const TITLE_OPTIONS = ["Staff", "Employee", "Owner"];
 
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-
-  // ================= 1. SINKRONISASI BACKGROUND (PENGATURAN.HTML) =================
-  var bgEl = document.getElementById('cc-bg-element');
-  var overlayEl = document.getElementById('cc-overlay-element');
-
-  function syncBackground() {
-    var bgMode = localStorage.getItem('cc_bg_mode') || 'sederhana';
-    if (bgEl && overlayEl) {
-      if (bgMode === 'default' || bgMode === 'animated') {
-        bgEl.className = 'cc-bg bg-default';
-        overlayEl.className = 'cc-overlay bg-default';
-      } else {
-        bgEl.className = 'cc-bg bg-simple';
-        overlayEl.className = 'cc-overlay bg-simple';
+    const I18N = {
+      id: {
+        page_title: "Pengaturan Profile - Delta Comersia",
+        topbar_subtitle: "Pengaturan Akun",
+        back_home_title: "Kembali ke Beranda",
+        banner_empty_title_view: "Belum Ada Banner",
+        banner_empty_sub_view: "Banner profil belum diatur",
+        banner_empty_title_edit: "Upload Banner Profil",
+        banner_empty_sub_edit: "Ketuk untuk pilih gambar (crop bebas 2.5:1)",
+        banner_change: "Ganti",
+        banner_remove_title: "Hapus Banner",
+        banner_view_title: "Lihat Banner Profil",
+        avatar_change_title: "Ganti Foto Profil",
+        avatar_view_title: "Lihat Foto Profil",
+        media_banner_label: "Banner Profil",
+        media_avatar_label: "Foto Profil",
+        not_set: "Belum diatur",
+        edit_profile: "Edit Profil",
+        lang_label: "Bahasa",
+        gallery_header: "Galeri",
+        disk_tooltip: "Klik: Play/Pause · Double-click: Reset",
+        disk_idle: "▶ Ketuk untuk Play",
+        disk_playing: "♫ Memutar...",
+        disk_paused: "⏸ Dijeda",
+        disk_reset: "⏮ Lagu di-reset · Ketuk untuk Play",
+        disk_error: "⚠ Gagal memutar audio",
+        label_username: "Nama Pengguna / Username:",
+        placeholder_username: "Masukkan nama lu...",
+        label_email: "Email:",
+        placeholder_email: "Masukkan email lu...",
+        label_title: "Jabatan / Gelar (Title):",
+        title_swipe_hint: "⇆ Geser / Tap",
+        btn_cancel: "Batal",
+        btn_save: "Simpan",
+        nav_home: "Home",
+        nav_product: "Produk",
+        nav_debt: "Utang",
+        nav_customer: "Customer",
+        nav_recap: "Rekap",
+        nav_report: "Laporan",
+        nav_profile: "Profil",
+        crop_avatar_title: "CROP FOTO PROFIL (1:1)",
+        crop_avatar_desc: "Geser & zoom gambar untuk atur posisi crop bulat 1:1.",
+        crop_banner_title: "CROP BANNER PROFIL (2.5:1)",
+        crop_banner_desc: "Geser & zoom gambar untuk atur area banner 2.5:1.",
+        crop_use: "Gunakan",
+        crop_cancel: "Batal",
+        modal_info_title: "Informasi",
+        modal_ok: "OK",
+        pwd_title: "Otorisasi Owner",
+        owner_tab_paste: "🔑 Paste Kode",
+        owner_tab_pay: "💳 Bayar (€1000 / Rp 20.112.500)",
+        pwd_msg: "Masukkan atau paste kode akses untuk mengaktifkan & menanamkan status Owner.",
+        pwd_placeholder: "Paste kode akses...",
+        paste_btn: "📋 Paste",
+        owner_paste_note: "Sekali berhasil, kode otomatis tertanam (1x klik ke depannya) dan bisa disalin atau dihapus kapan saja.",
+        pwd_confirm: "Konfirmasi",
+        pwd_cancel: "Batal",
+        pay_price_pill: "€1000 / Rp 20.112.500",
+        pay_transfer_desc: "Untuk mendapatkan kode akses Owner, silakan transfer sebesar <b>€1000</b> atau <b>Rp 20.112.500</b> ke nomor tujuan berikut:",
+        pay_go_paste: "Sudah Transfer? Paste Kode →",
+        pay_close: "Tutup",
+        copy_btn: "Salin",
+        copied_btn: "✔ Tersalin",
+        delete_btn: "Hapus",
+        embedded_code_view_label: "🔑 Kode Owner Tertanam",
+        embedded_code_edit_label: "✔ Kode Tertanam (1x Klik Simpan)",
+        edit_owner_hint_text: "🔒 Butuh Kode Owner (Paste / €1000 · Rp 20.112.500)",
+        edit_owner_hint_btn: "Akses Kode",
+        paste_fallback_msg: "Clipboard diblokir browser—silakan tempel (Paste) manual di kotak kode.",
+        code_deleted_title: "Kode Dihapus",
+        code_deleted_msg: "Kode Owner yang tertanam berhasil dihapus.",
+        gallery_close: "Tutup",
+        gallery_prev: "Sebelumnya",
+        gallery_next: "Selanjutnya",
+        alert_warn_title: "Peringatan",
+        alert_empty_user: "Nama pengguna tidak boleh kosong!",
+        alert_empty_email: "Email wajib diisi coy! Kalo kaga ga bisa di save.",
+        alert_denied_title: "Akses Ditolak",
+        alert_wrong_pwd: "Kode salah! Lu bukan Owner asli ya 🤨",
+        alert_success_title: "Berhasil",
+        alert_saved: "Profil berhasil diperbarui!"
+      },
+      es: {
+        page_title: "Configuración de Perfil - Delta Comersia",
+        topbar_subtitle: "Configuración de Cuenta",
+        back_home_title: "Volver al Inicio",
+        banner_empty_title_view: "Sin Banner",
+        banner_empty_sub_view: "El banner de perfil aún no está configurado",
+        banner_empty_title_edit: "Subir Banner de Perfil",
+        banner_empty_sub_edit: "Toca para elegir imagen (recorte libre 2.5:1)",
+        banner_change: "Cambiar",
+        banner_remove_title: "Eliminar Banner",
+        banner_view_title: "Ver Banner de Perfil",
+        avatar_change_title: "Cambiar Foto de Perfil",
+        avatar_view_title: "Ver Foto de Perfil",
+        media_banner_label: "Banner de Perfil",
+        media_avatar_label: "Foto de Perfil",
+        not_set: "No configurado",
+        edit_profile: "Editar Perfil",
+        lang_label: "Idioma",
+        gallery_header: "Galería",
+        disk_tooltip: "Clic: Reproducir/Pausar · Doble clic: Reiniciar",
+        disk_idle: "▶ Toca para Reproducir",
+        disk_playing: "♫ Reproduciendo...",
+        disk_paused: "⏸ En pausa",
+        disk_reset: "⏮ Canción reiniciada · Toca para Reproducir",
+        disk_error: "⚠ Error al reproducir audio",
+        label_username: "Nombre de Usuario:",
+        placeholder_username: "Ingresa tu nombre...",
+        label_email: "Correo Electrónico:",
+        placeholder_email: "Ingresa tu correo...",
+        label_title: "Cargo / Título:",
+        title_swipe_hint: "⇆ Desliza / Toca",
+        btn_cancel: "Cancelar",
+        btn_save: "Guardar",
+        nav_home: "Inicio",
+        nav_product: "Productos",
+        nav_debt: "Deudas",
+        nav_customer: "Clientes",
+        nav_recap: "Resumen",
+        nav_report: "Reportes",
+        nav_profile: "Perfil",
+        crop_avatar_title: "RECORTAR FOTO DE PERFIL (1:1)",
+        crop_avatar_desc: "Arrastra y haz zoom para ajustar el recorte circular 1:1.",
+        crop_banner_title: "RECORTAR BANNER DE PERFIL (2.5:1)",
+        crop_banner_desc: "Arrastra y haz zoom para ajustar el área del banner 2.5:1.",
+        crop_use: "Usar",
+        crop_cancel: "Cancelar",
+        modal_info_title: "Información",
+        modal_ok: "Aceptar",
+        pwd_title: "Autorización de Owner",
+        owner_tab_paste: "🔑 Pegar Código",
+        owner_tab_pay: "💳 Pagar (€1000 / Rp 20.112.500)",
+        pwd_msg: "Ingresa o pega el código de acceso para activar y vincular el estado de Owner.",
+        pwd_placeholder: "Pega el código de acceso...",
+        paste_btn: "📋 Pegar",
+        owner_paste_note: "Una vez activado, el código queda guardado (1 clic en el futuro) y puedes copiarlo o eliminarlo cuando quieras.",
+        pwd_confirm: "Confirmar",
+        pwd_cancel: "Cancelar",
+        pay_price_pill: "€1000 / Rp 20.112.500",
+        pay_transfer_desc: "Para obtener el código de acceso de Owner, transfiere <b>€1000</b> o <b>Rp 20.112.500</b> al siguiente número:",
+        pay_go_paste: "¿Ya transferiste? Pegar Código →",
+        pay_close: "Cerrar",
+        copy_btn: "Copiar",
+        copied_btn: "✔ Copiado",
+        delete_btn: "Eliminar",
+        embedded_code_view_label: "🔑 Código Owner Vinculado",
+        embedded_code_edit_label: "✔ Código Vinculado (1 Clic Guardar)",
+        edit_owner_hint_text: "🔒 Requiere Código Owner (Pegar / €1000 · Rp 20.112.500)",
+        edit_owner_hint_btn: "Obtener Código",
+        paste_fallback_msg: "El navegador bloqueó el portapapeles; pega el código manualmente en el campo.",
+        code_deleted_title: "Código Eliminado",
+        code_deleted_msg: "El código de Owner vinculado ha sido eliminado.",
+        gallery_close: "Cerrar",
+        gallery_prev: "Anterior",
+        gallery_next: "Siguiente",
+        alert_warn_title: "Advertencia",
+        alert_empty_user: "¡El nombre de usuario no puede estar vacío!",
+        alert_empty_email: "¡El correo electrónico es obligatorio! Sin eso no se puede guardar.",
+        alert_denied_title: "Acceso Denegado",
+        alert_wrong_pwd: "¡Código incorrecto! No eres el Owner real 🤨",
+        alert_success_title: "Éxito",
+        alert_saved: "¡Perfil actualizado correctamente!"
       }
-    }
-  }
-  syncBackground();
-
-  // ================= 2. SINKRONISASI NAVIGASI BAWAH (NAVBAR VS FAB) =================
-  var bottomNavEl = document.getElementById('cc-bottom-nav');
-  var fabStage = document.getElementById('cc-fab-stage');
-  var fabMain = document.getElementById('cc-fab-main');
-  var fabBackdrop = document.getElementById('cc-fab-backdrop');
-
-  var savedPosBeforeOpen = null;
-  var DRAG_THRESHOLD = 8;
-  var dragState = {
-    active: false, hasMoved: false, isMovable: false,
-    startX: 0, startY: 0, startLeft: 0, startTop: 0, pointerId: null
-  };
-
-  function getNavMode() {
-    return localStorage.getItem('cc_nav_mode') === 'fab' ? 'fab' : 'navbar';
-  }
-
-  function isFabMovable() {
-    return localStorage.getItem('cc_fab_movable') === 'true';
-  }
-
-  function updateFabVisualState() {
-    if (!fabStage) return;
-    if (isFabMovable()) fabStage.classList.add('cc-fab-grabbable');
-    else fabStage.classList.remove('cc-fab-grabbable');
-  }
-
-  function applySavedFabPosition() {
-    if (!fabStage || !isFabMovable()) return;
-    var savedPos = localStorage.getItem('cc_fab_position');
-    if (!savedPos) return;
-    try {
-      var pos = JSON.parse(savedPos);
-      if (typeof pos.left === 'number' && typeof pos.top === 'number') {
-        var maxLeft = Math.max(0, window.innerWidth - fabStage.offsetWidth);
-        var maxTop = Math.max(0, window.innerHeight - fabStage.offsetHeight);
-        var clampedLeft = Math.max(0, Math.min(maxLeft, pos.left));
-        var clampedTop = Math.max(0, Math.min(maxTop, pos.top));
-        fabStage.style.left = clampedLeft + 'px';
-        fabStage.style.top = clampedTop + 'px';
-        fabStage.style.bottom = 'auto';
-        fabStage.style.transform = 'none';
-      }
-    } catch(e) {}
-  }
-
-  function resetFabPosition() {
-    if (!fabStage) return;
-    fabStage.style.left = '';
-    fabStage.style.top = '';
-    fabStage.style.bottom = '';
-    fabStage.style.transform = '';
-  }
-
-  function openFab() {
-    if (!fabStage || !fabBackdrop) return;
-    if (isFabMovable()) {
-      var rect = fabStage.getBoundingClientRect();
-      savedPosBeforeOpen = { left: rect.left, top: rect.top };
-      fabStage.style.left = '';
-      fabStage.style.top = '';
-      fabStage.style.bottom = '';
-      fabStage.style.transform = '';
-    }
-    fabStage.classList.add('cc-fab-open');
-    fabBackdrop.classList.add('cc-fab-backdrop-show');
-  }
-
-  function closeFab() {
-    if (!fabStage || !fabBackdrop) return;
-    fabStage.classList.remove('cc-fab-open');
-    fabBackdrop.classList.remove('cc-fab-backdrop-show');
-    if (isFabMovable() && savedPosBeforeOpen) {
-      fabStage.style.left = savedPosBeforeOpen.left + 'px';
-      fabStage.style.top = savedPosBeforeOpen.top + 'px';
-      fabStage.style.bottom = 'auto';
-      fabStage.style.transform = 'none';
-      savedPosBeforeOpen = null;
-    }
-  }
-
-  function syncNavModeFromStorage() {
-    var mode = getNavMode();
-    if (mode === 'fab') {
-      if (bottomNavEl) bottomNavEl.style.display = 'none';
-      if (fabStage) fabStage.style.display = 'block';
-      if (fabBackdrop) fabBackdrop.style.display = 'block';
-      updateFabVisualState();
-      if (!isFabMovable()) resetFabPosition();
-      else applySavedFabPosition();
-    } else {
-      closeFab();
-      if (fabStage) fabStage.style.display = 'none';
-      if (fabBackdrop) fabBackdrop.style.display = 'none';
-      if (bottomNavEl) bottomNavEl.style.display = 'block';
-    }
-  }
-
-  if (fabBackdrop) fabBackdrop.addEventListener('click', closeFab);
-
-  document.querySelectorAll('.cc-fab-item').forEach(function (item) {
-    item.addEventListener('click', function () {
-      closeFab();
-    });
-  });
-
-  if (fabMain) {
-    fabMain.addEventListener('pointerdown', function(e) {
-      e.preventDefault();
-      e.stopPropagation();
-      dragState.active = true;
-      dragState.hasMoved = false;
-      dragState.pointerId = e.pointerId;
-      dragState.isMovable = isFabMovable() && !fabStage.classList.contains('cc-fab-open');
-      dragState.startX = e.clientX;
-      dragState.startY = e.clientY;
-      var rect = fabStage.getBoundingClientRect();
-      dragState.startLeft = rect.left;
-      dragState.startTop = rect.top;
-      try { fabMain.setPointerCapture(e.pointerId); } catch(err) {}
-    });
-
-    fabMain.addEventListener('pointermove', function(e) {
-      if (!dragState.active || !dragState.isMovable) return;
-      var dx = e.clientX - dragState.startX;
-      var dy = e.clientY - dragState.startY;
-      if (!dragState.hasMoved) {
-        if (Math.abs(dx) < DRAG_THRESHOLD && Math.abs(dy) < DRAG_THRESHOLD) return;
-        dragState.hasMoved = true;
-      }
-      var newLeft = dragState.startLeft + dx;
-      var newTop = dragState.startTop + dy;
-      var maxLeft = window.innerWidth - fabStage.offsetWidth;
-      var maxTop = window.innerHeight - fabStage.offsetHeight;
-      newLeft = Math.max(0, Math.min(maxLeft, newLeft));
-      newTop = Math.max(0, Math.min(maxTop, newTop));
-      fabStage.style.left = newLeft + 'px';
-      fabStage.style.top = newTop + 'px';
-      fabStage.style.bottom = 'auto';
-      fabStage.style.transform = 'none';
-    });
-
-    fabMain.addEventListener('pointerup', function(e) {
-      if (!dragState.active) return;
-      dragState.active = false;
-      try { fabMain.releasePointerCapture(e.pointerId); } catch(err) {}
-      if (dragState.hasMoved) {
-        var rect = fabStage.getBoundingClientRect();
-        localStorage.setItem('cc_fab_position', JSON.stringify({ left: rect.left, top: rect.top }));
-      } else {
-        if (fabStage.classList.contains('cc-fab-open')) closeFab();
-        else openFab();
-      }
-    });
-
-    fabMain.addEventListener('pointercancel', function() {
-      dragState.active = false;
-    });
-  }
-
-  syncNavModeFromStorage();
-
-  // ================= 3. DATA PROFIL, AVATAR & BANNER =================
-  var googleFetchedName = localStorage.getItem('cc_temp_google_name');
-  var googleFetchedAvatar = localStorage.getItem('cc_temp_google_avatar');
-  if (googleFetchedName) {
-    localStorage.setItem('cc_user_name', googleFetchedName);
-    localStorage.setItem('cc_google_linked', 'true');
-    localStorage.removeItem('cc_temp_google_name');
-  }
-  if (googleFetchedAvatar) {
-    localStorage.setItem('cc_user_avatar', googleFetchedAvatar);
-    localStorage.removeItem('cc_temp_google_avatar');
-  }
-
-  var inputUsername = document.getElementById('input-username');
-  var avatarPreviewWrap = document.getElementById('avatar-preview-wrap');
-  var bannerPreviewWrap = document.getElementById('banner-preview-wrap');
-  var btnRemoveBanner = document.getElementById('btn-remove-banner');
-  var toast = document.getElementById('cc-toast');
-
-  var DEFAULT_AVATAR_SVG = '<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>';
-  var DEFAULT_BANNER_HTML = '<div class="cc-banner-placeholder"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg><span>Upload Banner Profil</span></div>';
-
-  var savedName = localStorage.getItem('cc_user_name') || '';
-  var savedAvatar = localStorage.getItem('cc_user_avatar') || '';
-  var savedBanner = localStorage.getItem('cc_user_banner') || '';
-  var isGoogleLinked = localStorage.getItem('cc_google_linked') === 'true';
-  var isComersioLinked = localStorage.getItem('cc_comersio_linked') === 'true';
-  
-  var googleEmail = localStorage.getItem('cc_google_email') || 'Akun Google Terkait';
-  var comersioEmail = localStorage.getItem('cc_comersio_email') || '';
-
-  function renderAvatar(src) {
-    if (!avatarPreviewWrap) return;
-    if (src && src.trim() !== '') {
-      avatarPreviewWrap.innerHTML = '<img src="' + src + '" alt="Avatar">';
-    } else {
-      avatarPreviewWrap.innerHTML = DEFAULT_AVATAR_SVG;
-    }
-  }
-
-  function renderBanner(src) {
-    if (!bannerPreviewWrap) return;
-    if (src && src.trim() !== '') {
-      bannerPreviewWrap.innerHTML = '<img src="' + src + '" alt="Banner Profil">';
-      if (btnRemoveBanner) btnRemoveBanner.style.display = 'flex';
-    } else {
-      bannerPreviewWrap.innerHTML = DEFAULT_BANNER_HTML;
-      if (btnRemoveBanner) btnRemoveBanner.style.display = 'none';
-    }
-  }
-
-  if (inputUsername) inputUsername.value = savedName;
-  renderAvatar(savedAvatar);
-  renderBanner(savedBanner);
-
-  var btnG = document.getElementById('btn-link-google');
-  var btnUnbindG = document.getElementById('btn-unbind-google');
-  if (isGoogleLinked) {
-    document.getElementById('google-status').textContent = 'Terkait';
-    document.getElementById('google-status').style.color = '#29e0c9';
-    document.getElementById('google-account-email').textContent = googleEmail;
-    btnG.style.display = 'none';
-    btnUnbindG.style.display = 'flex';
-  } else {
-    document.getElementById('google-status').textContent = 'Belum dikaitkan';
-    document.getElementById('google-status').style.color = '#a9b2c3';
-    document.getElementById('google-account-email').textContent = '';
-    btnG.style.display = 'flex';
-    btnUnbindG.style.display = 'none';
-  }
-
-  var btnC = document.getElementById('btn-link-comersio');
-  var btnUnbindC = document.getElementById('btn-unbind-comersio');
-  if (isComersioLinked) {
-    document.getElementById('comersio-status').textContent = 'Terkait';
-    document.getElementById('comersio-status').style.color = '#29e0c9';
-    document.getElementById('comersio-account-email').textContent = comersioEmail;
-    btnC.style.display = 'none';
-    btnUnbindC.style.display = 'flex';
-  } else {
-    document.getElementById('comersio-status').textContent = 'Belum dikaitkan';
-    document.getElementById('comersio-status').style.color = '#a9b2c3';
-    document.getElementById('comersio-account-email').textContent = '';
-    btnC.style.display = 'flex';
-    btnUnbindC.style.display = 'none';
-  }
-
-  function showToast(msg) {
-    if (!toast) return;
-    toast.textContent = msg;
-    toast.classList.add('show');
-    setTimeout(function() { toast.classList.remove('show'); }, 2500);
-  }
-
-  btnUnbindG.addEventListener('click', function() {
-    localStorage.removeItem('cc_google_linked');
-    localStorage.removeItem('cc_google_email');
-    showToast('Akun Google berhasil diputuskan!');
-    setTimeout(function() { location.reload(); }, 1000);
-  });
-
-  btnUnbindC.addEventListener('click', function() {
-    localStorage.removeItem('cc_comersio_linked');
-    localStorage.removeItem('cc_comersio_email');
-    showToast('Comérsio Akun berhasil diputuskan!');
-    setTimeout(function() { location.reload(); }, 1000);
-  });
-
-  // ================= 4. CROPPER LOGIC (AVATAR 1:1 & BANNER) =================
-  var triggerFile = document.getElementById('trigger-file');
-  var inputFile = document.getElementById('input-file');
-  var triggerBanner = document.getElementById('trigger-banner');
-  var btnChangeBanner = document.getElementById('btn-change-banner');
-  var inputBannerFile = document.getElementById('input-banner-file');
-
-  var cropModal = document.getElementById('crop-modal');
-  var cropModalTitle = document.getElementById('crop-modal-title');
-  var cropCanvasWrap = document.getElementById('crop-canvas-wrap');
-  var cropCanvas = document.getElementById('crop-canvas');
-  var ctx = cropCanvas.getContext('2d');
-
-  var currentCropTarget = 'avatar'; // 'avatar' | 'banner'
-  var imgObj = new Image();
-  var imgX = 0, imgY = 0, imgScale = 1;
-  var finalCroppedAvatar = '';
-  var finalCroppedBanner = '';
-  var bannerRemovedFlag = false;
-
-  // Drag pan di dalam canvas cropper
-  var cropDrag = { active: false, startX: 0, startY: 0, origX: 0, origY: 0 };
-
-  function drawCropCanvas() {
-    var cw = cropCanvas.width;
-    var ch = cropCanvas.height;
-    var drawW = imgObj.width * imgScale;
-    var drawH = imgObj.height * imgScale;
-
-    // Batasi posisi agar tidak keluar area kosong
-    imgX = Math.min(0, Math.max(cw - drawW, imgX));
-    imgY = Math.min(0, Math.max(ch - drawH, imgY));
-
-    ctx.clearRect(0, 0, cw, ch);
-    ctx.drawImage(imgObj, imgX, imgY, drawW, drawH);
-  }
-
-  function openImageCropper(file, targetType) {
-    if (!file) return;
-    currentCropTarget = targetType;
-
-    if (targetType === 'banner') {
-      cropModalTitle.textContent = 'Sesuaikan Banner Profil';
-      cropCanvasWrap.classList.add('is-banner');
-      cropCanvas.width = 640;
-      cropCanvas.height = 224;
-    } else {
-      cropModalTitle.textContent = 'Sesuaikan Foto (1:1)';
-      cropCanvasWrap.classList.remove('is-banner');
-      cropCanvas.width = 240;
-      cropCanvas.height = 240;
-    }
-
-    var reader = new FileReader();
-    reader.onload = function(evt) {
-      imgObj.onload = function() {
-        var cw = cropCanvas.width;
-        var ch = cropCanvas.height;
-        var scaleX = cw / imgObj.width;
-        var scaleY = ch / imgObj.height;
-        imgScale = Math.max(scaleX, scaleY);
-        imgX = (cw - (imgObj.width * imgScale)) / 2;
-        imgY = (ch - (imgObj.height * imgScale)) / 2;
-        drawCropCanvas();
-        cropModal.classList.add('show');
-      };
-      imgObj.src = evt.target.result;
     };
-    reader.readAsDataURL(file);
-  }
 
-  cropCanvasWrap.addEventListener('pointerdown', function(e) {
-    cropDrag.active = true;
-    cropDrag.startX = e.clientX;
-    cropDrag.startY = e.clientY;
-    cropDrag.origX = imgX;
-    cropDrag.origY = imgY;
-    try { cropCanvasWrap.setPointerCapture(e.pointerId); } catch(err) {}
-  });
+    let currentDiskState = "idle";
+    let activeCropMode = "avatar";
 
-  cropCanvasWrap.addEventListener('pointermove', function(e) {
-    if (!cropDrag.active) return;
-    var ratioX = cropCanvas.width / cropCanvasWrap.clientWidth;
-    var ratioY = cropCanvas.height / cropCanvasWrap.clientHeight;
-    imgX = cropDrag.origX + (e.clientX - cropDrag.startX) * ratioX;
-    imgY = cropDrag.origY + (e.clientY - cropDrag.startY) * ratioY;
-    drawCropCanvas();
-  });
+    function getCurrentLang() {
+      const saved = (localStorage.getItem(LANG_STORAGE_KEY) || "id").toLowerCase();
+      return saved === "es" ? "es" : "id";
+    }
 
-  cropCanvasWrap.addEventListener('pointerup', function(e) {
-    cropDrag.active = false;
-    try { cropCanvasWrap.releasePointerCapture(e.pointerId); } catch(err) {}
-  });
+    function t(key) {
+      const lang = getCurrentLang();
+      return (I18N[lang] && I18N[lang][key]) || I18N.id[key] || key;
+    }
 
-  cropCanvasWrap.addEventListener('pointercancel', function() {
-    cropDrag.active = false;
-  });
+    function setAppLanguage(lang) {
+      const normalized = lang === "es" ? "es" : "id";
+      localStorage.setItem(LANG_STORAGE_KEY, normalized);
+      applyLanguage();
+      loadProfileState();
+    }
 
-  // Trigger Avatar
-  if (triggerFile && inputFile) {
-    triggerFile.addEventListener('click', function() { inputFile.click(); });
-    inputFile.addEventListener('change', function(e) {
-      if (e.target.files && e.target.files[0]) {
-        openImageCropper(e.target.files[0], 'avatar');
+    function applyLanguage() {
+      const lang = getCurrentLang();
+      document.documentElement.lang = lang;
+      document.title = t("page_title");
+
+      document.getElementById("topLangId").classList.toggle("active", lang === "id");
+      document.getElementById("topLangEs").classList.toggle("active", lang === "es");
+      document.getElementById("cardLangId").classList.toggle("active", lang === "id");
+      document.getElementById("cardLangEs").classList.toggle("active", lang === "es");
+
+      document.getElementById("topbarSubtitle").innerText = t("topbar_subtitle");
+      document.getElementById("backHomeBtn").title = t("back_home_title");
+      document.getElementById("bannerEditBadgeText").innerText = t("banner_change");
+      document.getElementById("bannerRemoveBtn").title = t("banner_remove_title");
+      updateHeroTooltips();
+      updateBannerEmptyText();
+
+      document.getElementById("editProfileBtnText").innerText = t("edit_profile");
+      document.getElementById("langCardLabelText").innerText = t("lang_label");
+      document.getElementById("galleryHeaderText").innerText = t("gallery_header");
+
+      // Embedded Owner Code UI
+      document.getElementById("viewEmbeddedCodeLabel").innerText = t("embedded_code_view_label");
+      document.getElementById("editEmbeddedCodeLabel").innerText = t("embedded_code_edit_label");
+      document.getElementById("viewCopyCodeBtn").innerText = t("copy_btn");
+      document.getElementById("editCopyCodeBtn").innerText = t("copy_btn");
+      document.getElementById("viewDeleteCodeBtn").innerText = t("delete_btn");
+      document.getElementById("editDeleteCodeBtn").innerText = t("delete_btn");
+      document.getElementById("editOwnerHintText").innerText = t("edit_owner_hint_text");
+      document.getElementById("editOwnerHintBtn").innerText = t("edit_owner_hint_btn");
+
+      document.getElementById("diskContainer").title = t("disk_tooltip");
+      updateDiskStatusText();
+
+      document.getElementById("labelUsername").innerText = t("label_username");
+      document.getElementById("profileUsernameInput").placeholder = t("placeholder_username");
+      document.getElementById("labelEmail").innerText = t("label_email");
+      document.getElementById("profileEmailInput").placeholder = t("placeholder_email");
+      document.getElementById("labelTitle").innerText = t("label_title");
+      document.getElementById("titleSwipeHint").innerText = t("title_swipe_hint");
+      document.getElementById("cancelEditBtn").innerText = t("btn_cancel");
+      document.getElementById("saveEditBtn").innerText = t("btn_save");
+
+      document.getElementById("navHome").innerText = t("nav_home");
+      document.getElementById("navProduct").innerText = t("nav_product");
+      document.getElementById("navDebt").innerText = t("nav_debt");
+      document.getElementById("navCustomer").innerText = t("nav_customer");
+      document.getElementById("navRecap").innerText = t("nav_recap");
+      document.getElementById("navReport").innerText = t("nav_report");
+      document.getElementById("navProfile").innerText = t("nav_profile");
+
+      updateCropModalTexts();
+      document.getElementById("cropConfirmBtn").innerText = t("crop_use");
+      document.getElementById("cropCancelBtn").innerText = t("crop_cancel");
+      document.getElementById("customModalOkBtn").innerText = t("modal_ok");
+
+      // Owner Modal
+      document.getElementById("pwdModalTitle").innerText = t("pwd_title");
+      document.getElementById("ownerTabPaste").innerText = t("owner_tab_paste");
+      document.getElementById("ownerTabPay").innerText = t("owner_tab_pay");
+      document.getElementById("pwdModalMsg").innerText = t("pwd_msg");
+      document.getElementById("ownerPasswordInput").placeholder = t("pwd_placeholder");
+      document.getElementById("pasteCodeBtn").innerText = t("paste_btn");
+      document.getElementById("ownerPasteNote").innerText = t("owner_paste_note");
+      document.getElementById("pwdConfirmBtn").innerText = t("pwd_confirm");
+      document.getElementById("pwdCancelBtn").innerText = t("pwd_cancel");
+      document.getElementById("payPricePill").innerText = t("pay_price_pill");
+      document.getElementById("payTransferDesc").innerHTML = t("pay_transfer_desc");
+      document.getElementById("payCopyAccountBtn").innerText = t("copy_btn");
+      document.getElementById("payGoPasteBtn").innerText = t("pay_go_paste");
+      document.getElementById("payCloseBtn").innerText = t("pay_close");
+
+      document.getElementById("mediaCloseBtn").title = t("gallery_close");
+      document.getElementById("galleryCloseBtn").title = t("gallery_close");
+      document.getElementById("galleryPrevBtn").title = t("gallery_prev");
+      document.getElementById("galleryNextBtn").title = t("gallery_next");
+    }
+
+    function updateCropModalTexts() {
+      if (activeCropMode === "banner") {
+        document.getElementById("cropModalTitle").innerText = t("crop_banner_title");
+        document.getElementById("cropModalDesc").innerText = t("crop_banner_desc");
+      } else {
+        document.getElementById("cropModalTitle").innerText = t("crop_avatar_title");
+        document.getElementById("cropModalDesc").innerText = t("crop_avatar_desc");
+      }
+    }
+
+    function updateHeroTooltips() {
+      const isEdit = document.body.classList.contains("edit-mode");
+      const avatarWrap = document.getElementById("avatarWrapper");
+      const bannerBox = document.getElementById("profileBannerBox");
+      if (isEdit) {
+        avatarWrap.title = t("avatar_change_title");
+        bannerBox.title = t("banner_empty_title_edit");
+      } else {
+        avatarWrap.title = savedAvatarBase64 ? t("avatar_view_title") : "";
+        bannerBox.title = savedBannerBase64 ? t("banner_view_title") : "";
+      }
+    }
+
+    function updateDiskStatusText() {
+      const status = document.getElementById("diskStatus");
+      if (!status) return;
+      const map = {
+        idle: "disk_idle",
+        playing: "disk_playing",
+        paused: "disk_paused",
+        reset: "disk_reset",
+        error: "disk_error"
+      };
+      status.textContent = t(map[currentDiskState] || "disk_idle");
+    }
+
+    window.addEventListener("storage", function(e) {
+      if (e.key === LANG_STORAGE_KEY || e.key === OWNER_CODE_KEY) {
+        applyLanguage();
+        loadProfileState();
       }
     });
-  }
 
-  // Trigger Banner
-  if (triggerBanner && inputBannerFile) {
-    triggerBanner.addEventListener('click', function(e) {
-      if (btnRemoveBanner && btnRemoveBanner.contains(e.target)) return;
-      inputBannerFile.click();
-    });
-    if (btnChangeBanner) {
-      btnChangeBanner.addEventListener('click', function(e) {
-        e.stopPropagation();
-        inputBannerFile.click();
+    let tempCroppedBase64 = "";
+    let tempBannerBase64 = "";
+    let savedAvatarBase64 = "";
+    let savedBannerBase64 = "";
+    let bannerRemoved = false;
+
+    /* ============================================================
+       ========== EMBEDDED OWNER CODE MANAGEMENT ==========
+       ============================================================ */
+    function isOwnerCodeEmbedded() {
+      return localStorage.getItem(OWNER_CODE_KEY) === VALID_OWNER_CODE;
+    }
+
+    function syncOwnerCodeUI() {
+      const embedded = isOwnerCodeEmbedded();
+      const codeVal = localStorage.getItem(OWNER_CODE_KEY) || VALID_OWNER_CODE;
+      const selectedTitle = document.getElementById("profileTitleInput").value;
+
+      // View mode card
+      const viewCard = document.getElementById("viewEmbeddedCodeCard");
+      document.getElementById("viewEmbeddedCodeValue").innerText = codeVal;
+      viewCard.classList.toggle("visible", embedded);
+
+      // Edit mode cards (only relevant when Owner is selected)
+      const editCard = document.getElementById("editEmbeddedCodeCard");
+      const editHint = document.getElementById("editOwnerLockedHint");
+      document.getElementById("editEmbeddedCodeValue").innerText = codeVal;
+
+      if (selectedTitle === "Owner") {
+        editCard.classList.toggle("visible", embedded);
+        editHint.classList.toggle("visible", !embedded);
+      } else {
+        editCard.classList.remove("visible");
+        editHint.classList.remove("visible");
+      }
+    }
+
+    async function copyTextWithFallback(text) {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        try {
+          await navigator.clipboard.writeText(text);
+          return true;
+        } catch (e) {}
+      }
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      ta.style.position = "fixed";
+      ta.style.opacity = "0";
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      let ok = false;
+      try {
+        ok = document.execCommand("copy");
+      } catch (e) {}
+      document.body.removeChild(ta);
+      return ok;
+    }
+
+    async function copyEmbeddedOwnerCode(btnEl) {
+      const code = localStorage.getItem(OWNER_CODE_KEY) || VALID_OWNER_CODE;
+      await copyTextWithFallback(code);
+      if (btnEl) {
+        const orig = t("copy_btn");
+        btnEl.innerText = t("copied_btn");
+        setTimeout(() => { btnEl.innerText = orig; }, 1500);
+      }
+    }
+
+    async function copyTransferAccount(btnEl) {
+      await copyTextWithFallback(TRANSFER_ACCOUNT_NUM);
+      if (btnEl) {
+        const orig = t("copy_btn");
+        btnEl.innerText = t("copied_btn");
+        setTimeout(() => { btnEl.innerText = orig; }, 1500);
+      }
+    }
+
+    async function deleteEmbeddedOwnerCode() {
+      localStorage.removeItem(OWNER_CODE_KEY);
+
+      // If active title was Owner ✔, revert it to Staff • since the embedded code was deleted
+      const currentSavedTitle = localStorage.getItem("title") || "";
+      if (currentSavedTitle.includes("Owner")) {
+        localStorage.setItem("title", "Staff •");
+      }
+      if (document.getElementById("profileTitleInput").value === "Owner") {
+        selectTitle("Staff");
+      }
+
+      loadProfileState();
+      await showCustomAlert(t("code_deleted_msg"), t("code_deleted_title"));
+    }
+
+    async function openOwnerAuthFromHint() {
+      const authorized = await showPasswordPrompt();
+      if (authorized) {
+        syncOwnerCodeUI();
+      }
+    }
+
+    /* ========== DROPDOWN & SWIPEABLE TITLE ========== */
+    let suppressNextTriggerClick = false;
+
+    function openCustomSelect() {
+      const trigger = document.getElementById("titleSelectTrigger");
+      const options = document.getElementById("titleSelectOptions");
+      trigger.classList.add("active");
+      options.classList.add("show");
+      requestAnimationFrame(() => {
+        options.style.opacity = "1";
+        options.style.transform = "translateY(0)";
+        const screen = document.getElementById("screen-profile");
+        if (screen) {
+          screen.scrollTo({ top: screen.scrollHeight, behavior: "smooth" });
+        }
       });
     }
-    inputBannerFile.addEventListener('change', function(e) {
-      if (e.target.files && e.target.files[0]) {
-        openImageCropper(e.target.files[0], 'banner');
+
+    function closeCustomSelect() {
+      const trigger = document.getElementById("titleSelectTrigger");
+      const options = document.getElementById("titleSelectOptions");
+      trigger.classList.remove("active");
+      if (options.classList.contains("show")) {
+        options.style.opacity = "0";
+        options.style.transform = "translateY(-8px)";
+        setTimeout(() => options.classList.remove("show"), 200);
+      }
+    }
+
+    function toggleCustomSelect() {
+      if (suppressNextTriggerClick) {
+        suppressNextTriggerClick = false;
+        return;
+      }
+      const options = document.getElementById("titleSelectOptions");
+      if (options.classList.contains("show")) {
+        closeCustomSelect();
+      } else {
+        openCustomSelect();
+      }
+    }
+
+    function selectTitle(value) {
+      document.getElementById("profileTitleInput").value = value;
+      document.getElementById("titleSelectDisplay").innerText = value;
+      const opts = document.querySelectorAll(".custom-select-option");
+      opts.forEach(opt => {
+        const label = opt.innerText.trim();
+        if (label === value) opt.classList.add("selected");
+        else opt.classList.remove("selected");
+      });
+      const dots = document.querySelectorAll(".custom-select-dot");
+      dots.forEach(dot => {
+        dot.classList.toggle("active", dot.getAttribute("data-dot") === value);
+      });
+      closeCustomSelect();
+      syncOwnerCodeUI();
+    }
+
+    function cycleTitleByStep(step) {
+      const currentVal = document.getElementById("profileTitleInput").value || "Staff";
+      const idx = TITLE_OPTIONS.indexOf(currentVal);
+      const safeIdx = idx >= 0 ? idx : 0;
+      const nextIdx = (safeIdx + step + TITLE_OPTIONS.length) % TITLE_OPTIONS.length;
+      selectTitle(TITLE_OPTIONS[nextIdx]);
+
+      const trigger = document.getElementById("titleSelectTrigger");
+      trigger.classList.add("swiped");
+      setTimeout(() => trigger.classList.remove("swiped"), 160);
+    }
+
+    (function initTitleSwipe() {
+      const trigger = document.getElementById("titleSelectTrigger");
+      if (!trigger) return;
+      let startX = 0;
+      let startY = 0;
+      let tracking = false;
+
+      trigger.addEventListener("touchstart", function(e) {
+        if (e.touches.length !== 1) return;
+        startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+        tracking = true;
+      }, { passive: true });
+
+      trigger.addEventListener("touchend", function(e) {
+        if (!tracking || e.changedTouches.length !== 1) return;
+        tracking = false;
+        const dx = e.changedTouches[0].clientX - startX;
+        const dy = e.changedTouches[0].clientY - startY;
+        if (Math.abs(dx) > 28 && Math.abs(dx) > Math.abs(dy)) {
+          suppressNextTriggerClick = true;
+          cycleTitleByStep(dx < 0 ? 1 : -1);
+          setTimeout(() => { suppressNextTriggerClick = false; }, 320);
+        }
+      }, { passive: true });
+    })();
+
+    document.addEventListener("click", function(e) {
+      const container = document.querySelector(".custom-select-container");
+      if (container && !container.contains(e.target)) {
+        closeCustomSelect();
       }
     });
-  }
 
-  // Hapus Banner
-  if (btnRemoveBanner) {
-    btnRemoveBanner.addEventListener('click', function(e) {
-      e.stopPropagation();
-      finalCroppedBanner = '';
-      bannerRemovedFlag = true;
-      localStorage.removeItem('cc_user_banner');
-      renderBanner('');
-      showToast('Banner profil dihapus!');
+    /* ========== ALERTS & OWNER AUTH MODAL ========== */
+    function showCustomAlert(message, title = null) {
+      return new Promise((resolve) => {
+        document.getElementById("customModalTitle").innerText = title || t("modal_info_title");
+        document.getElementById("customModalMsg").innerText = message;
+        document.getElementById("customModalOverlay").classList.add("active");
+        window.modalResolve = resolve;
+      });
+    }
+    function closeCustomModal() {
+      document.getElementById("customModalOverlay").classList.remove("active");
+      if(window.modalResolve) window.modalResolve();
+    }
+
+    function switchOwnerModalTab(tab) {
+      const isPaste = tab === "paste";
+      document.getElementById("ownerTabPaste").classList.toggle("active", isPaste);
+      document.getElementById("ownerTabPay").classList.toggle("active", !isPaste);
+      document.getElementById("ownerPanelPaste").style.display = isPaste ? "block" : "none";
+      document.getElementById("ownerPanelPay").style.display = isPaste ? "none" : "block";
+      if (isPaste) {
+        setTimeout(() => document.getElementById("ownerPasswordInput").focus(), 60);
+      }
+    }
+
+    async function pasteOwnerCodeFromClipboard() {
+      const input = document.getElementById("ownerPasswordInput");
+      if (navigator.clipboard && navigator.clipboard.readText) {
+        try {
+          const clipText = await navigator.clipboard.readText();
+          if (clipText && clipText.trim()) {
+            input.value = clipText.trim();
+            input.focus();
+            return;
+          }
+        } catch (e) {}
+      }
+      input.focus();
+      document.getElementById("ownerPasteNote").innerText = t("paste_fallback_msg");
+    }
+
+    function showPasswordPrompt() {
+      return new Promise((resolve) => {
+        document.getElementById("ownerPasswordInput").value = "";
+        document.getElementById("ownerPasteNote").innerText = t("owner_paste_note");
+        switchOwnerModalTab("paste");
+        document.getElementById("passwordModalOverlay").classList.add("active");
+        window.passwordResolve = resolve;
+      });
+    }
+
+    async function submitPassword() {
+      const enteredCode = document.getElementById("ownerPasswordInput").value.trim();
+      if (enteredCode !== VALID_OWNER_CODE) {
+        document.getElementById("passwordModalOverlay").classList.remove("active");
+        await showCustomAlert(t("alert_wrong_pwd"), t("alert_denied_title"));
+        if (window.passwordResolve) window.passwordResolve(false);
+        return;
+      }
+
+      // Embed code persistently in localStorage so future clicks require 0 re-entry
+      localStorage.setItem(OWNER_CODE_KEY, VALID_OWNER_CODE);
+      document.getElementById("passwordModalOverlay").classList.remove("active");
+      syncOwnerCodeUI();
+      if (window.passwordResolve) window.passwordResolve(true);
+    }
+
+    function cancelPassword() {
+      document.getElementById("passwordModalOverlay").classList.remove("active");
+      if (window.passwordResolve) window.passwordResolve(false);
+    }
+
+    /* ========== LOADING ========== */
+    function toggleLoadingState(isActive) {
+      const elementsToBlur = ["bg-layer-el", "bg-dim-el", "topbar-el", "screen-profile", "bottom-nav-el"];
+      if(isActive) {
+        document.getElementById("loadingOverlay").classList.add("active");
+        elementsToBlur.forEach(id => document.getElementById(id).classList.add("blur-active"));
+      } else {
+        document.getElementById("loadingOverlay").classList.remove("active");
+        elementsToBlur.forEach(id => document.getElementById(id).classList.remove("blur-active"));
+      }
+    }
+
+    /* ========== LOAD STATE ========== */
+    function loadProfileState() {
+      const username = localStorage.getItem("username") || "";
+      const email = localStorage.getItem("email") || "";
+      const savedTitleFull = localStorage.getItem("title") || "Staff •";
+      const savedPic = localStorage.getItem("profile_picture") || localStorage.getItem("user_avatar") || "";
+      const savedBanner = localStorage.getItem("profile_banner") || "";
+
+      const vUser = document.getElementById("viewUsername");
+      vUser.innerText = username || t("not_set");
+      vUser.className = "view-username" + (username ? "" : " empty");
+
+      const vEmail = document.getElementById("viewEmail");
+      vEmail.innerText = email || t("not_set");
+      vEmail.className = "view-email" + (email ? "" : " empty");
+
+      let baseTitle = savedTitleFull.replace(" ✔", "").replace(" •", "").trim();
+      const isOwner = savedTitleFull.includes("✔") && isOwnerCodeEmbedded();
+      if (baseTitle === "Owner" && !isOwnerCodeEmbedded()) {
+        baseTitle = "Staff";
+      }
+
+      const vTitle = document.getElementById("viewTitle");
+      if (baseTitle && baseTitle !== "") {
+        vTitle.innerText = baseTitle + (isOwner ? " ✔" : "");
+        vTitle.className = "view-title-badge";
+      } else {
+        vTitle.innerText = t("not_set");
+        vTitle.className = "view-title-badge empty";
+      }
+
+      document.getElementById("profileUsernameInput").value = username;
+      document.getElementById("profileEmailInput").value = email;
+      if(["Owner", "Staff", "Employee"].includes(baseTitle)) {
+        selectTitle(baseTitle);
+      } else {
+        selectTitle("Staff");
+      }
+
+      savedAvatarBase64 = savedPic;
+      const container = document.getElementById("profileAvatarContainer");
+      const avatarWrap = document.getElementById("avatarWrapper");
+      if(savedPic) {
+        container.innerHTML = `<img src="${savedPic}" alt="Avatar">`;
+        avatarWrap.classList.add("has-avatar");
+      } else {
+        container.innerHTML = `<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>`;
+        avatarWrap.classList.remove("has-avatar");
+      }
+
+      savedBannerBase64 = savedBanner;
+      if(savedBanner) showBannerPreview(savedBanner);
+      else hideBannerPreview();
+
+      syncOwnerCodeUI();
+      updateHeroTooltips();
+    }
+
+    /* ========== MODE SWITCH ========== */
+    function enterEditMode() {
+      tempCroppedBase64 = savedAvatarBase64;
+      tempBannerBase64 = savedBannerBase64;
+      bannerRemoved = false;
+      document.body.classList.add("edit-mode");
+      syncOwnerCodeUI();
+      updateBannerEmptyText();
+      updateHeroTooltips();
+    }
+    function cancelEditMode() {
+      closeCustomSelect();
+      document.body.classList.remove("edit-mode");
+      loadProfileState();
+      tempCroppedBase64 = savedAvatarBase64;
+      tempBannerBase64 = savedBannerBase64;
+      bannerRemoved = false;
+      updateBannerEmptyText();
+      updateHeroTooltips();
+    }
+    function updateBannerEmptyText() {
+      const title = document.getElementById("bannerEmptyTitle");
+      const sub = document.getElementById("bannerEmptySub");
+      if (document.body.classList.contains("edit-mode")) {
+        title.innerText = t("banner_empty_title_edit");
+        sub.innerText = t("banner_empty_sub_edit");
+      } else {
+        title.innerText = t("banner_empty_title_view");
+        sub.innerText = t("banner_empty_sub_view");
+      }
+    }
+
+    /* ============================================================
+       ========== FULL MEDIA LIGHTBOX (VIEW MODE) ==========
+       ============================================================ */
+    function openMediaPreview(type) {
+      const modal = document.getElementById("mediaLightboxModal");
+      const img = document.getElementById("mediaLightboxImg");
+      const title = document.getElementById("mediaLightboxTitle");
+
+      if (type === "banner") {
+        if (!savedBannerBase64) return;
+        title.innerText = t("media_banner_label");
+        img.src = savedBannerBase64;
+        modal.classList.add("active");
+      } else if (type === "avatar") {
+        if (!savedAvatarBase64) return;
+        title.innerText = t("media_avatar_label");
+        img.src = savedAvatarBase64;
+        modal.classList.add("active");
+      }
+    }
+
+    function closeMediaPreview() {
+      document.getElementById("mediaLightboxModal").classList.remove("active");
+    }
+
+    document.getElementById("mediaLightboxModal").addEventListener("click", function(e) {
+      if (e.target === this) closeMediaPreview();
     });
-  }
 
-  document.getElementById('btn-cancel-crop').addEventListener('click', function() {
-    cropModal.classList.remove('show');
-    inputFile.value = '';
-    inputBannerFile.value = '';
-  });
-
-  document.getElementById('btn-apply-crop').addEventListener('click', function() {
-    var dataUrl = cropCanvas.toDataURL('image/jpeg', 0.85);
-    if (currentCropTarget === 'banner') {
-      finalCroppedBanner = dataUrl;
-      bannerRemovedFlag = false;
-      renderBanner(finalCroppedBanner);
-      try { localStorage.setItem('cc_user_banner', finalCroppedBanner); } catch (err) {}
-      showToast('Banner profil diterapkan!');
-    } else {
-      finalCroppedAvatar = dataUrl;
-      renderAvatar(finalCroppedAvatar);
-      showToast('Foto profil dipotong (1:1)!');
-    }
-    cropModal.classList.remove('show');
-    inputFile.value = '';
-    inputBannerFile.value = '';
-  });
-
-  document.getElementById('btn-save-profile').addEventListener('click', function() {
-    var nameVal = inputUsername.value.trim();
-    if (!nameVal) {
-      showToast('Nama pengguna tidak boleh kosong!');
-      return;
-    }
-    try {
-      localStorage.setItem('cc_user_name', nameVal);
-      localStorage.setItem('cc_is_logged', 'true');
-      if (finalCroppedAvatar) {
-        localStorage.setItem('cc_user_avatar', finalCroppedAvatar);
+    /* ============================================================
+       ========== AVATAR & BANNER CLICK HANDLERS ==========
+       ============================================================ */
+    function handleAvatarClick() {
+      if (!document.body.classList.contains("edit-mode")) {
+        openMediaPreview("avatar");
+        return;
       }
-      if (bannerRemovedFlag) {
-        localStorage.removeItem('cc_user_banner');
-      } else if (finalCroppedBanner) {
-        localStorage.setItem('cc_user_banner', finalCroppedBanner);
+      document.getElementById("avatarFileInput").click();
+    }
+
+    function handleBannerClick() {
+      if (!document.body.classList.contains("edit-mode")) {
+        openMediaPreview("banner");
+        return;
       }
-      showToast('Perubahan disimpan!');
-    } catch (err) {
-      showToast('Ukuran gambar terlalu besar!');
+      document.getElementById("bannerFileInput").click();
     }
-  });
 
-  // ================= 5. REAL-TIME SYNC ANTAR TAB / HALAMAN =================
-  window.addEventListener('storage', function(e) {
-    if (e.key === 'cc_bg_mode' || !e.key) syncBackground();
-    if (e.key === 'cc_nav_mode' || !e.key) syncNavModeFromStorage();
-    if (e.key === 'cc_fab_movable') {
-      updateFabVisualState();
-      if (!isFabMovable()) resetFabPosition();
-      else applySavedFabPosition();
-    }
-    if (e.key === 'cc_fab_position') {
-      if (isFabMovable()) applySavedFabPosition();
-    }
-    if (e.key === 'cc_user_avatar') {
-      renderAvatar(localStorage.getItem('cc_user_avatar') || '');
-    }
-    if (e.key === 'cc_user_banner') {
-      renderBanner(localStorage.getItem('cc_user_banner') || '');
-    }
-  });
+    /* ============================================================
+       ========== INTERACTIVE FREE PAN & ZOOM CROPPER ==========
+       ============================================================ */
+    const cropState = {
+      img: null,
+      mode: "avatar",
+      vpW: 230,
+      vpH: 230,
+      outW: 400,
+      outH: 400,
+      baseScale: 1,
+      zoom: 1,
+      scale: 1,
+      posX: 0,
+      posY: 0,
+      pointers: new Map(),
+      lastPinchDist: null,
+      dragStartX: 0,
+      dragStartY: 0,
+      startPosX: 0,
+      startPosY: 0
+    };
 
-  window.addEventListener('pageshow', function () {
-    syncBackground();
-    syncNavModeFromStorage();
-  });
+    function openInteractiveCropper(dataUrl, mode) {
+      const img = new Image();
+      img.onload = function() {
+        activeCropMode = mode;
+        cropState.img = img;
+        cropState.mode = mode;
+        cropState.pointers.clear();
+        cropState.lastPinchDist = null;
 
-  window.addEventListener('focus', function () {
-    syncBackground();
-    syncNavModeFromStorage();
-  });
+        const viewport = document.getElementById("cropViewport");
+        const targetImg = document.getElementById("cropTargetImg");
+        const slider = document.getElementById("cropZoomSlider");
 
-});
-</script>
+        if (mode === "banner") {
+          viewport.className = "crop-viewport mode-banner";
+          cropState.vpW = 300;
+          cropState.vpH = 120;
+          cropState.outW = 1200;
+          cropState.outH = 480;
+        } else {
+          viewport.className = "crop-viewport mode-avatar";
+          cropState.vpW = 230;
+          cropState.vpH = 230;
+          cropState.outW = 400;
+          cropState.outH = 400;
+        }
+
+        updateCropModalTexts();
+
+        cropState.baseScale = Math.max(
+          cropState.vpW / img.naturalWidth,
+          cropState.vpH / img.naturalHeight
+        );
+        cropState.zoom = 1;
+        cropState.scale = cropState.baseScale;
+        slider.value = "1";
+
+        const dispW = img.naturalWidth * cropState.scale;
+        const dispH = img.naturalHeight * cropState.scale;
+        cropState.posX = (cropState.vpW - dispW) / 2;
+        cropState.posY = (cropState.vpH - dispH) / 2;
+
+        targetImg.src = dataUrl;
+        renderCropTransform();
+        document.getElementById("cropModalOverlay").classList.add("active");
+      };
+      img.src = dataUrl;
+    }
+
+    function clampCropPosition() {
+      if (!cropState.img) return;
+      const dispW = cropState.img.naturalWidth * cropState.scale;
+      const dispH = cropState.img.naturalHeight * cropState.scale;
+      const minX = cropState.vpW - dispW;
+      const minY = cropState.vpH - dispH;
+      cropState.posX = Math.min(0, Math.max(minX, cropState.posX));
+      cropState.posY = Math.min(0, Math.max(minY, cropState.posY));
+    }
+
+    function renderCropTransform() {
+      if (!cropState.img) return;
+      clampCropPosition();
+      const targetImg = document.getElementById("cropTargetImg");
+      targetImg.style.width = cropState.img.naturalWidth + "px";
+      targetImg.style.height = cropState.img.naturalHeight + "px";
+      targetImg.style.transform = `translate3d(${cropState.posX}px, ${cropState.posY}px, 0) scale(${cropState.scale})`;
+    }
+
+    function setCropZoom(newZoom) {
+      if (!cropState.img) return;
+      const clampedZoom = Math.min(3.5, Math.max(1, newZoom));
+      const oldScale = cropState.scale;
+      const newScale = cropState.baseScale * clampedZoom;
+
+      const cx = cropState.vpW / 2;
+      const cy = cropState.vpH / 2;
+      const imgCenterX = (cx - cropState.posX) / oldScale;
+      const imgCenterY = (cy - cropState.posY) / oldScale;
+
+      cropState.zoom = clampedZoom;
+      cropState.scale = newScale;
+      cropState.posX = cx - imgCenterX * newScale;
+      cropState.posY = cy - imgCenterY * newScale;
+
+      document.getElementById("cropZoomSlider").value = clampedZoom.toFixed(2);
+      renderCropTransform();
+    }
+
+    function onCropSliderInput(val) {
+      setCropZoom(parseFloat(val));
+    }
+
+    function stepCropZoom(delta) {
+      setCropZoom(cropState.zoom + delta);
+    }
+
+    (function initCropGestures() {
+      const vp = document.getElementById("cropViewport");
+
+      vp.addEventListener("pointerdown", function(e) {
+        if (!cropState.img) return;
+        vp.setPointerCapture(e.pointerId);
+        cropState.pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+
+        if (cropState.pointers.size === 1) {
+          cropState.dragStartX = e.clientX;
+          cropState.dragStartY = e.clientY;
+          cropState.startPosX = cropState.posX;
+          cropState.startPosY = cropState.posY;
+          cropState.lastPinchDist = null;
+        } else if (cropState.pointers.size === 2) {
+          const pts = Array.from(cropState.pointers.values());
+          cropState.lastPinchDist = Math.hypot(pts[1].x - pts[0].x, pts[1].y - pts[0].y);
+        }
+      });
+
+      vp.addEventListener("pointermove", function(e) {
+        if (!cropState.img || !cropState.pointers.has(e.pointerId)) return;
+        cropState.pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+
+        if (cropState.pointers.size === 1) {
+          const dx = e.clientX - cropState.dragStartX;
+          const dy = e.clientY - cropState.dragStartY;
+          cropState.posX = cropState.startPosX + dx;
+          cropState.posY = cropState.startPosY + dy;
+          renderCropTransform();
+        } else if (cropState.pointers.size === 2) {
+          const pts = Array.from(cropState.pointers.values());
+          const dist = Math.hypot(pts[1].x - pts[0].x, pts[1].y - pts[0].y);
+          if (cropState.lastPinchDist && cropState.lastPinchDist > 0) {
+            const ratio = dist / cropState.lastPinchDist;
+            setCropZoom(cropState.zoom * ratio);
+          }
+          cropState.lastPinchDist = dist;
+        }
+      });
+
+      function endPointer(e) {
+        cropState.pointers.delete(e.pointerId);
+        cropState.lastPinchDist = null;
+        if (cropState.pointers.size === 1) {
+          const remaining = Array.from(cropState.pointers.values())[0];
+          cropState.dragStartX = remaining.x;
+          cropState.dragStartY = remaining.y;
+          cropState.startPosX = cropState.posX;
+          cropState.startPosY = cropState.posY;
+        }
+      }
+
+      vp.addEventListener("pointerup", endPointer);
+      vp.addEventListener("pointercancel", endPointer);
+
+      vp.addEventListener("wheel", function(e) {
+        if (!cropState.img) return;
+        e.preventDefault();
+        const delta = e.deltaY < 0 ? 0.12 : -0.12;
+        setCropZoom(cropState.zoom + delta);
+      }, { passive: false });
+    })();
+
+    function handleImageSelected(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        openInteractiveCropper(e.target.result, "avatar");
+        event.target.value = "";
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function handleBannerSelected(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        openInteractiveCropper(e.target.result, "banner");
+        event.target.value = "";
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function confirmCrop() {
+      if (!cropState.img) return;
+      const canvas = document.createElement("canvas");
+      canvas.width = cropState.outW;
+      canvas.height = cropState.outH;
+      const ctx = canvas.getContext("2d");
+
+      let srcX = -cropState.posX / cropState.scale;
+      let srcY = -cropState.posY / cropState.scale;
+      let srcW = cropState.vpW / cropState.scale;
+      let srcH = cropState.vpH / cropState.scale;
+
+      srcX = Math.max(0, srcX);
+      srcY = Math.max(0, srcY);
+      srcW = Math.min(cropState.img.naturalWidth - srcX, srcW);
+      srcH = Math.min(cropState.img.naturalHeight - srcY, srcH);
+
+      ctx.drawImage(
+        cropState.img,
+        srcX, srcY, srcW, srcH,
+        0, 0, cropState.outW, cropState.outH
+      );
+
+      const resultDataUrl = canvas.toDataURL("image/jpeg", 0.86);
+
+      if (cropState.mode === "banner") {
+        tempBannerBase64 = resultDataUrl;
+        bannerRemoved = false;
+        showBannerPreview(tempBannerBase64);
+      } else {
+        tempCroppedBase64 = resultDataUrl;
+        document.getElementById("profileAvatarContainer").innerHTML = `<img src="${tempCroppedBase64}" alt="Avatar">`;
+        document.getElementById("avatarWrapper").classList.add("has-avatar");
+      }
+
+      document.getElementById("cropModalOverlay").classList.remove("active");
+      cropState.img = null;
+    }
+
+    function closeCropModal() {
+      document.getElementById("cropModalOverlay").classList.remove("active");
+      if (cropState.mode === "banner") {
+        tempBannerBase64 = savedBannerBase64 || "";
+      } else {
+        tempCroppedBase64 = savedAvatarBase64 || "";
+      }
+      cropState.img = null;
+    }
+
+    /* ========== BANNER PREVIEW HELPERS ========== */
+    function showBannerPreview(base64) {
+      const img = document.getElementById("bannerPreviewImg");
+      const empty = document.getElementById("bannerEmptyState");
+      const box = document.getElementById("profileBannerBox");
+      img.src = base64;
+      img.style.display = "block";
+      empty.style.display = "none";
+      box.classList.add("has-banner");
+    }
+    function hideBannerPreview() {
+      const img = document.getElementById("bannerPreviewImg");
+      const empty = document.getElementById("bannerEmptyState");
+      const box = document.getElementById("profileBannerBox");
+      img.src = "";
+      img.style.display = "none";
+      empty.style.display = "flex";
+      box.classList.remove("has-banner");
+    }
+    function removeBanner(ev) {
+      if (ev) ev.stopPropagation();
+      hideBannerPreview();
+      tempBannerBase64 = "";
+      bannerRemoved = true;
+    }
+
+    /* ========== SAVE ========== */
+    async function saveProfileData() {
+      const newUsername = document.getElementById("profileUsernameInput").value.trim();
+      const newEmail = document.getElementById("profileEmailInput").value.trim();
+      const selectedTitle = document.getElementById("profileTitleInput").value;
+
+      if(!newUsername) { await showCustomAlert(t("alert_empty_user"), t("alert_warn_title")); return; }
+      if(!newEmail) { await showCustomAlert(t("alert_empty_email"), t("alert_warn_title")); return; }
+
+      let finalTitleToSave = "";
+      if (selectedTitle === "Owner") {
+        // 1x klik: if Owner code is already embedded in localStorage, skip prompt!
+        if (!isOwnerCodeEmbedded()) {
+          const authorized = await showPasswordPrompt();
+          if (!authorized) return;
+        }
+        finalTitleToSave = "Owner ✔";
+      } else {
+        finalTitleToSave = selectedTitle + " •";
+      }
+
+      toggleLoadingState(true);
+
+      setTimeout(async () => {
+        localStorage.setItem("username", newUsername);
+        localStorage.setItem("email", newEmail);
+        localStorage.setItem("title", finalTitleToSave);
+
+        if(tempCroppedBase64) {
+          localStorage.setItem("profile_picture", tempCroppedBase64);
+          localStorage.setItem("user_avatar", tempCroppedBase64);
+        }
+
+        if (bannerRemoved) {
+          localStorage.removeItem("profile_banner");
+        } else if (tempBannerBase64) {
+          localStorage.setItem("profile_banner", tempBannerBase64);
+        }
+
+        toggleLoadingState(false);
+        await showCustomAlert(t("alert_saved"), t("alert_success_title"));
+
+        document.body.classList.remove("edit-mode");
+        loadProfileState();
+        updateBannerEmptyText();
+      }, 1200);
+    }
+
+    /* ============================================================
+       ========== GALLERY ==========
+       ============================================================ */
+    const galleryImages = [
+      '1.jpg','2.jpg','3.jpg','4.jpg','5.jpg',
+      '6.jpg','7.jpg','8.jpg','9.jpg','10.jpg'
+    ];
+    let currentGalleryIndex = 0;
+
+    function initGallery() {
+      const grid = document.getElementById('galleryGrid');
+      if (!grid) return;
+      grid.innerHTML = '';
+      galleryImages.forEach((src, idx) => {
+        const img = document.createElement('img');
+        img.src = src;
+        img.className = 'gallery-thumb';
+        img.alt = 'Gallery ' + (idx + 1);
+        img.loading = 'lazy';
+        img.onerror = function() {
+          this.style.background = '#1a1a1a';
+          this.style.borderColor = 'rgba(255,255,255,0.1)';
+          this.style.cursor = 'not-allowed';
+          this.onclick = null;
+          this.removeAttribute('src');
+          this.alt = '?';
+        };
+        img.onclick = () => openGallery(idx);
+        grid.appendChild(img);
+      });
+    }
+
+    function openGallery(idx) {
+      currentGalleryIndex = idx;
+      updateGalleryDisplay();
+      document.getElementById('galleryModal').classList.add('active');
+    }
+
+    function updateGalleryDisplay() {
+      document.getElementById('galleryFullImg').src = galleryImages[currentGalleryIndex];
+      document.getElementById('galleryCounter').textContent =
+        (currentGalleryIndex + 1) + ' / ' + galleryImages.length;
+    }
+
+    function prevGallery() {
+      currentGalleryIndex = (currentGalleryIndex - 1 + galleryImages.length) % galleryImages.length;
+      updateGalleryDisplay();
+    }
+
+    function nextGallery() {
+      currentGalleryIndex = (currentGalleryIndex + 1) % galleryImages.length;
+      updateGalleryDisplay();
+    }
+
+    function closeGallery() {
+      document.getElementById('galleryModal').classList.remove('active');
+    }
+
+    document.getElementById('galleryModal').addEventListener('click', function(e) {
+      if (e.target === this) closeGallery();
+    });
+
+    document.addEventListener('keydown', function(e) {
+      const pwdModal = document.getElementById('passwordModalOverlay');
+      if (pwdModal.classList.contains('active')) {
+        if (e.key === 'Escape') {
+          cancelPassword();
+          return;
+        }
+        if (e.key === 'Enter' && document.getElementById('ownerPanelPaste').style.display !== 'none') {
+          submitPassword();
+          return;
+        }
+      }
+
+      const mediaModal = document.getElementById('mediaLightboxModal');
+      if (mediaModal.classList.contains('active') && e.key === 'Escape') {
+        closeMediaPreview();
+        return;
+      }
+
+      const cropModal = document.getElementById('cropModalOverlay');
+      if (cropModal.classList.contains('active') && e.key === 'Escape') {
+        closeCropModal();
+        return;
+      }
+
+      const modal = document.getElementById('galleryModal');
+      if (!modal.classList.contains('active')) return;
+      if (e.key === 'ArrowLeft') prevGallery();
+      else if (e.key === 'ArrowRight') nextGallery();
+      else if (e.key === 'Escape') closeGallery();
+    });
+
+    /* ============================================================
+       ========== DISK PLAYER ==========
+       ============================================================ */
+    let diskClickTimer = null;
+
+    function handleDiskClick() {
+      if (diskClickTimer !== null) {
+        clearTimeout(diskClickTimer);
+        diskClickTimer = null;
+        resetSong();
+        return;
+      }
+      diskClickTimer = setTimeout(() => {
+        diskClickTimer = null;
+        togglePlayPause();
+      }, 260);
+    }
+
+    function togglePlayPause() {
+      const audio = document.getElementById('bgMusic');
+      const disk = document.getElementById('diskContainer');
+      if (!audio || !disk) return;
+
+      if (audio.paused) {
+        const playPromise = audio.play();
+        if (playPromise && typeof playPromise.then === 'function') {
+          playPromise.then(() => {
+            disk.classList.add('playing');
+            currentDiskState = "playing";
+            updateDiskStatusText();
+          }).catch(err => {
+            console.warn('Audio play gagal:', err);
+            currentDiskState = "error";
+            updateDiskStatusText();
+            disk.classList.remove('playing');
+          });
+        }
+      } else {
+        audio.pause();
+        disk.classList.remove('playing');
+        currentDiskState = "paused";
+        updateDiskStatusText();
+      }
+    }
+
+    function resetSong() {
+      const audio = document.getElementById('bgMusic');
+      const disk = document.getElementById('diskContainer');
+      if (!audio || !disk) return;
+
+      audio.pause();
+      try { audio.currentTime = 0; } catch (e) {}
+      disk.classList.remove('playing');
+      currentDiskState = "reset";
+      updateDiskStatusText();
+    }
+
+    window.addEventListener('DOMContentLoaded', function() {
+      applyLanguage();
+      loadProfileState();
+      initGallery();
+    });
+  </script>
+
 </body>
 </html>
